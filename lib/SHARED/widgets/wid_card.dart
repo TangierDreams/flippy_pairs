@@ -1,0 +1,55 @@
+import 'dart:math';
+import 'package:flutter/material.dart';
+
+class WidCard extends StatelessWidget {
+  final bool isFaceUp;
+  final IconData frontIcon;
+  final VoidCallback onTap;
+
+  const WidCard({
+    super.key,
+    required this.isFaceUp,
+    required this.frontIcon,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(
+          begin: 0,
+          end: isFaceUp ? 1 : 0, // 0 = back, 1 = front
+        ),
+        duration: const Duration(milliseconds: 500),
+        //curve: Curves.easeInOutBack, // 👈 bounce curve
+        builder: (context, value, child) {
+          // Rotate Y axis from 0 → π
+          double angle = value * pi;
+          bool showFront = value > 0.5;
+
+          return Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001) // perspective
+              ..rotateY(angle),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.blueGrey[700],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Center(
+                child: Icon(
+                  showFront ? frontIcon : Icons.help_outline,
+                  color: Colors.white70,
+                  size: 32,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
