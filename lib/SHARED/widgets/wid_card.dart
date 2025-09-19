@@ -36,13 +36,15 @@ class WidCard extends StatelessWidget {
               ..rotateY(angle),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.blueGrey[700],
+                //color: Colors.blueGrey[700],
+                color: showFront ? const Color.fromARGB(255, 234, 238, 240) : Colors.blueGrey[700],
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Center(
                 child: Icon(
                   showFront ? frontIcon : Icons.help_outline,
-                  color: Colors.white70,
+                  //color: Colors.white70,
+                  color: showFront ? const Color.fromARGB(255, 193, 12, 12) : Colors.white70,
                   size: 32,
                 ),
               ),

@@ -8,6 +8,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   final Function()? onMenuPressed;
   final Function()? onBackButtonPressed;
   final Function()? onCloseButtonPressed;
+   final List<Widget>? extraActions;
 
   const WidToolbar({
     super.key,
@@ -17,14 +18,12 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
     this.onMenuPressed,
     this.onBackButtonPressed,
     this.onCloseButtonPressed,
+    this.extraActions,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // leading: showMenuButton
-      //     ? IconButton(icon: const Icon(Icons.menu), onPressed: onMenuPressed)
-      //     : null,
         leading: showMenuButton
             ? Builder(
                 // Use a Builder to get the Scaffold's context
@@ -41,7 +40,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
       title: Text(AppGeneral.title),
       centerTitle: false,
       actions: <Widget>[
-        if (showBackButton)
+        if (showBackButton) 
           IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: onBackButtonPressed ?? () => Navigator.of(context).pop(),
@@ -52,6 +51,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
             onPressed:
                 onCloseButtonPressed ?? () => Navigator.of(context).pop(),
           ),
+        if (extraActions != null) ...extraActions!,          
       ],
     );
   }
