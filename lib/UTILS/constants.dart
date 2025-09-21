@@ -19,6 +19,12 @@ class AppTexts {
     color: AppColors.contrast,
   );
 
+  static final TextStyle smallSubtitle = TextStyle(
+    fontSize: 12,
+    color: AppColors.contrast,
+  );
+
+
   static final TextStyle normal = TextStyle(
     fontSize: 14,
     color: AppColors.fontColor,

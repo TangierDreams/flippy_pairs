@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flippy_pairs/SHARED/widgets/wid_toolbar.dart';
+import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
 
 class PagSettings extends StatelessWidget {
   const PagSettings({

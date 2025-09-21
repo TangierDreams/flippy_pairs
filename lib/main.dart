@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PAGES/GAME/pag_game.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGES/_HOME/pag_home.dart';
 import 'package:flippy_pairs/UTILS/constants.dart';
@@ -8,7 +9,6 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -17,7 +17,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       title: AppGeneral.title,
-      home: PagHome(),
+
+      // ROUTING A LAS DISTINTAS PAGINAS:
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const PagHome(),
+        '/game': (context) => const PagGame(),
+      },
     );
   }
 }
