@@ -1,7 +1,7 @@
 import 'package:flippy_pairs/PAGES/GAME/pag_game.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGES/_HOME/pag_home.dart';
-import 'package:flippy_pairs/UTILS/constants.dart';
+import 'package:flippy_pairs/SHARED/UTILS/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

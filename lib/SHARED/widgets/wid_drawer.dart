@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/SHARED/MODELS/mod_drawer_option.dart';
 import 'package:flippy_pairs/PAGES/SETTINGS/pag_settings.dart';
-import 'package:flippy_pairs/UTILS/constants.dart';
+import 'package:flippy_pairs/SHARED/UTILS/constants.dart';
 
 class WidDrawer extends StatelessWidget {
 

@@ -18,22 +18,21 @@ class _PagGameState extends State<PagGame> {
   late SrvGameControl game;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
     pRows = args['pRows'];
     pCols = args['pCols'];
-  }
 
-
-  @override
-  void initState() {
-    super.initState();
-    // 3x2, 4x3, 5x4, 6x5, 8x7, 9x8.
     game = SrvGameControl(rows: pRows, cols: pCols);
-  }
 
+  }
 
   void _checkForWin() {
     if (game.hasWon) {
@@ -55,16 +54,10 @@ class _PagGameState extends State<PagGame> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: WidToolbar(
-        showMenuButton: true,
-        showBackButton: false,
+        showMenuButton: false,
+        showBackButton: true,
         showCloseButton: false,
         subtitle: "Harden Your Mind Once and for All!",
-        extraActions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => setState(() => game.resetGame()),
-          ),
-        ],
       ),
       drawer: WidDrawer(),
       body: Padding(

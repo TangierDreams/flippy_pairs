@@ -1,4 +1,4 @@
-import 'package:flippy_pairs/UTILS/constants.dart';
+import 'package:flippy_pairs/SHARED/UTILS/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
 
@@ -22,33 +22,26 @@ class PagHome extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Juego 6x5, 8x7, 9x8.:
-            GridButton(pTitle: "Jugar con Cuadrícula de 3x2", pRows: 3, pCols: 2),
-
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GridButton(pTitle: "3x2", pRows: 3, pCols: 2),
+                GridButton(pTitle: "4x3", pRows: 4, pCols: 3),
+                GridButton(pTitle: "5x4", pRows: 5, pCols: 4),
+              ]
+            ),
             const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GridButton(pTitle: "6x5", pRows: 6, pCols: 5),
+                GridButton(pTitle: "8x7", pRows: 8, pCols: 7),
+                GridButton(pTitle: "9x8", pRows: 9, pCols: 8),
+              ]
+            )
 
-            GridButton(pTitle: "Jugar con Cuadrícula de 4x3", pRows: 4, pCols: 3),
-
-            const SizedBox(height: 20),
-
-            GridButton(pTitle: "Jugar con Cuadrícula de 5x4", pRows: 5, pCols: 4),
-
-            const SizedBox(height: 20),
-
-            GridButton(pTitle: "Jugar con Cuadrícula de 6x5", pRows: 6, pCols: 5),
-
-            const SizedBox(height: 20),
-
-            GridButton(pTitle: "Jugar con Cuadrícula de 8x7", pRows: 8, pCols: 7),
-
-            const SizedBox(height: 20),
-
-            GridButton(pTitle: "Jugar con Cuadrícula de 9x8", pRows: 9, pCols: 8),
-
-            const SizedBox(height: 20),
           ],
         ),
       ),
