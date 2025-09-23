@@ -1,13 +1,39 @@
 import 'package:flippy_pairs/SHARED/UTILS/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+// Variables globales:
 
 int rowsSelected = 3;
 int colsSelected = 2;
+final player = AudioPlayer();
 
-class PagHome extends StatelessWidget {
+class PagHome extends StatefulWidget {
   const PagHome({super.key});
+
+  @override
+  State<PagHome> createState() => _PagHomeState();
+}
+
+
+class _PagHomeState extends State<PagHome> {
+
+  // NEW: we keep track of the selected button index
+
+  int selectedIndex = 0; // by default, first level selected
+
+  // NEW: list of levels to avoid repeating code
+
+  final levels = const [
+    {"title": "3x2", "rows": 3, "cols": 2},
+    {"title": "4x3", "rows": 4, "cols": 3},
+    {"title": "5x4", "rows": 5, "cols": 4},
+    {"title": "6x5", "rows": 6, "cols": 5},
+    {"title": "8x7", "rows": 8, "cols": 7},
+    {"title": "9x8", "rows": 9, "cols": 8},
+  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +47,8 @@ class PagHome extends StatelessWidget {
         subtitle: "Harden Your Mind Once and for All!",
       ),
 
-      // Menú Lateral:
-
       //drawer: MyDrawer(),
+
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -32,84 +57,37 @@ class PagHome extends StatelessWidget {
             Text(
               'Difficulty',
               textAlign: TextAlign.center,
-              style: GoogleFonts.chewy(
-                textStyle: const TextStyle(
-                  fontSize: 30,
-                  height: 0.7,
-                  color: Colors.orange,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 4,
-                      color: Colors.black54,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
-                ),
-              ),
+              style: AppTexts.textStyleOrange30,
             ),
 
             const SizedBox(height: 15),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GridButton(pTitle: "3x2", pRows: 3, pCols: 2),
-                GridButton(pTitle: "4x3", pRows: 4, pCols: 3),
-                GridButton(pTitle: "5x4", pRows: 5, pCols: 4),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GridButton(pTitle: "6x5", pRows: 6, pCols: 5),
-                GridButton(pTitle: "8x7", pRows: 8, pCols: 7),
-                GridButton(pTitle: "9x8", pRows: 9, pCols: 8),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(
-                  context,
-                ).pushNamed('/game', arguments: {'pRows': rowsSelected, 'pCols': colsSelected});
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 15,
-                ),
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.contrast,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                elevation: 10,
+            // 🔥 NEW: Generate the buttons dynamically in 2 rows
+            for (int row = 0; row < 2; row++) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(3, (col) {
+                  final index = row * 3 + col; // compute global index
+                  final level = levels[index];
+                  return LevelButton(
+                    pTitle: level["title"] as String,
+                    pRows: level["rows"] as int,
+                    pCols: level["cols"] as int,
+                    selected: selectedIndex == index, // highlight if selected
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = index;
+                        rowsSelected = level["rows"] as int;
+                        colsSelected = level["cols"] as int;
+                      });
+                    },
+                  );
+                }),
               ),
+              const SizedBox(height: 20),
+            ],
 
-              child: Text(
-                'Start Playing!',
-                style: GoogleFonts.luckiestGuy(
-                  textStyle: const TextStyle(
-                    fontSize: 28,
-                    //height: 0.9,
-                    color: Colors.orange,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 8,
-                        color: Colors.black87,
-                        offset: Offset(3, 3),
-                      ),
-                    ],
-                  ),
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
+            PlayButton(),
           ],
         ),
       ),
@@ -117,49 +95,100 @@ class PagHome extends StatelessWidget {
   }
 }
 
-class GridButton extends StatelessWidget {
+
+//------------------------------------------------------------------------------
+// Botón Play
+//------------------------------------------------------------------------------
+class PlayButton extends StatelessWidget {
+  const PlayButton({
+    super.key,
+  });
+
+  // static shared player so we can preload
+  static final AudioPlayer _player = AudioPlayer()..setSource(AssetSource('sounds/play.mp3'));
+
+  @override
+  Widget build(BuildContext context) {
+    
+    return ElevatedButton(
+      onPressed: () {
+        _player.resume(); // resume preloaded sound
+        Navigator.of(context).pushNamed(
+          '/game',
+          arguments: {'pRows': rowsSelected, 'pCols': colsSelected},
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          vertical: 15,
+          horizontal: 15,
+        ),
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.contrast,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        elevation: 10,
+      ),
+    
+      child: Text(
+        'Start Playing!',
+        style: AppTexts.textStyleOrange28,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+
+//------------------------------------------------------------------------------
+// Boton de nivel.
+//------------------------------------------------------------------------------
+class LevelButton extends StatelessWidget {
   final String pTitle;
   final int pRows;
   final int pCols;
+  final bool selected;
+  final VoidCallback onTap;  
 
-  const GridButton({
+  const LevelButton({
     super.key,
     required this.pTitle,
     required this.pRows,
     required this.pCols,
+    required this.selected,
+    required this.onTap,    
   });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-        onPressed: () {
-            rowsSelected = pRows;
-            colsSelected = pCols;
-        },      
-        style: ElevatedButton.styleFrom(
+
+    
+
+    return AnimatedScale(
+      scale: selected ? 1.1 : 1.0, // 🔥 grows when selected
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutBack,   // 🔥 elastic effect
+      child: ElevatedButton(    
+      onPressed: () async {
+          // 🔥 Play funny sound
+          await player.play(AssetSource('sounds/notification.mp3'));
+          
+          // Then trigger the callback
+          onTap();
+      },
+      style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-        backgroundColor: AppColors.primary,
+        backgroundColor: selected ? AppColors.accent : AppColors.primary, // 🔥 highlight if selected
         foregroundColor: AppColors.contrast,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 10,
+        elevation: selected ? 15 : 10, // 🔥 stronger elevation when selected
       ),
       child: Text(
         pTitle,
-        style: GoogleFonts.chewy(
-          textStyle: const TextStyle(
-            fontSize: 30,
-            height: 0.7,
-            color: Colors.yellow,
-            shadows: [
-              Shadow(
-                blurRadius: 4,
-                color: Colors.black54,
-                offset: Offset(2, 2),
-              ),
-            ],
-          ),
-        ),
+        style: AppTexts.textStyleYellow30,
         textAlign: TextAlign.center,
+      ),
       ),
     );
   }

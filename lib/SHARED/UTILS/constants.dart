@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppGeneral {
   static const String title = "Flippy Pairs";
@@ -14,6 +15,52 @@ class AppColors {
 }
 
 class AppTexts {
+
+  static final textStyleOrange30 = GoogleFonts.chewy(
+      textStyle: const TextStyle(
+        fontSize: 30,
+        height: 0.7,
+        color: Colors.orange,
+        shadows: [
+          Shadow(
+            blurRadius: 4,
+            color: Colors.black54,
+            offset: Offset(2, 2),
+          ),
+        ],
+      ),
+  );
+
+  static final textStyleOrange28 = GoogleFonts.luckiestGuy(
+      textStyle: const TextStyle(
+        fontSize: 28,
+        //height: 0.9,
+        color: Colors.orange,
+        shadows: [
+          Shadow(
+            blurRadius: 8,
+            color: Colors.black87,
+            offset: Offset(3, 3),
+          ),
+        ],
+      ),
+    );
+
+  static final textStyleYellow30 = GoogleFonts.chewy(
+        textStyle: const TextStyle(
+          fontSize: 30,
+          height: 0.7,
+          color: Colors.yellow,
+          shadows: [
+            Shadow(
+              blurRadius: 4,
+              color: Colors.black54,
+              offset: Offset(2, 2),
+            ),
+          ],
+        ),
+  );
+
   static final TextStyle subtitle = TextStyle(
     fontSize: 20,
     color: AppColors.contrast,
