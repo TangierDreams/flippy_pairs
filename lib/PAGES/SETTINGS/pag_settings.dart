@@ -16,7 +16,6 @@ class PagSettings extends StatelessWidget {
       appBar: WidToolbar(
         showMenuButton: false,
         showBackButton: true,
-        showCloseButton: false,
       ),
 
       body: Center(

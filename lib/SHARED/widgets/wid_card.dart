@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flippy_pairs/SHARED/SERVICES/srv_sounds.dart';
 import 'package:flutter/material.dart';
 
 class WidCard extends StatelessWidget {
@@ -16,7 +17,10 @@ class WidCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+        onTap: () {
+           SrvSounds().emitFlipSound();  // extra action
+           onTap();                      // then call the passed function
+        },      
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(
           begin: 0,

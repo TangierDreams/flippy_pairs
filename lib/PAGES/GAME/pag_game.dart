@@ -56,7 +56,7 @@ class _PagGameState extends State<PagGame> {
       appBar: WidToolbar(
         showMenuButton: false,
         showBackButton: true,
-        showCloseButton: false,
+        //showCloseButton: false,
         subtitle: "Harden Your Mind Once and for All!",
       ),
       drawer: WidDrawer(),

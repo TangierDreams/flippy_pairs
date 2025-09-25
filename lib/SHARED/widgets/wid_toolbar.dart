@@ -1,29 +1,22 @@
+import 'package:flippy_pairs/SHARED/SERVICES/srv_sounds.dart';
+import 'package:flippy_pairs/SHARED/WIDGETS/wid_arrow_back.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flippy_pairs/SHARED/UTILS/constants.dart';
 
 class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   final bool showMenuButton;
   final bool showBackButton;
-  final bool showCloseButton;
   final Function()? onMenuPressed;
   final Function()? onBackButtonPressed;
-  final Function()? onCloseButtonPressed;
   final String? subtitle;
-  final List<Widget>? extraActions;
-  final double toolbarHeight;
 
   const WidToolbar({
     super.key,
     this.showMenuButton = true,
     this.showBackButton = false,
-    this.showCloseButton = false,
     this.onMenuPressed,
     this.onBackButtonPressed,
-    this.onCloseButtonPressed,
     this.subtitle,
-    this.extraActions,
-    this.toolbarHeight = 72.0, // increase if fonts are larger
   });
 
   @override
@@ -35,8 +28,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
               builder: (BuildContext context) {
                 return IconButton(
                   icon: const Icon(Icons.menu),
-                  onPressed:
-                      onMenuPressed ?? () => Scaffold.of(context).openDrawer(),
+                  onPressed: onMenuPressed ?? () => Scaffold.of(context).openDrawer(),
                 );
               },
             )
@@ -44,67 +36,39 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.primary,
       foregroundColor: AppColors.contrast,
       centerTitle: true,
-      toolbarHeight: toolbarHeight, // <-- ensures the bar is tall enough
+      toolbarHeight: 72.0, // <-- Altura del toolbar
       title: Column(
         mainAxisSize: MainAxisSize.min, // don't stretch vertically
         children: [
-          const SizedBox(height: 6), // small top offset *inside* the bar
-          Text(
-            AppGeneral.title,
-            style: GoogleFonts.luckiestGuy(
-              textStyle: const TextStyle(
-                fontSize: 32,
-                height: 0.9,
-                color: Colors.orange,
-                shadows: [
-                  Shadow(
-                    blurRadius: 8,
-                    color: Colors.black87,
-                    offset: Offset(3, 3),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          const SizedBox(height: 6),
+          Text(AppGeneral.title, style: AppTexts.textStyleOrange32),
           if (subtitle != null) ...[
-            const SizedBox(height: 1), // small gap between title and subtitle
-            Text(
-              subtitle!,
-              style: GoogleFonts.chewy(
-                textStyle: const TextStyle(
-                  fontSize: 14,
-                  height: 0.7,
-                  color: Colors.yellow,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 4,
-                      color: Colors.black54,
-                      offset: Offset(2, 2),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            const SizedBox(height: 1), // Pequeño espacio entre título y subtítulo
+            Text(subtitle!, style: AppTexts.textStyleYellow14),
           ],
         ],
       ),
       actions: <Widget>[
         if (showBackButton)
-          IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: onBackButtonPressed ?? () => Navigator.of(context).pop(),
-          )
-        else if (showCloseButton)
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed:
-                onCloseButtonPressed ?? () => Navigator.of(context).pop(),
+          GestureDetector(
+            onTapDown: (_) {
+              // 👇 play sound immediately when finger touches
+              SrvSounds().emitGobackSound();
+            },
+            onTap: () {
+              // 👇 navigate when finger is released
+              if (onBackButtonPressed != null) {
+                onBackButtonPressed!(); // call the custom callback if provided
+              } else if (context.mounted) {
+                Navigator.of(context).pop(); // default behavior
+              }
+            },
+            child: Padding(padding: const EdgeInsets.all(6), child: WidArrowBack()),
           ),
-        if (extraActions != null) ...extraActions!,
       ],
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(toolbarHeight);
+  Size get preferredSize => Size.fromHeight(72.0);
 }

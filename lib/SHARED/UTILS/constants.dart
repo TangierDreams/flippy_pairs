@@ -1,3 +1,4 @@
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -15,50 +16,59 @@ class AppColors {
 }
 
 class AppTexts {
+  static final textStyleOrange32 = GoogleFonts.luckiestGuy(
+    textStyle: const TextStyle(
+      fontSize: 32,
+      height: 0.9,
+      color: Colors.orange,
+      shadows: [
+        Shadow(blurRadius: 8, color: Colors.black87, offset: Offset(3, 3)),
+      ],
+    ),
+  );
 
   static final textStyleOrange30 = GoogleFonts.chewy(
-      textStyle: const TextStyle(
-        fontSize: 30,
-        height: 0.7,
-        color: Colors.orange,
-        shadows: [
-          Shadow(
-            blurRadius: 4,
-            color: Colors.black54,
-            offset: Offset(2, 2),
-          ),
-        ],
-      ),
+    textStyle: const TextStyle(
+      fontSize: 30,
+      height: 0.7,
+      color: Colors.orange,
+      shadows: [
+        Shadow(blurRadius: 4, color: Colors.black54, offset: Offset(2, 2)),
+      ],
+    ),
   );
 
   static final textStyleOrange28 = GoogleFonts.luckiestGuy(
-      textStyle: const TextStyle(
-        fontSize: 28,
-        //height: 0.9,
-        color: Colors.orange,
-        shadows: [
-          Shadow(
-            blurRadius: 8,
-            color: Colors.black87,
-            offset: Offset(3, 3),
-          ),
-        ],
-      ),
-    );
+    textStyle: const TextStyle(
+      fontSize: 28,
+      //height: 0.9,
+      color: Colors.orange,
+      shadows: [
+        Shadow(blurRadius: 8, color: Colors.black87, offset: Offset(3, 3)),
+      ],
+    ),
+  );
 
   static final textStyleYellow30 = GoogleFonts.chewy(
-        textStyle: const TextStyle(
-          fontSize: 30,
-          height: 0.7,
-          color: Colors.yellow,
-          shadows: [
-            Shadow(
-              blurRadius: 4,
-              color: Colors.black54,
-              offset: Offset(2, 2),
-            ),
-          ],
-        ),
+    textStyle: const TextStyle(
+      fontSize: 30,
+      height: 0.7,
+      color: Colors.yellow,
+      shadows: [
+        Shadow(blurRadius: 4, color: Colors.black54, offset: Offset(2, 2)),
+      ],
+    ),
+  );
+
+  static final textStyleYellow14 = GoogleFonts.chewy(
+    textStyle: const TextStyle(
+      fontSize: 14,
+      height: 0.7,
+      color: Colors.yellow,
+      shadows: [
+        Shadow(blurRadius: 4, color: Colors.black54, offset: Offset(2, 2)),
+      ],
+    ),
   );
 
   static final TextStyle subtitle = TextStyle(
@@ -70,7 +80,6 @@ class AppTexts {
     fontSize: 12,
     color: AppColors.contrast,
   );
-
 
   static final TextStyle normal = TextStyle(
     fontSize: 14,

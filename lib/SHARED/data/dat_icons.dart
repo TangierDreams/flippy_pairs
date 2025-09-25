@@ -31,13 +31,17 @@ class DatIcons {
     Icons.arrow_circle_up,
     Icons.ice_skating,
     Icons.sports,
-    Icons.wifi,
     Icons.wifi_calling,
     Icons.lock_clock_outlined,
     Icons.mark_chat_read_outlined,
     Icons.ac_unit,
     Icons.insert_chart,
     Icons.abc_sharp,
+    Icons.alarm_add,
+    Icons.alarm_off,
+    Icons.temple_buddhist,
+    Icons.twelve_mp,
+    Icons.accessible,
   ];
 
   // Obtenemos un número de pares de iconos, desordenados:
