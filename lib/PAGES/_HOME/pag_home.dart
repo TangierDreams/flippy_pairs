@@ -52,7 +52,7 @@ class _PagHomeState extends State<PagHome> {
 
             const SizedBox(height: 15),
 
-            // 🔥 NEW: Generate the buttons dynamically in 2 rows
+            // Generate the buttons dynamically in 2 rows
             for (int row = 0; row < 2; row++) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

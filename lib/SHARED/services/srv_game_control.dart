@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/SHARED/SERVICES/srv_diskette.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/SHARED/DATA/dat_icons.dart';
 
@@ -9,6 +10,9 @@ class SrvGameControl {
   late List<bool> matched;
   int? firstFlippedIndex;
   bool allowFlip = true;
+  int matchedPairs = 0;
+  int failedPairs = 0;
+  int points = 0;
 
   SrvGameControl({required this.rows, required this.cols}) {
     _startNewGame();
@@ -24,9 +28,13 @@ class SrvGameControl {
     matched = List.generate(totalCards, (_) => false);
     firstFlippedIndex = null;
     allowFlip = true;
+    matchedPairs = 0;
+    failedPairs = 0;
+    points = SrvDiskette.get("puntuacion", defaultValue: 0);
   }
 
   void resetGame() {
+    SrvDiskette.set("puntuacion", value: points);
     _startNewGame();
   }
 
@@ -37,10 +45,7 @@ class SrvGameControl {
   /// If a pair was wrong -> returns `false`
   /// If only one card flipped -> returns `null`
 
-  Future<bool?> onCardTap(
-    int index,
-    void Function(void Function()) setState,
-  ) async {
+  Future<bool?> onCardTap(int index, void Function(void Function()) setState) async {
     if (!allowFlip) return null;
     if (cardsUp[index] || matched[index]) return null;
 
@@ -60,6 +65,8 @@ class SrvGameControl {
         matched[secondIndex] = true;
         firstFlippedIndex = null;
       });
+      matchedPairs++;
+      points += 10;
       return true; // match
     } else {
       allowFlip = false;
@@ -70,6 +77,8 @@ class SrvGameControl {
         firstFlippedIndex = null;
         allowFlip = true;
       });
+      failedPairs++;
+      points--;
       return false; // not a match
     }
   }

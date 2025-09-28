@@ -50,21 +50,40 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: <Widget>[
         if (showBackButton)
-          GestureDetector(
-            onTapDown: (_) {
-              // 👇 play sound immediately when finger touches
-              SrvSounds().emitGobackSound();
-            },
-            onTap: () {
-              // 👇 navigate when finger is released
-              if (onBackButtonPressed != null) {
-                onBackButtonPressed!(); // call the custom callback if provided
-              } else if (context.mounted) {
-                Navigator.of(context).pop(); // default behavior
-              }
-            },
-            child: Padding(padding: const EdgeInsets.all(6), child: WidArrowBack()),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () async {
+                // play sound
+                await SrvSounds().emitGobackSound();
+
+                // wait a bit
+                await Future.delayed(const Duration(milliseconds: 250));
+
+                // go back
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const WidArrowBack(),
+            ),
           ),
+
+        //       IconButton(
+        //         icon: const Icon(Icons.arrow_back),
+        //         onPressed: () async {
+        //           // play your goback sound
+        //           await SrvSounds().emitGobackSound();
+
+        //           // wait a little before navigating
+        //           await Future.delayed(const Duration(milliseconds: 250));
+
+        //           // navigate back
+        //           if (context.mounted) {
+        //             Navigator.pop(context);
+        //           }
+        //         },
+        //       ),
       ],
     );
   }
