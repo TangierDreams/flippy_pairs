@@ -1,11 +1,193 @@
-import 'package:flippy_pairs/SHARED/SERVICES/srv_game_control.dart';
 import 'package:flippy_pairs/SHARED/SERVICES/srv_sounds.dart';
+import 'package:flippy_pairs/SHARED/SERVICES/srv_diskette.dart';
+import 'package:flippy_pairs/SHARED/DATA/dat_icons.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_counter.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_game_over.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_card.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_timer.dart';
+
+// ============================================================================
+// VARIABLES GLOBALES DEL JUEGO
+// ============================================================================
+
+// Configuración del tablero
+late int _rows;
+late int _cols;
+late int _totalCards;
+late int _totalPairs;
+
+// Las cartas y su estado
+late List<IconData> _icons; // Los iconos de cada carta
+late List<bool> _cartasVolteadas; // true = carta boca arriba
+late List<bool> _cartasEmparejadas; // true = ya hizo match
+
+// Control del turno actual
+int? _primeraCarta; // índice de la primera carta volteada
+bool _puedoVoltearCarta = true; // false = esperando a que se oculten las cartas
+
+// Puntuaciones
+int _puntosTotal = 0; // Puntos acumulados (se guardan en disco)
+int _puntosPartida = 0; // Puntos solo de esta partida
+int _parejasAcertadas = 0;
+int _parejasFalladas = 0;
+
+// Para el efecto visual de flash
+Set<int> _cartasParpadeando = {};
+
+// ============================================================================
+// FUNCIONES DE INICIALIZACIÓN
+// ============================================================================
+
+void inicializarJuego(int rows, int cols) {
+  _rows = rows;
+  _cols = cols;
+  _totalCards = rows * cols;
+  _totalPairs = _totalCards ~/ 2;
+
+  // Conseguir los iconos aleatorios
+  _icons = DatIcons.getIcons(_totalPairs);
+
+  // Resetear todos los estados
+  _cartasVolteadas = List.filled(_totalCards, false);
+  _cartasEmparejadas = List.filled(_totalCards, false);
+
+  _primeraCarta = null;
+  _puedoVoltearCarta = true;
+
+  _parejasAcertadas = 0;
+  _parejasFalladas = 0;
+  _puntosPartida = 0;
+
+  _cartasParpadeando = {};
+
+  // Cargar puntos guardados del disco
+  _puntosTotal = SrvDiskette.get("puntuacion", defaultValue: 0) as int;
+}
+
+void resetearJuego() {
+  inicializarJuego(_rows, _cols);
+}
+
+// ============================================================================
+// FUNCIONES DE LÓGICA PURA
+// ============================================================================
+
+bool esPareja(int carta1, int carta2) {
+  return _icons[carta1] == _icons[carta2];
+}
+
+bool juegoTerminado() {
+  // Si todas las cartas están emparejadas, hemos ganado
+  for (bool emparejada in _cartasEmparejadas) {
+    if (!emparejada) return false;
+  }
+  return true;
+}
+
+void sumarPuntos(int puntos) {
+  _puntosTotal += puntos;
+  _puntosPartida += puntos;
+}
+
+void restarPuntos(int puntos) {
+  _puntosTotal -= puntos;
+  _puntosPartida -= puntos;
+}
+
+void guardarPuntuacion() {
+  SrvDiskette.set("puntuacion", value: _puntosTotal);
+}
+
+// ============================================================================
+// FUNCIÓN PRINCIPAL: MANEJAR EL TOQUE EN UNA CARTA
+// ============================================================================
+
+Future<void> manejarToqueCarta(int index, Function setState) async {
+  // 1. VERIFICACIONES BÁSICAS
+
+  // Si no puedo voltear, ignoro el toque
+  if (!_puedoVoltearCarta) return;
+
+  // Si la carta ya está volteada o emparejada, ignoro
+  if (_cartasVolteadas[index] || _cartasEmparejadas[index]) return;
+
+  // 2. VOLTEAR LA CARTA
+
+  setState(() {
+    _cartasVolteadas[index] = true;
+  });
+
+  // 3. ¿ES LA PRIMERA O LA SEGUNDA CARTA?
+
+  // Si es la primera carta del turno
+  if (_primeraCarta == null) {
+    _primeraCarta = index;
+    return; // Esperamos a que volteen la segunda
+  }
+
+  // Si llegamos aquí, es la segunda carta
+  int indicePrimera = _primeraCarta!;
+  int indiceSegunda = index;
+
+  // 4. COMPROBAR SI HACEN PAREJA
+
+  if (esPareja(indicePrimera, indiceSegunda)) {
+    // ¡MATCH! ✓
+
+    setState(() {
+      _cartasEmparejadas[indicePrimera] = true;
+      _cartasEmparejadas[indiceSegunda] = true;
+      _primeraCarta = null;
+    });
+
+    _parejasAcertadas++;
+    sumarPuntos(10);
+
+    // Efecto visual de parpadeo
+    setState(() {
+      _cartasParpadeando.add(indicePrimera);
+      _cartasParpadeando.add(indiceSegunda);
+    });
+
+    SrvSounds().emitLevelSound();
+
+    await Future.delayed(const Duration(milliseconds: 800));
+
+    setState(() {
+      _cartasParpadeando.clear();
+    });
+
+    // Verificar si hemos terminado el juego
+    if (juegoTerminado()) {
+      guardarPuntuacion();
+    }
+  } else {
+    // NO HACEN MATCH ✗
+
+    _puedoVoltearCarta = false; // Bloqueamos más toques
+    _parejasFalladas++;
+    restarPuntos(1);
+
+    // Esperamos para que el jugador las vea
+    await Future.delayed(const Duration(milliseconds: 800));
+
+    SrvSounds().emitGobackSound();
+
+    // Las volvemos a ocultar
+    setState(() {
+      _cartasVolteadas[indicePrimera] = false;
+      _cartasVolteadas[indiceSegunda] = false;
+      _primeraCarta = null;
+      _puedoVoltearCarta = true;
+    });
+  }
+}
+
+// ============================================================================
+// WIDGET DE LA PÁGINA
+// ============================================================================
 
 class PagGame extends StatefulWidget {
   const PagGame({super.key});
@@ -15,186 +197,111 @@ class PagGame extends StatefulWidget {
 }
 
 class _PagGameState extends State<PagGame> {
-  // Definimos las variables de estado:
-
-  late int pRows;
-  late int pCols;
-  SrvGameControl? srvGameControl;
-
-  // Este objeto nos permite acceder desde aquí a los métodos definidos en el
-  // widget WidTimer, como start, stop o dispose:
-
-  final GlobalKey<WidTimerState> _widTimerKey = GlobalKey<WidTimerState>();
-
-  // Introducimos este objeto para poder hacer un flash de las cartas cuando
-  // hacen match:
-
-  final Set<int> _flashingIndices = <int>{};
+  bool _juegoInicializado = false;
+  final GlobalKey<WidTimerState> _timerKey = GlobalKey<WidTimerState>();
 
   @override
   void initState() {
     super.initState();
-
-    // Inicializamos el juego:
-
-    _initializeGame();
+    _inicializarPantalla();
   }
 
-  void _initializeGame() async {
-    // Detenemos la ejecución de "_initializeGame" hasta el siguiente ciclo para
-    // asegurarnos de que el contexto está listo para ser usado.
-
+  void _inicializarPantalla() async {
     await Future.microtask(() {});
+    if (!mounted) return;
 
-    // Si después del "Future" no tenemos el contexto, nos vamos:
-
-    if (!mounted) {
-      return;
-    }
-
-    // Cargamos la lista de argumentos del widget:
-
+    // Obtener argumentos de navegación
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    pRows = args['pRows'];
-    pCols = args['pCols'];
+    int rows = args['pRows'];
+    int cols = args['pCols'];
 
-    // Instanciamos el control del juego y reconstruimos la UI:
+    // Inicializar el juego con las variables globales
+    inicializarJuego(rows, cols);
 
     setState(() {
-      srvGameControl = SrvGameControl(rows: pRows, cols: pCols);
+      _juegoInicializado = true;
     });
 
-    // Este método es más seguro que "Future.Microtask":
-    // (Sobre todo si estamos esperando la creación de otro widget)
-
+    // Iniciar el timer
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        _widTimerKey.currentState?.start();
+        _timerKey.currentState?.start();
       }
     });
   }
 
-  // Si nos vamos de la página, nos cargamos el _timer:
-
   @override
   void dispose() {
-    _widTimerKey.currentState?.stop();
+    _timerKey.currentState?.stop();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Mostramos un spinner mientras se inicializa el control de juego:
-
-    if (srvGameControl == null) {
+    if (!_juegoInicializado) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-
-    // Montamos la pantalla principal del juego:
 
     return Scaffold(
       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: "Harden Your Mind Once and for All!"),
       body: Column(
         children: [
           const SizedBox(height: 10),
+
+          // Contadores
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              WidCounter(text: "Points: ", counter: srvGameControl!.points, mode: 1),
-              WidCounter(text: "Match: ", counter: srvGameControl!.matchedPairsCount, mode: 1),
-              WidCounter(text: "Fail: ", counter: srvGameControl!.failedPairsCount, mode: 2),
-              WidTimer(key: _widTimerKey, mode: 1),
+              WidCounter(text: "Points: ", counter: _puntosTotal, mode: 1),
+              WidCounter(text: "Match: ", counter: _parejasAcertadas, mode: 1),
+              WidCounter(text: "Fail: ", counter: _parejasFalladas, mode: 2),
+              WidTimer(key: _timerKey, mode: 1),
             ],
           ),
+
+          // Grid de cartas
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: srvGameControl!.cols,
+                  crossAxisCount: _cols,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
-                itemCount: srvGameControl!.totalCardsCount,
+                itemCount: _totalCards,
                 itemBuilder: (context, index) {
                   return WidCard(
-                    isFaceUp: srvGameControl!.cardsUp[index] || srvGameControl!.matched[index],
-                    frontIcon: srvGameControl!.icons[index],
+                    isFaceUp: _cartasVolteadas[index] || _cartasEmparejadas[index],
+                    frontIcon: _icons[index],
+                    isFlashing: _cartasParpadeando.contains(index),
                     onTap: () async {
-                      // Cuando presionamos sobre una carta:
+                      SrvSounds().emitFlipSound();
 
-                      final result = await srvGameControl!.onCardTap(index, setState);
+                      await manejarToqueCarta(index, setState);
 
-                      // Check if the tap resulted in a match (srvGameControl.isMatch is a new hypothetical property)
-                      // NOTE: If srvGameControl is designed well, it should tell us which two cards were matched.
-                      // Assuming srvGameControl can tell us the indices of the last two matched cards:
+                      // Si el juego ha terminado
+                      if (juegoTerminado()) {
+                        _timerKey.currentState?.stop();
+                        await Future.delayed(const Duration(milliseconds: 500));
 
-                      if (srvGameControl!.isLastMoveAMatch) {
-                        // You'll need a way for SrvGameControl to expose this
-
-                        // 1. Get the indices of the recently matched pair (you'll need to update SrvGameControl to expose this)
-                        final matchedIndices = srvGameControl!.lastFlippedCards;
-
-                        // 2. Start the Flash
-                        setState(() {
-                          _flashingIndices.addAll(matchedIndices);
-                        });
-
-                        SrvSounds().emitLevelSound();
-
-                        // 3. Wait a short duration for the "flash" effect
-                        await Future.delayed(const Duration(milliseconds: 800));
-
-                        // 4. Stop the Flash and Rebuild
-                        if (mounted) {
-                          setState(() {
-                            _flashingIndices.clear(); // Clear the indices to stop the flash
-                            matchedIndices.clear();
-                          });
-                        }
-                      } else {
-                        if (srvGameControl!.isLastMoveAnError) {
-                          SrvSounds().emitGobackSound();
-                        }
-                      }
-
-                      if (result == true) {
-                        // Si hemos acabado la partida:
-
-                        if (srvGameControl!.hasWon) {
-                          //Paramos el timer:
-
-                          _widTimerKey.currentState?.stop();
-
-                          // Esperamos medio segundo antes de mostrar un pop-up:
-
-                          await Future.delayed(const Duration(milliseconds: 500));
-
-                          // Mostramos el "WidGameOver" al final del juego:
-
-                          if (context.mounted) {
-                            widGameOver(
-                              context,
-                              srvGameControl!.gamePoints,
-                              srvGameControl!.points,
-                              _widTimerKey.currentState!.formattedTime,
-
-                              // Si hemos pulsado "Play again", reseteamos el juego y el timer:
-                              onPlayAgain: () {
-                                setState(() {
-                                  srvGameControl!.resetGame();
-                                  _widTimerKey.currentState?.reset();
-                                  _widTimerKey.currentState?.start();
-                                });
-                              },
-                            );
-                          }
+                        if (context.mounted) {
+                          widGameOver(
+                            context,
+                            _puntosPartida,
+                            _puntosTotal,
+                            _timerKey.currentState!.formattedTime,
+                            onPlayAgain: () {
+                              setState(() {
+                                resetearJuego();
+                                _timerKey.currentState?.reset();
+                                _timerKey.currentState?.start();
+                              });
+                            },
+                          );
                         }
                       }
                     },
-
-                    // NEW: Pass the boolean flag indicating if this specific card should flash.
-                    isFlashing: _flashingIndices.contains(index),
                   );
                 },
               ),
