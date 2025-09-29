@@ -47,6 +47,12 @@ class WidTimerState extends State<WidTimer> {
     });
   }
 
+  // 💡 NEW PUBLIC GETTER: Exposes the formatted time string (mm:ss)
+
+  String get formattedTime {
+    return _formatTime(_seconds);
+  }
+
   String _formatTime(int totalSeconds) {
     final minutes = (totalSeconds ~/ 60).toString().padLeft(2, '0');
     final seconds = (totalSeconds % 60).toString().padLeft(2, '0');

@@ -6,32 +6,39 @@ class WidCard extends StatelessWidget {
   final bool isFaceUp;
   final IconData frontIcon;
   final VoidCallback onTap;
+  final bool isFlashing; // NEW: Flag to control the flash effect
 
   const WidCard({
     super.key,
     required this.isFaceUp,
     required this.frontIcon,
     required this.onTap,
+    required this.isFlashing,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () {
-           SrvSounds().emitFlipSound();  // extra action
-           onTap();                      // then call the passed function
-        },      
+      onTap: () {
+        SrvSounds().emitFlipSound(); // extra action
+        onTap(); // then call the passed function
+      },
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(
           begin: 0,
           end: isFaceUp ? 1 : 0, // 0 = back, 1 = front
         ),
         duration: const Duration(milliseconds: 500),
-        //curve: Curves.easeInOutBack, // 👈 bounce curve
         builder: (context, value, child) {
           // Rotate Y axis from 0 → π
           double angle = value * pi;
           bool showFront = value > 0.5;
+
+          // Determine the base color based on face-up status
+          final Color baseColor = showFront ? const Color.fromARGB(255, 234, 238, 240) : Colors.blueGrey[700]!;
+
+          // Apply the flash color if flashing is true, otherwise use the base color.
+          final Color finalColor = isFlashing ? Colors.yellow.shade700 : baseColor;
 
           return Transform(
             alignment: Alignment.center,
@@ -41,8 +48,10 @@ class WidCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 //color: Colors.blueGrey[700],
-                color: showFront ? const Color.fromARGB(255, 234, 238, 240) : Colors.blueGrey[700],
+                color: finalColor,
                 borderRadius: BorderRadius.circular(12),
+                // OPTIONAL: Add a bright border during the flash for more impact
+                border: isFlashing ? Border.all(color: Colors.red.shade700, width: 4) : null,
               ),
               child: Center(
                 child: Icon(

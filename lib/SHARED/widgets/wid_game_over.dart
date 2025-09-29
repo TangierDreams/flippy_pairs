@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Future<void> widGameOver(BuildContext context, bool won, {VoidCallback? onPlayAgain}) {
+Future<void> widGameOver(
+  BuildContext context,
+  int gamePoints,
+  int totalPoints,
+  String time, {
+  VoidCallback? onPlayAgain,
+}) {
+  bool won = gamePoints > 0 ? true : false;
+
   return showDialog(
     context: context,
     barrierDismissible: false,
@@ -12,7 +20,9 @@ Future<void> widGameOver(BuildContext context, bool won, {VoidCallback? onPlayAg
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: won ? [Colors.orangeAccent, Colors.yellow] : [Colors.deepPurpleAccent, Colors.blueAccent],
+              colors: won
+                  ? [Colors.orangeAccent, const Color(0xFFFFEB3B)]
+                  : [Colors.deepPurpleAccent, Colors.blueAccent],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -22,7 +32,7 @@ Future<void> widGameOver(BuildContext context, bool won, {VoidCallback? onPlayAg
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                won ? "🎉 You Won!" : "😅 Game Over!",
+                "😅 Game Over!",
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 32,
                   color: Colors.white,
@@ -32,10 +42,25 @@ Future<void> widGameOver(BuildContext context, bool won, {VoidCallback? onPlayAg
               ),
               const SizedBox(height: 16),
               Text(
-                won ? "Flippin’ Fantastic! 🃏" : "Shuffle again and beat it next time!",
+                won
+                    ? "You've won $gamePoints points in this game. Congratulations!"
+                    : "You've lost $gamePoints points in this game. Oooops!",
                 style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 16),
+              Text(
+                "Your total score is $totalPoints points.",
+                style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "You finished the game in $time minutes.",
+                style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+
               const SizedBox(height: 24),
 
               // NEW: Two buttons row
