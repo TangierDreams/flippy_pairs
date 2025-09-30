@@ -1,13 +1,12 @@
-// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AppGeneral {
+class DatosGenerales {
   static const String title = "Flippy Pairs";
   static const String logo = "assets/imagenes/app_logo.png";
 }
 
-class AppColors {
+class Colores {
   static const Color primary = Colors.indigo;
   static const Color contrast = Colors.white;
   static const Color accent = Colors.amber;
@@ -15,7 +14,7 @@ class AppColors {
   static final Color fontColor = Colors.grey.shade800;
 }
 
-class AppTexts {
+class Textos {
   static final textStyleOrange32 = GoogleFonts.luckiestGuy(
     textStyle: const TextStyle(
       fontSize: 32,
@@ -61,13 +60,13 @@ class AppTexts {
     ),
   );
 
-  static final TextStyle subtitle = TextStyle(fontSize: 20, color: AppColors.contrast);
+  static final TextStyle subtitle = TextStyle(fontSize: 20, color: Colores.contrast);
 
-  static final TextStyle smallSubtitle = TextStyle(fontSize: 12, color: AppColors.contrast);
+  static final TextStyle smallSubtitle = TextStyle(fontSize: 12, color: Colores.contrast);
 
-  static final TextStyle normal = TextStyle(fontSize: 14, color: AppColors.fontColor);
+  static final TextStyle normal = TextStyle(fontSize: 14, color: Colores.fontColor);
 
-  static final TextStyle highlighted = TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.fontColor);
+  static final TextStyle highlighted = TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colores.fontColor);
 
   static final TextStyle buttonDisabled = TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey);
 }

@@ -1,11 +1,11 @@
-import 'package:flippy_pairs/SHARED/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/SHARED/SERVICIOS/srv_diskette.dart';
-import 'package:flippy_pairs/SHARED/SERVICIOS/srv_imagenes.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_contador.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_temporizador.dart';
 
 // ============================================================================
@@ -63,7 +63,7 @@ void inicializarJuego(int rows, int cols) async {
   _cartasDestello = {};
 
   // Cargar puntos guardados del disco
-  _puntosTotales = await disketteLeerValor("puntuacion", defaultValue: 0);
+  _puntosTotales = await Diskette.leerValor("puntuacion", defaultValue: 0);
 }
 
 void resetearJuego() {
@@ -154,7 +154,7 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
       _cartasDestello.add(indiceSegunda);
     });
 
-    reproducirSonidoLevel();
+    Sonidos.level();
 
     await Future.delayed(const Duration(milliseconds: 800));
 
@@ -164,7 +164,7 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
 
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
-      disketteGuardarValor("puntuacion", _puntosTotales);
+      Diskette.guardarValor("puntuacion", _puntosTotales);
     }
   } else {
     // NO HACEN MATCH ✗
@@ -176,7 +176,7 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
     // Esperamos para que el jugador las vea
     await Future.delayed(const Duration(milliseconds: 800));
 
-    reproducirSonidoGoback();
+    Sonidos.goback();
 
     // Las volvemos a ocultar
     setState(() {
@@ -279,7 +279,7 @@ class _PagJuegoState extends State<PagJuego> {
                     pImagenCarta: _imagenes[index],
                     pDestello: _cartasDestello.contains(index),
                     pAlPresionar: () async {
-                      reproducirSonidoFlip();
+                      Sonidos.flip();
 
                       await manejarToqueCarta(index, setState);
 

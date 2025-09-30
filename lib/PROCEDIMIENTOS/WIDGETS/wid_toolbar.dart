@@ -1,7 +1,7 @@
-import 'package:flippy_pairs/SHARED/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_flecha_atras.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_flecha_atras.dart';
 import 'package:flutter/material.dart';
-import 'package:flippy_pairs/SHARED/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 
 class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   final bool showMenuButton;
@@ -23,7 +23,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     // LOGO DE LA APP:
 
-    final Widget appLogo = SizedBox(width: 50, height: 50, child: Image.asset(AppGeneral.logo));
+    final Widget appLogo = SizedBox(width: 50, height: 50, child: Image.asset(DatosGenerales.logo));
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -37,18 +37,18 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
               },
             )
           : appLogo,
-      backgroundColor: AppColors.primary,
-      foregroundColor: AppColors.contrast,
+      backgroundColor: Colores.primary,
+      foregroundColor: Colores.contrast,
       centerTitle: true,
       toolbarHeight: 72.0, // <-- Altura del toolbar
       title: Column(
         mainAxisSize: MainAxisSize.min, // don't stretch vertically
         children: [
           const SizedBox(height: 6),
-          Text(AppGeneral.title, style: AppTexts.textStyleOrange32),
+          Text(DatosGenerales.title, style: Textos.textStyleOrange32),
           if (subtitle != null) ...[
             const SizedBox(height: 1), // Pequeño espacio entre título y subtítulo
-            Text(subtitle!, style: AppTexts.textStyleYellow14),
+            Text(subtitle!, style: Textos.textStyleYellow14),
           ],
         ],
       ),
@@ -59,7 +59,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
             child: GestureDetector(
               onTap: () async {
                 // play sound
-                await reproducirSonidoGoback();
+                await Sonidos.goback();
 
                 // wait a bit
                 await Future.delayed(const Duration(milliseconds: 250));

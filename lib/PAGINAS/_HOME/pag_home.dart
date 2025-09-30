@@ -1,7 +1,7 @@
-import 'package:flippy_pairs/SHARED/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/SHARED/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 
 // Variables globales:
 
@@ -40,7 +40,7 @@ class _PagHomeState extends State<PagHome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Difficulty', textAlign: TextAlign.center, style: AppTexts.textStyleOrange30),
+            Text('Difficulty', textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
             const SizedBox(height: 15),
 
@@ -87,7 +87,7 @@ class BotonJugar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        reproducirSonidoPlay();
+        Sonidos.play();
 
         // Esperamos un poco para que se perciba el sonido
         await Future.delayed(const Duration(milliseconds: 300));
@@ -100,13 +100,13 @@ class BotonJugar extends StatelessWidget {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.contrast,
+        backgroundColor: Colores.primary,
+        foregroundColor: Colores.contrast,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 10,
       ),
 
-      child: Text('Start Playing!', style: AppTexts.textStyleOrange28, textAlign: TextAlign.center),
+      child: Text('Start Playing!', style: Textos.textStyleOrange28, textAlign: TextAlign.center),
     );
   }
 }
@@ -138,17 +138,17 @@ class BotonDeNivel extends StatelessWidget {
       curve: Curves.easeOutBack,
       child: ElevatedButton(
         onPressed: () async {
-          reproducirSonidoLevel();
+          Sonidos.level();
           pAlPresionar();
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-          backgroundColor: pSeleccionado ? Colors.orange : AppColors.primary,
-          foregroundColor: AppColors.contrast,
+          backgroundColor: pSeleccionado ? Colors.orange : Colores.primary,
+          foregroundColor: Colores.contrast,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: pSeleccionado ? 15 : 10,
         ),
-        child: Text(pTitulo, style: AppTexts.textStyleYellow30, textAlign: TextAlign.center),
+        child: Text(pTitulo, style: Textos.textStyleYellow30, textAlign: TextAlign.center),
       ),
     );
   }
