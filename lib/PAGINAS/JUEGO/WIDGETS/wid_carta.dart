@@ -1,44 +1,44 @@
 import 'dart:math';
-import 'package:flippy_pairs/SHARED/SERVICES/srv_sounds.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_sonidos.dart';
 import 'package:flutter/material.dart';
 
-class WidCard extends StatelessWidget {
-  final bool isFaceUp;
-  final IconData frontIcon;
-  final VoidCallback onTap;
-  final bool isFlashing; // NEW: Flag to control the flash effect
+class WidCarta extends StatelessWidget {
+  final bool pEstaBocaArriba;
+  final IconData pImagenCarta;
+  final VoidCallback pAlPresionar;
+  final bool pDestello;
 
-  const WidCard({
+  const WidCarta({
     super.key,
-    required this.isFaceUp,
-    required this.frontIcon,
-    required this.onTap,
-    required this.isFlashing,
+    required this.pEstaBocaArriba,
+    required this.pImagenCarta,
+    required this.pAlPresionar,
+    required this.pDestello,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        SrvSounds().emitFlipSound(); // extra action
-        onTap(); // then call the passed function
+        reproducirSonidoFlip();
+        pAlPresionar(); // then call the passed function
       },
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(
           begin: 0,
-          end: isFaceUp ? 1 : 0, // 0 = back, 1 = front
+          end: pEstaBocaArriba ? 1 : 0, // 0 = back, 1 = front
         ),
         duration: const Duration(milliseconds: 500),
         builder: (context, value, child) {
           // Rotate Y axis from 0 → π
           double angle = value * pi;
-          bool showFront = value > 0.5;
+          bool mostrarCarta = value > 0.5;
 
           // Determine the base color based on face-up status
-          final Color baseColor = showFront ? const Color.fromARGB(255, 234, 238, 240) : Colors.blueGrey[700]!;
+          final Color colorBase = mostrarCarta ? const Color.fromARGB(255, 234, 238, 240) : Colors.blueGrey[700]!;
 
           // Apply the flash color if flashing is true, otherwise use the base color.
-          final Color finalColor = isFlashing ? Colors.yellow.shade700 : baseColor;
+          final Color colorFinal = pDestello ? Colors.yellow.shade700 : colorBase;
 
           return Transform(
             alignment: Alignment.center,
@@ -48,16 +48,16 @@ class WidCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 //color: Colors.blueGrey[700],
-                color: finalColor,
+                color: colorFinal,
                 borderRadius: BorderRadius.circular(12),
                 // OPTIONAL: Add a bright border during the flash for more impact
-                border: isFlashing ? Border.all(color: Colors.red.shade700, width: 4) : null,
+                border: pDestello ? Border.all(color: Colors.red.shade700, width: 4) : null,
               ),
               child: Center(
                 child: Icon(
-                  showFront ? frontIcon : Icons.help_outline,
+                  mostrarCarta ? pImagenCarta : Icons.help_outline,
                   //color: Colors.white70,
-                  color: showFront ? const Color.fromARGB(255, 193, 12, 12) : Colors.white70,
+                  color: mostrarCarta ? const Color.fromARGB(255, 193, 12, 12) : Colors.white70,
                   size: 32,
                 ),
               ),

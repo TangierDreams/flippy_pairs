@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Future<void> widGameOver(
+Future<void> widJuegoAcabado(
   BuildContext context,
-  int gamePoints,
-  int totalPoints,
-  String time, {
-  VoidCallback? onPlayAgain,
+  int puntosDelJuego,
+  int pTotalPuntos,
+  String pTiempo, {
+  VoidCallback? pAlJugarOtraVez,
 }) {
-  bool won = gamePoints > 0 ? true : false;
+  bool gana = puntosDelJuego > 0 ? true : false;
 
   return showDialog(
     context: context,
@@ -20,7 +20,7 @@ Future<void> widGameOver(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: won
+              colors: gana
                   ? [Colors.orangeAccent, const Color(0xFFFFEB3B)]
                   : [Colors.deepPurpleAccent, Colors.blueAccent],
               begin: Alignment.topLeft,
@@ -42,21 +42,21 @@ Future<void> widGameOver(
               ),
               const SizedBox(height: 16),
               Text(
-                won
-                    ? "You've won $gamePoints points in this game. Congratulations!"
-                    : "You've lost $gamePoints points in this game. Oooops!",
+                gana
+                    ? "You've won $puntosDelJuego points in this game. Congratulations!"
+                    : "You've lost $puntosDelJuego points in this game. Oooops!",
                 style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                "Your total score is $totalPoints points.",
+                "Your total score is $pTotalPuntos points.",
                 style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
-                "You finished the game in $time minutes.",
+                "You finished the game in $pTiempo minutes.",
                 style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
                 textAlign: TextAlign.center,
               ),
@@ -90,7 +90,7 @@ Future<void> widGameOver(
                     ),
                     onPressed: () {
                       Navigator.of(context).pop(); // close dialog
-                      if (onPlayAgain != null) onPlayAgain();
+                      if (pAlJugarOtraVez != null) pAlJugarOtraVez();
                     },
                     child: const Text("Play Again"),
                   ),

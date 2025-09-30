@@ -1,7 +1,7 @@
-import 'package:flippy_pairs/SHARED/SERVICES/srv_sounds.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_arrow_back.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/SHARED/WIDGETS/wid_flecha_atras.dart';
 import 'package:flutter/material.dart';
-import 'package:flippy_pairs/SHARED/UTILS/constants.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_globales.dart';
 
 class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   final bool showMenuButton;
@@ -21,6 +21,10 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    // LOGO DE LA APP:
+
+    final Widget appLogo = SizedBox(width: 50, height: 50, child: Image.asset(AppGeneral.logo));
+
     return AppBar(
       automaticallyImplyLeading: false,
       leading: showMenuButton
@@ -32,7 +36,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
                 );
               },
             )
-          : null,
+          : appLogo,
       backgroundColor: AppColors.primary,
       foregroundColor: AppColors.contrast,
       centerTitle: true,
@@ -55,7 +59,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
             child: GestureDetector(
               onTap: () async {
                 // play sound
-                await SrvSounds().emitGobackSound();
+                await reproducirSonidoGoback();
 
                 // wait a bit
                 await Future.delayed(const Duration(milliseconds: 250));
@@ -65,25 +69,9 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
                   Navigator.pop(context);
                 }
               },
-              child: const WidArrowBack(),
+              child: const WidFlechaAtras(),
             ),
           ),
-
-        //       IconButton(
-        //         icon: const Icon(Icons.arrow_back),
-        //         onPressed: () async {
-        //           // play your goback sound
-        //           await SrvSounds().emitGobackSound();
-
-        //           // wait a little before navigating
-        //           await Future.delayed(const Duration(milliseconds: 250));
-
-        //           // navigate back
-        //           if (context.mounted) {
-        //             Navigator.pop(context);
-        //           }
-        //         },
-        //       ),
       ],
     );
   }

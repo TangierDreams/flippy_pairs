@@ -1,103 +1,106 @@
-import 'package:flippy_pairs/SHARED/SERVICES/srv_sounds.dart';
-import 'package:flippy_pairs/SHARED/SERVICES/srv_diskette.dart';
-import 'package:flippy_pairs/SHARED/DATA/dat_icons.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_counter.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_game_over.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_imagenes.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_contador.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
 import 'package:flutter/material.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_card.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
-import 'package:flippy_pairs/SHARED/WIDGETS/wid_timer.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_temporizador.dart';
 
 // ============================================================================
 // VARIABLES GLOBALES DEL JUEGO
 // ============================================================================
 
 // Configuración del tablero
-late int _rows;
-late int _cols;
-late int _totalCards;
-late int _totalPairs;
+late int _filas;
+late int _columnas;
+late int _cartasTotales;
+late int _parejasTotales;
 
 // Las cartas y su estado
-late List<IconData> _icons; // Los iconos de cada carta
-late List<bool> _cartasVolteadas; // true = carta boca arriba
+late List<IconData> _imagenes; // Los iconos de cada carta
+late List<bool> _cartasGiradas; // true = carta boca arriba
 late List<bool> _cartasEmparejadas; // true = ya hizo match
 
 // Control del turno actual
 int? _primeraCarta; // índice de la primera carta volteada
-bool _puedoVoltearCarta = true; // false = esperando a que se oculten las cartas
+bool _puedoGirarLaCarta = true; // false = esperando a que se oculten las cartas
 
 // Puntuaciones
-int _puntosTotal = 0; // Puntos acumulados (se guardan en disco)
+int _puntosTotales = 0; // Puntos acumulados (se guardan en disco)
 int _puntosPartida = 0; // Puntos solo de esta partida
 int _parejasAcertadas = 0;
 int _parejasFalladas = 0;
 
 // Para el efecto visual de flash
-Set<int> _cartasParpadeando = {};
+Set<int> _cartasDestello = {};
 
 // ============================================================================
 // FUNCIONES DE INICIALIZACIÓN
 // ============================================================================
 
-void inicializarJuego(int rows, int cols) {
-  _rows = rows;
-  _cols = cols;
-  _totalCards = rows * cols;
-  _totalPairs = _totalCards ~/ 2;
+void inicializarJuego(int rows, int cols) async {
+  _filas = rows;
+  _columnas = cols;
+  _cartasTotales = rows * cols;
+  _parejasTotales = _cartasTotales ~/ 2;
 
   // Conseguir los iconos aleatorios
-  _icons = DatIcons.getIcons(_totalPairs);
+  _imagenes = DatIcons.getIcons(_parejasTotales);
 
   // Resetear todos los estados
-  _cartasVolteadas = List.filled(_totalCards, false);
-  _cartasEmparejadas = List.filled(_totalCards, false);
+  _cartasGiradas = List.filled(_cartasTotales, false);
+  _cartasEmparejadas = List.filled(_cartasTotales, false);
 
   _primeraCarta = null;
-  _puedoVoltearCarta = true;
+  _puedoGirarLaCarta = true;
 
   _parejasAcertadas = 0;
   _parejasFalladas = 0;
   _puntosPartida = 0;
 
-  _cartasParpadeando = {};
+  _cartasDestello = {};
 
   // Cargar puntos guardados del disco
-  _puntosTotal = SrvDiskette.get("puntuacion", defaultValue: 0) as int;
+  _puntosTotales = await disketteLeerValor("puntuacion", defaultValue: 0);
 }
 
 void resetearJuego() {
-  inicializarJuego(_rows, _cols);
+  inicializarJuego(_filas, _columnas);
 }
 
 // ============================================================================
 // FUNCIONES DE LÓGICA PURA
 // ============================================================================
 
+// Comprobamos si 2 cartas son iguales:
+
 bool esPareja(int carta1, int carta2) {
-  return _icons[carta1] == _icons[carta2];
+  return _imagenes[carta1] == _imagenes[carta2];
 }
 
+// Si todas las cartas están emparejadas, se acabó el juego:
+
 bool juegoTerminado() {
-  // Si todas las cartas están emparejadas, hemos ganado
   for (bool emparejada in _cartasEmparejadas) {
     if (!emparejada) return false;
   }
   return true;
 }
 
+// Sumamos puntos:
+
 void sumarPuntos(int puntos) {
-  _puntosTotal += puntos;
+  _puntosTotales += puntos;
   _puntosPartida += puntos;
 }
 
-void restarPuntos(int puntos) {
-  _puntosTotal -= puntos;
-  _puntosPartida -= puntos;
-}
+// Restamos puntos:
 
-void guardarPuntuacion() {
-  SrvDiskette.set("puntuacion", value: _puntosTotal);
+void restarPuntos(int puntos) {
+  _puntosTotales -= puntos;
+  _puntosPartida -= puntos;
 }
 
 // ============================================================================
@@ -108,15 +111,15 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
   // 1. VERIFICACIONES BÁSICAS
 
   // Si no puedo voltear, ignoro el toque
-  if (!_puedoVoltearCarta) return;
+  if (!_puedoGirarLaCarta) return;
 
   // Si la carta ya está volteada o emparejada, ignoro
-  if (_cartasVolteadas[index] || _cartasEmparejadas[index]) return;
+  if (_cartasGiradas[index] || _cartasEmparejadas[index]) return;
 
   // 2. VOLTEAR LA CARTA
 
   setState(() {
-    _cartasVolteadas[index] = true;
+    _cartasGiradas[index] = true;
   });
 
   // 3. ¿ES LA PRIMERA O LA SEGUNDA CARTA?
@@ -147,40 +150,40 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
 
     // Efecto visual de parpadeo
     setState(() {
-      _cartasParpadeando.add(indicePrimera);
-      _cartasParpadeando.add(indiceSegunda);
+      _cartasDestello.add(indicePrimera);
+      _cartasDestello.add(indiceSegunda);
     });
 
-    SrvSounds().emitLevelSound();
+    reproducirSonidoLevel();
 
     await Future.delayed(const Duration(milliseconds: 800));
 
     setState(() {
-      _cartasParpadeando.clear();
+      _cartasDestello.clear();
     });
 
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
-      guardarPuntuacion();
+      disketteGuardarValor("puntuacion", _puntosTotales);
     }
   } else {
     // NO HACEN MATCH ✗
 
-    _puedoVoltearCarta = false; // Bloqueamos más toques
+    _puedoGirarLaCarta = false; // Bloqueamos más toques
     _parejasFalladas++;
     restarPuntos(1);
 
     // Esperamos para que el jugador las vea
     await Future.delayed(const Duration(milliseconds: 800));
 
-    SrvSounds().emitGobackSound();
+    reproducirSonidoGoback();
 
     // Las volvemos a ocultar
     setState(() {
-      _cartasVolteadas[indicePrimera] = false;
-      _cartasVolteadas[indiceSegunda] = false;
+      _cartasGiradas[indicePrimera] = false;
+      _cartasGiradas[indiceSegunda] = false;
       _primeraCarta = null;
-      _puedoVoltearCarta = true;
+      _puedoGirarLaCarta = true;
     });
   }
 }
@@ -189,16 +192,16 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
 // WIDGET DE LA PÁGINA
 // ============================================================================
 
-class PagGame extends StatefulWidget {
-  const PagGame({super.key});
+class PagJuego extends StatefulWidget {
+  const PagJuego({super.key});
 
   @override
-  State<PagGame> createState() => _PagGameState();
+  State<PagJuego> createState() => _PagJuegoState();
 }
 
-class _PagGameState extends State<PagGame> {
+class _PagJuegoState extends State<PagJuego> {
   bool _juegoInicializado = false;
-  final GlobalKey<WidTimerState> _timerKey = GlobalKey<WidTimerState>();
+  final GlobalKey<WidTemporizadorState> _timerKey = GlobalKey<WidTemporizadorState>();
 
   @override
   void initState() {
@@ -252,10 +255,10 @@ class _PagGameState extends State<PagGame> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              WidCounter(text: "Points: ", counter: _puntosTotal, mode: 1),
-              WidCounter(text: "Match: ", counter: _parejasAcertadas, mode: 1),
-              WidCounter(text: "Fail: ", counter: _parejasFalladas, mode: 2),
-              WidTimer(key: _timerKey, mode: 1),
+              WidContador(pTexto: "Points: ", pContador: _puntosTotales, pModo: 1),
+              WidContador(pTexto: "Match: ", pContador: _parejasAcertadas, pModo: 1),
+              WidContador(pTexto: "Fail: ", pContador: _parejasFalladas, pModo: 2),
+              WidTemporizador(key: _timerKey, pModo: 1),
             ],
           ),
 
@@ -265,18 +268,18 @@ class _PagGameState extends State<PagGame> {
               padding: const EdgeInsets.all(12.0),
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: _cols,
+                  crossAxisCount: _columnas,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
-                itemCount: _totalCards,
+                itemCount: _cartasTotales,
                 itemBuilder: (context, index) {
-                  return WidCard(
-                    isFaceUp: _cartasVolteadas[index] || _cartasEmparejadas[index],
-                    frontIcon: _icons[index],
-                    isFlashing: _cartasParpadeando.contains(index),
-                    onTap: () async {
-                      SrvSounds().emitFlipSound();
+                  return WidCarta(
+                    pEstaBocaArriba: _cartasGiradas[index] || _cartasEmparejadas[index],
+                    pImagenCarta: _imagenes[index],
+                    pDestello: _cartasDestello.contains(index),
+                    pAlPresionar: () async {
+                      reproducirSonidoFlip();
 
                       await manejarToqueCarta(index, setState);
 
@@ -286,12 +289,12 @@ class _PagGameState extends State<PagGame> {
                         await Future.delayed(const Duration(milliseconds: 500));
 
                         if (context.mounted) {
-                          widGameOver(
+                          widJuegoAcabado(
                             context,
                             _puntosPartida,
-                            _puntosTotal,
-                            _timerKey.currentState!.formattedTime,
-                            onPlayAgain: () {
+                            _puntosTotales,
+                            _timerKey.currentState!.getTiempoFormateado,
+                            pAlJugarOtraVez: () {
                               setState(() {
                                 resetearJuego();
                                 _timerKey.currentState?.reset();

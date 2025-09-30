@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class WidArrowBack extends StatelessWidget {
-  const WidArrowBack({super.key});
+class WidFlechaAtras extends StatelessWidget {
+  const WidFlechaAtras({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +25,7 @@ class WidArrowBack extends StatelessWidget {
       child: Stack(
         children: [
           // Efecto de highlight
-          Positioned(
-            top: 4,
-            left: 4,
-            child: SizedBox(
-              width: 12,
-              height: 12,
-              // decoration: BoxDecoration(
-              //   color: const Color.fromARGB(255, 201, 50, 50),
-              //   borderRadius: BorderRadius.circular(6),
-              // ),
-            ),
-          ),
+          Positioned(top: 4, left: 4, child: SizedBox(width: 12, height: 12)),
           // Flecha extra gruesa
           Center(
             child: Icon(

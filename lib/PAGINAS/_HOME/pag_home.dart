@@ -1,12 +1,12 @@
-import 'package:flippy_pairs/SHARED/SERVICES/srv_sounds.dart';
-import 'package:flippy_pairs/SHARED/UTILS/constants.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/SHARED/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/SHARED/WIDGETS/wid_toolbar.dart';
 
 // Variables globales:
 
-int rowsSelected = 3;
-int colsSelected = 2;
+int filasSeleccionadas = 3;
+int columnasSeleccionadas = 2;
 
 class PagHome extends StatefulWidget {
   const PagHome({super.key});
@@ -16,33 +16,25 @@ class PagHome extends StatefulWidget {
 }
 
 class _PagHomeState extends State<PagHome> {
-  // NEW: we keep track of the selected button index
+  int nivelSeleccionado = 0;
 
-  int selectedIndex = 0; // by default, first level selected
+  // Lista de niveles a seleccionar:
 
-  // NEW: list of levels to avoid repeating code
-
-  final levels = const [
-    {"title": "3x2", "rows": 3, "cols": 2},
-    {"title": "4x3", "rows": 4, "cols": 3},
-    {"title": "5x4", "rows": 5, "cols": 4},
-    {"title": "6x5", "rows": 6, "cols": 5},
-    {"title": "8x7", "rows": 8, "cols": 7},
-    {"title": "9x8", "rows": 9, "cols": 8},
+  final niveles = const [
+    {"titulo": "3x2", "filas": 3, "columnas": 2},
+    {"titulo": "4x3", "filas": 4, "columnas": 3},
+    {"titulo": "5x4", "filas": 5, "columnas": 4},
+    {"titulo": "6x5", "filas": 6, "columnas": 5},
+    {"titulo": "8x7", "filas": 8, "columnas": 7},
+    {"titulo": "9x8", "filas": 9, "columnas": 8},
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       //Toolbar:
-      appBar: WidToolbar(
-        showMenuButton: false,
-        showBackButton: false,
-        //showCloseButton: false,
-        subtitle: "Harden Your Mind Once and for All!",
-      ),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: "Harden Your Mind Once and for All!"),
 
-      //drawer: MyDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -52,23 +44,23 @@ class _PagHomeState extends State<PagHome> {
 
             const SizedBox(height: 15),
 
-            // Generate the buttons dynamically in 2 rows
+            // Generamos dinámicamente los botones en 2 filas:
             for (int row = 0; row < 2; row++) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: List.generate(3, (col) {
-                  final index = row * 3 + col; // compute global index
-                  final level = levels[index];
-                  return LevelButton(
-                    pTitle: level["title"] as String,
-                    pRows: level["rows"] as int,
-                    pCols: level["cols"] as int,
-                    selected: selectedIndex == index, // highlight if selected
-                    onTap: () {
+                  final index = row * 3 + col;
+                  final nivel = niveles[index];
+                  return BotonDeNivel(
+                    pTitulo: nivel["titulo"] as String,
+                    pFilas: nivel["filas"] as int,
+                    pColumnas: nivel["columnas"] as int,
+                    pSeleccionado: nivelSeleccionado == index,
+                    pAlPresionar: () {
                       setState(() {
-                        selectedIndex = index;
-                        rowsSelected = level["rows"] as int;
-                        colsSelected = level["cols"] as int;
+                        nivelSeleccionado = index;
+                        filasSeleccionadas = nivel["filas"] as int;
+                        columnasSeleccionadas = nivel["columnas"] as int;
                       });
                     },
                   );
@@ -77,7 +69,7 @@ class _PagHomeState extends State<PagHome> {
               const SizedBox(height: 20),
             ],
 
-            PlayButton(),
+            BotonJugar(),
           ],
         ),
       ),
@@ -88,20 +80,22 @@ class _PagHomeState extends State<PagHome> {
 //------------------------------------------------------------------------------
 // Botón Play
 //------------------------------------------------------------------------------
-class PlayButton extends StatelessWidget {
-  const PlayButton({super.key});
+class BotonJugar extends StatelessWidget {
+  const BotonJugar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        SrvSounds().emitPlaySound();
+        reproducirSonidoPlay();
 
         // Esperamos un poco para que se perciba el sonido
         await Future.delayed(const Duration(milliseconds: 300));
 
         if (context.mounted) {
-          Navigator.of(context).pushNamed('/game', arguments: {'pRows': rowsSelected, 'pCols': colsSelected});
+          Navigator.of(
+            context,
+          ).pushNamed('/game', arguments: {'pRows': filasSeleccionadas, 'pCols': columnasSeleccionadas});
         }
       },
       style: ElevatedButton.styleFrom(
@@ -120,41 +114,41 @@ class PlayButton extends StatelessWidget {
 //------------------------------------------------------------------------------
 // Boton de nivel.
 //------------------------------------------------------------------------------
-class LevelButton extends StatelessWidget {
-  final String pTitle;
-  final int pRows;
-  final int pCols;
-  final bool selected;
-  final VoidCallback onTap;
+class BotonDeNivel extends StatelessWidget {
+  final String pTitulo;
+  final int pFilas;
+  final int pColumnas;
+  final bool pSeleccionado;
+  final VoidCallback pAlPresionar;
 
-  const LevelButton({
+  const BotonDeNivel({
     super.key,
-    required this.pTitle,
-    required this.pRows,
-    required this.pCols,
-    required this.selected,
-    required this.onTap,
+    required this.pTitulo,
+    required this.pFilas,
+    required this.pColumnas,
+    required this.pSeleccionado,
+    required this.pAlPresionar,
   });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedScale(
-      scale: selected ? 1.2 : 1.0,
+      scale: pSeleccionado ? 1.2 : 1.0,
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOutBack,
       child: ElevatedButton(
         onPressed: () async {
-          SrvSounds().emitLevelSound();
-          onTap();
+          reproducirSonidoLevel();
+          pAlPresionar();
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-          backgroundColor: selected ? Colors.orange : AppColors.primary,
+          backgroundColor: pSeleccionado ? Colors.orange : AppColors.primary,
           foregroundColor: AppColors.contrast,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: selected ? 15 : 10,
+          elevation: pSeleccionado ? 15 : 10,
         ),
-        child: Text(pTitle, style: AppTexts.textStyleYellow30, textAlign: TextAlign.center),
+        child: Text(pTitulo, style: AppTexts.textStyleYellow30, textAlign: TextAlign.center),
       ),
     );
   }
