@@ -48,7 +48,7 @@ void inicializarJuego(int pFilas, int pColumnas) async {
   _parejasTotales = _cartasTotales ~/ 2;
 
   // Conseguir los iconos aleatorios
-  _imagenes = SrvImagenes.obtenerImagenes("paisajes", _parejasTotales);
+  _imagenes = SrvImagenes.obtenerImagenes(_parejasTotales);
 
   // Resetear todos los estados
   _cartasGiradas = List.filled(_cartasTotales, false);

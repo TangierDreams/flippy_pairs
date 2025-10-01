@@ -22,6 +22,33 @@ class _PagHomeState extends State<PagHome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text("Themes", textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+            const SizedBox(height: 15),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    InfoJuego.listaSeleccionada = "iconos";
+                  },
+                  child: Image.asset('assets/imagenes/iconos/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    InfoJuego.listaSeleccionada = "animales";
+                  },
+                  child: Image.asset('assets/imagenes/animales/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    InfoJuego.listaSeleccionada = "retratos";
+                  },
+                  child: Image.asset('assets/imagenes/retratos/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                ),
+              ],
+            ),
+            const SizedBox(height: 25),
             Text('Difficulty', textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
             const SizedBox(height: 15),

@@ -1,6 +1,8 @@
 //import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+
 class SrvImagenes {
   static final List<String> listaIconos = [
     "assets/imagenes/iconos/01.png",
@@ -80,59 +82,59 @@ class SrvImagenes {
     "assets/imagenes/animales/36.png",
   ];
 
-  static final List<String> listaPaisajes = [
-    "assets/imagenes/paisajes/01.jpg",
-    "assets/imagenes/paisajes/02.jpg",
-    "assets/imagenes/paisajes/03.jpg",
-    "assets/imagenes/paisajes/04.jpg",
-    "assets/imagenes/paisajes/05.jpg",
-    "assets/imagenes/paisajes/06.jpg",
-    "assets/imagenes/paisajes/07.jpg",
-    "assets/imagenes/paisajes/08.jpg",
-    "assets/imagenes/paisajes/09.jpg",
-    "assets/imagenes/paisajes/10.jpg",
-    "assets/imagenes/paisajes/11.jpg",
-    "assets/imagenes/paisajes/12.jpg",
-    "assets/imagenes/paisajes/13.jpg",
-    "assets/imagenes/paisajes/14.jpg",
-    "assets/imagenes/paisajes/15.jpg",
-    "assets/imagenes/paisajes/16.jpg",
-    "assets/imagenes/paisajes/17.jpg",
-    "assets/imagenes/paisajes/18.jpg",
-    "assets/imagenes/paisajes/19.jpg",
-    "assets/imagenes/paisajes/20.jpg",
-    "assets/imagenes/paisajes/21.jpg",
-    "assets/imagenes/paisajes/22.jpg",
-    "assets/imagenes/paisajes/23.jpg",
-    "assets/imagenes/paisajes/24.jpg",
-    "assets/imagenes/paisajes/25.jpg",
-    "assets/imagenes/paisajes/26.jpg",
-    "assets/imagenes/paisajes/27.jpg",
-    "assets/imagenes/paisajes/28.jpg",
-    "assets/imagenes/paisajes/29.jpg",
-    "assets/imagenes/paisajes/30.jpg",
-    "assets/imagenes/paisajes/31.jpg",
-    "assets/imagenes/paisajes/32.jpg",
-    "assets/imagenes/paisajes/33.jpg",
-    "assets/imagenes/paisajes/34.jpg",
-    "assets/imagenes/paisajes/35.jpg",
-    "assets/imagenes/paisajes/36.jpg",
+  static final List<String> listaRetratos = [
+    "assets/imagenes/retratos/01.png",
+    "assets/imagenes/retratos/02.png",
+    "assets/imagenes/retratos/03.png",
+    "assets/imagenes/retratos/04.png",
+    "assets/imagenes/retratos/05.png",
+    "assets/imagenes/retratos/06.png",
+    "assets/imagenes/retratos/07.png",
+    "assets/imagenes/retratos/08.png",
+    "assets/imagenes/retratos/09.png",
+    "assets/imagenes/retratos/10.png",
+    "assets/imagenes/retratos/11.png",
+    "assets/imagenes/retratos/12.png",
+    "assets/imagenes/retratos/13.png",
+    "assets/imagenes/retratos/14.png",
+    "assets/imagenes/retratos/15.png",
+    "assets/imagenes/retratos/16.png",
+    "assets/imagenes/retratos/17.png",
+    "assets/imagenes/retratos/18.png",
+    "assets/imagenes/retratos/19.png",
+    "assets/imagenes/retratos/20.png",
+    "assets/imagenes/retratos/21.png",
+    "assets/imagenes/retratos/22.png",
+    "assets/imagenes/retratos/23.png",
+    "assets/imagenes/retratos/24.png",
+    "assets/imagenes/retratos/25.png",
+    "assets/imagenes/retratos/26.png",
+    "assets/imagenes/retratos/27.png",
+    "assets/imagenes/retratos/28.png",
+    "assets/imagenes/retratos/29.png",
+    "assets/imagenes/retratos/30.png",
+    "assets/imagenes/retratos/31.png",
+    "assets/imagenes/retratos/32.png",
+    "assets/imagenes/retratos/33.png",
+    "assets/imagenes/retratos/34.png",
+    "assets/imagenes/retratos/35.png",
+    "assets/imagenes/retratos/36.png",
   ];
 
   // Obtenemos un número de pares de iconos, desordenados:
 
-  static List<String> obtenerImagenes(String pLista, int pNumParejas) {
+  static List<String> obtenerImagenes(int pNumParejas) {
     final random = Random();
 
     // Cogemos los primeros n iconos de la lista base:
 
     List<String> seleccionados = [];
-    switch (pLista) {
+    switch (InfoJuego.listaSeleccionada) {
       case "animales":
         seleccionados = listaAnimales.take(pNumParejas).toList();
         break;
-      case "paisajes":
-        seleccionados = listaPaisajes.take(pNumParejas).toList();
+      case "retratos":
+        seleccionados = listaRetratos.take(pNumParejas).toList();
         break;
       default:
         seleccionados = listaIconos.take(pNumParejas).toList();

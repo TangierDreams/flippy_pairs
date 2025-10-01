@@ -10,6 +10,7 @@ class InfoJuego {
   static int filasSeleccionadas = 3;
   static int columnasSeleccionadas = 2;
   static int nivelSeleccionado = 0;
+  static String listaSeleccionada = "iconos";
   static const niveles = [
     {"titulo": "3x2", "filas": 3, "columnas": 2, "puntosMas": 10, "puntosMenos": 7},
     {"titulo": "4x3", "filas": 4, "columnas": 3, "puntosMas": 10, "puntosMenos": 6},
