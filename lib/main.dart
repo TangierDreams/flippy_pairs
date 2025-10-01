@@ -21,11 +21,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
-      title: DatosGenerales.title,
+      title: DatosGenerales.nombreApp,
 
       // ROUTING A LAS DISTINTAS PAGINAS:
       initialRoute: '/',
-      routes: {'/': (context) => const PagHome(), '/game': (context) => const PagJuego()},
+      routes: {
+        //Home:
+        '/': (context) => const PagHome(),
+        //Juego:
+        '/game': (context) => const PagJuego(),
+      },
     );
   }
 }

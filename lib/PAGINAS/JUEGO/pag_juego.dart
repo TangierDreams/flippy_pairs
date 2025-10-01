@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
@@ -19,7 +20,7 @@ late int _cartasTotales;
 late int _parejasTotales;
 
 // Las cartas y su estado
-late List<IconData> _imagenes; // Los iconos de cada carta
+late List<String> _imagenes; // Los iconos de cada carta
 late List<bool> _cartasGiradas; // true = carta boca arriba
 late List<bool> _cartasEmparejadas; // true = ya hizo match
 
@@ -40,14 +41,14 @@ Set<int> _cartasDestello = {};
 // FUNCIONES DE INICIALIZACIÓN
 // ============================================================================
 
-void inicializarJuego(int rows, int cols) async {
-  _filas = rows;
-  _columnas = cols;
-  _cartasTotales = rows * cols;
+void inicializarJuego(int pFilas, int pColumnas) async {
+  _filas = pFilas;
+  _columnas = pColumnas;
+  _cartasTotales = _filas * _columnas;
   _parejasTotales = _cartasTotales ~/ 2;
 
   // Conseguir los iconos aleatorios
-  _imagenes = DatIcons.getIcons(_parejasTotales);
+  _imagenes = SrvImagenes.obtenerImagenes("paisajes", _parejasTotales);
 
   // Resetear todos los estados
   _cartasGiradas = List.filled(_cartasTotales, false);
@@ -91,16 +92,16 @@ bool juegoTerminado() {
 
 // Sumamos puntos:
 
-void sumarPuntos(int puntos) {
-  _puntosTotales += puntos;
-  _puntosPartida += puntos;
+void sumarPuntos() {
+  _puntosTotales += InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMas"] as int;
+  _puntosPartida += InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMas"] as int;
 }
 
 // Restamos puntos:
 
-void restarPuntos(int puntos) {
-  _puntosTotales -= puntos;
-  _puntosPartida -= puntos;
+void restarPuntos() {
+  _puntosTotales -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMenos"] as int;
+  _puntosPartida -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMenos"] as int;
 }
 
 // ============================================================================
@@ -146,7 +147,7 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
     });
 
     _parejasAcertadas++;
-    sumarPuntos(10);
+    sumarPuntos();
 
     // Efecto visual de parpadeo
     setState(() {
@@ -171,7 +172,7 @@ Future<void> manejarToqueCarta(int index, Function setState) async {
 
     _puedoGirarLaCarta = false; // Bloqueamos más toques
     _parejasFalladas++;
-    restarPuntos(1);
+    restarPuntos();
 
     // Esperamos para que el jugador las vea
     await Future.delayed(const Duration(milliseconds: 800));
@@ -214,12 +215,13 @@ class _PagJuegoState extends State<PagJuego> {
     if (!mounted) return;
 
     // Obtener argumentos de navegación
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    int rows = args['pRows'];
-    int cols = args['pCols'];
+    //final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    //int rows = args['pRows'];
+    //int cols = args['pCols'];
 
     // Inicializar el juego con las variables globales
-    inicializarJuego(rows, cols);
+
+    inicializarJuego(InfoJuego.filasSeleccionadas, InfoJuego.columnasSeleccionadas);
 
     setState(() {
       _juegoInicializado = true;

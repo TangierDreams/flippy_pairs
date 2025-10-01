@@ -23,7 +23,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     // LOGO DE LA APP:
 
-    final Widget appLogo = SizedBox(width: 50, height: 50, child: Image.asset(DatosGenerales.logo));
+    final Widget appLogo = SizedBox(width: 50, height: 50, child: Image.asset(DatosGenerales.logoApp));
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -37,15 +37,15 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
               },
             )
           : appLogo,
-      backgroundColor: Colores.primary,
-      foregroundColor: Colores.contrast,
+      backgroundColor: Colores.primero,
+      foregroundColor: Colores.onPrimero,
       centerTitle: true,
       toolbarHeight: 72.0, // <-- Altura del toolbar
       title: Column(
         mainAxisSize: MainAxisSize.min, // don't stretch vertically
         children: [
           const SizedBox(height: 6),
-          Text(DatosGenerales.title, style: Textos.textStyleOrange32),
+          Text(DatosGenerales.nombreApp, style: Textos.textStyleOrange32),
           if (subtitle != null) ...[
             const SizedBox(height: 1), // Pequeño espacio entre título y subtítulo
             Text(subtitle!, style: Textos.textStyleYellow14),

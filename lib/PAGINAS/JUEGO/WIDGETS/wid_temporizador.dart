@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -67,16 +68,12 @@ class WidTemporizadorState extends State<WidTemporizador> {
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: pModo == 1 ? Colors.orange[300] : const Color.fromARGB(255, 169, 239, 252),
+        color: pModo == 1 ? Colores.tercero : Colores.quinto,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: pModo == 1 ? Colors.orange[800]! : const Color.fromARGB(255, 38, 23, 253), width: 3),
+        border: Border.all(color: pModo == 1 ? Colores.segundo : Colores.primero, width: 3),
         boxShadow: [
-          BoxShadow(
-            color: pModo == 1 ? Colors.orange[900]! : const Color.fromARGB(255, 38, 23, 253),
-            blurRadius: 8,
-            offset: const Offset(4, 4),
-          ),
-          const BoxShadow(color: Colors.white70, blurRadius: 4, offset: Offset(-2, -2)),
+          BoxShadow(color: pModo == 1 ? Colores.segundo : Colores.primero, blurRadius: 8, offset: const Offset(4, 4)),
+          BoxShadow(color: Colores.blanco, blurRadius: 4, offset: Offset(-2, -2)),
         ],
       ),
       child: Text(
@@ -84,13 +81,9 @@ class WidTemporizadorState extends State<WidTemporizador> {
         style: GoogleFonts.comicNeue(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: Colors.white,
+          color: Colores.blanco,
           shadows: [
-            Shadow(
-              color: pModo == 1 ? Colors.orange[900]! : const Color.fromARGB(255, 38, 23, 253),
-              blurRadius: 3,
-              offset: const Offset(2, 2),
-            ),
+            Shadow(color: pModo == 1 ? Colores.cuarto : Colores.primero, blurRadius: 3, offset: const Offset(2, 2)),
           ],
         ),
       ),

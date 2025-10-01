@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,9 +21,7 @@ Future<void> widJuegoAcabado(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: gana
-                  ? [Colors.orangeAccent, const Color(0xFFFFEB3B)]
-                  : [Colors.deepPurpleAccent, Colors.blueAccent],
+              colors: gana ? [Colores.segundo, Colores.tercero] : [Colores.quinto, Colores.primero],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -35,8 +34,8 @@ Future<void> widJuegoAcabado(
                 "😅 Game Over!",
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 32,
-                  color: Colors.white,
-                  shadows: [Shadow(blurRadius: 6, color: Colors.black45, offset: Offset(2, 2))],
+                  color: Colores.blanco,
+                  shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: Offset(2, 2))],
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -45,19 +44,19 @@ Future<void> widJuegoAcabado(
                 gana
                     ? "You've won $puntosDelJuego points in this game. Congratulations!"
                     : "You've lost $puntosDelJuego points in this game. Oooops!",
-                style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
+                style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
                 "Your total score is $pTotalPuntos points.",
-                style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
+                style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               Text(
                 "You finished the game in $pTiempo minutes.",
-                style: GoogleFonts.baloo2(fontSize: 18, color: Colors.white),
+                style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                 textAlign: TextAlign.center,
               ),
 
@@ -70,8 +69,8 @@ Future<void> widJuegoAcabado(
                   // Finish button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.redAccent,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colores.cuarto,
+                      foregroundColor: Colores.blanco,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                     ),
                     onPressed: () {
@@ -84,8 +83,8 @@ Future<void> widJuegoAcabado(
                   // Play Again button
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
+                      backgroundColor: Colores.segundo,
+                      foregroundColor: Colores.blanco,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                     ),
                     onPressed: () {

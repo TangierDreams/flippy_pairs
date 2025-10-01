@@ -3,11 +3,6 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 
-// Variables globales:
-
-int filasSeleccionadas = 3;
-int columnasSeleccionadas = 2;
-
 class PagHome extends StatefulWidget {
   const PagHome({super.key});
 
@@ -16,19 +11,6 @@ class PagHome extends StatefulWidget {
 }
 
 class _PagHomeState extends State<PagHome> {
-  int nivelSeleccionado = 0;
-
-  // Lista de niveles a seleccionar:
-
-  final niveles = const [
-    {"titulo": "3x2", "filas": 3, "columnas": 2},
-    {"titulo": "4x3", "filas": 4, "columnas": 3},
-    {"titulo": "5x4", "filas": 5, "columnas": 4},
-    {"titulo": "6x5", "filas": 6, "columnas": 5},
-    {"titulo": "8x7", "filas": 8, "columnas": 7},
-    {"titulo": "9x8", "filas": 9, "columnas": 8},
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,17 +32,17 @@ class _PagHomeState extends State<PagHome> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: List.generate(3, (col) {
                   final index = row * 3 + col;
-                  final nivel = niveles[index];
+                  final nivel = InfoJuego.niveles[index];
                   return BotonDeNivel(
                     pTitulo: nivel["titulo"] as String,
                     pFilas: nivel["filas"] as int,
                     pColumnas: nivel["columnas"] as int,
-                    pSeleccionado: nivelSeleccionado == index,
+                    pSeleccionado: InfoJuego.nivelSeleccionado == index,
                     pAlPresionar: () {
                       setState(() {
-                        nivelSeleccionado = index;
-                        filasSeleccionadas = nivel["filas"] as int;
-                        columnasSeleccionadas = nivel["columnas"] as int;
+                        InfoJuego.nivelSeleccionado = index;
+                        InfoJuego.filasSeleccionadas = nivel["filas"] as int;
+                        InfoJuego.columnasSeleccionadas = nivel["columnas"] as int;
                       });
                     },
                   );
@@ -93,15 +75,16 @@ class BotonJugar extends StatelessWidget {
         await Future.delayed(const Duration(milliseconds: 300));
 
         if (context.mounted) {
-          Navigator.of(
-            context,
-          ).pushNamed('/game', arguments: {'pRows': filasSeleccionadas, 'pCols': columnasSeleccionadas});
+          Navigator.of(context).pushNamed(
+            '/game',
+            //arguments: {'pRows': InfoJuego.filasSeleccionadas, 'pCols': InfoJuego.columnasSeleccionadas},
+          );
         }
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        backgroundColor: Colores.primary,
-        foregroundColor: Colores.contrast,
+        backgroundColor: Colores.primero,
+        foregroundColor: Colores.onPrimero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 10,
       ),
@@ -143,8 +126,8 @@ class BotonDeNivel extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-          backgroundColor: pSeleccionado ? Colors.orange : Colores.primary,
-          foregroundColor: Colores.contrast,
+          backgroundColor: pSeleccionado ? Colores.segundo : Colores.primero,
+          foregroundColor: Colores.onPrimero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: pSeleccionado ? 15 : 10,
         ),

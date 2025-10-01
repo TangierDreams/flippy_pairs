@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class WidCarta extends StatelessWidget {
   final bool pEstaBocaArriba;
-  final IconData pImagenCarta;
+  final String pImagenCarta;
   final VoidCallback pAlPresionar;
   final bool pDestello;
 
@@ -22,7 +22,7 @@ class WidCarta extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Sonidos.flip();
-        pAlPresionar(); // then call the passed function
+        pAlPresionar();
       },
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(
@@ -36,10 +36,10 @@ class WidCarta extends StatelessWidget {
           bool mostrarCarta = value > 0.5;
 
           // Determine the base color based on face-up status
-          final Color colorBase = mostrarCarta ? const Color.fromARGB(255, 234, 238, 240) : Colores.primary;
+          final Color colorBase = mostrarCarta ? Colores.onPrimero : Colores.primero;
 
           // Apply the flash color if flashing is true, otherwise use the base color.
-          final Color colorFinal = pDestello ? Colors.yellow.shade700 : colorBase;
+          final Color colorFinal = pDestello ? Colores.tercero : colorBase;
 
           return Transform(
             alignment: Alignment.center,
@@ -48,39 +48,35 @@ class WidCarta extends StatelessWidget {
               ..rotateY(angle),
             child: Container(
               decoration: BoxDecoration(
-                //color: Colors.blueGrey[700],
                 color: colorFinal,
                 borderRadius: BorderRadius.circular(12),
-                // OPTIONAL: Add a bright border during the flash for more impact
-                border: pDestello ? Border.all(color: Colors.red.shade700, width: 4) : null,
+
+                // Añadimos un borde al destello:
+                border: pDestello ? Border.all(color: Colores.cuarto, width: 4) : null,
               ),
               child: Center(
-                child: mostrarCarta
-                    ? Icon(
-                        pImagenCarta, // Si mostrarCarta es true, sigue usando el Icon
-                        color: const Color.fromARGB(255, 193, 12, 12),
-                        size: 32,
-                      )
-                    : LayoutBuilder(
-                        // 👈 1. Usamos LayoutBuilder para conocer el tamaño
-                        builder: (BuildContext context, BoxConstraints constraints) {
-                          // Definimos el padding como un porcentaje del tamaño del contenedor.
-                          // Por ejemplo, el 8% de la altura máxima (constraints.maxHeight).
-                          final double dynamicPadding = constraints.maxHeight * 0.16;
+                child: LayoutBuilder(
+                  // Utilizamos LayoutBuilder para conocer el tamaño del contenedor:
+                  builder: (BuildContext context, BoxConstraints dimensiones) {
+                    // Definimos el padding como un porcentaje del tamaño del contenedor.
 
-                          // Opcional: Establecer un límite mínimo y máximo para que no sea ridículo
-                          // final double finalPadding = dynamicPadding.clamp(4.0, 12.0);
+                    final double dynamicPadding = dimensiones.maxHeight * 0.16;
 
-                          return Padding(
-                            // 👈 2. Aplicamos el padding calculado
-                            padding: EdgeInsets.all(dynamicPadding),
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: Image.asset('assets/imagenes/interrogacion.png'),
-                            ),
-                          );
-                        },
+                    // Podemos establecer un límite mínimo y máximo:
+                    // final double finalPadding = dynamicPadding.clamp(4.0, 12.0);
+
+                    return Padding(
+                      // 👈 2. Aplicamos el padding calculado
+                      padding: EdgeInsets.all(dynamicPadding),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: mostrarCarta
+                            ? Image.asset(pImagenCarta)
+                            : Image.asset('assets/imagenes/general/interrogacion.png'),
                       ),
+                    );
+                  },
+                ),
               ),
             ),
           );
