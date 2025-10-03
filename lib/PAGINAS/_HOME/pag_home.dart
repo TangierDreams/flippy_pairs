@@ -23,8 +23,12 @@ class _PagHomeState extends State<PagHome> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text("Themes", textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+
             const SizedBox(height: 15),
 
+            //------------------------------------------------------------------
+            // Primera línea de imagenes
+            //------------------------------------------------------------------
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -48,12 +52,45 @@ class _PagHomeState extends State<PagHome> {
                 ),
               ],
             ),
+
+            const SizedBox(height: 15),
+
+            //------------------------------------------------------------------
+            // Segunda línea de imagenes
+            //------------------------------------------------------------------
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    InfoJuego.listaSeleccionada = "coches";
+                  },
+                  child: Image.asset('assets/imagenes/coches/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    InfoJuego.listaSeleccionada = "herramientas";
+                  },
+                  child: Image.asset('assets/imagenes/herramientas/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    InfoJuego.listaSeleccionada = "ciudades";
+                  },
+                  child: Image.asset('assets/imagenes/ciudades/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                ),
+              ],
+            ),
+
             const SizedBox(height: 25),
+
             Text('Difficulty', textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
             const SizedBox(height: 15),
 
-            // Generamos dinámicamente los botones en 2 filas:
+            //------------------------------------------------------------------
+            // Las 2 filas con los niveles de juego
+            //------------------------------------------------------------------
             for (int row = 0; row < 2; row++) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -78,6 +115,9 @@ class _PagHomeState extends State<PagHome> {
               const SizedBox(height: 20),
             ],
 
+            //------------------------------------------------------------------
+            // Botón para comenzar a jugar
+            //------------------------------------------------------------------
             BotonJugar(),
           ],
         ),
