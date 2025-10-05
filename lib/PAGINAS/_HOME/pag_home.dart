@@ -32,23 +32,25 @@ class _PagHomeState extends State<PagHome> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    InfoJuego.listaSeleccionada = "iconos";
-                  },
-                  child: Image.asset('assets/imagenes/iconos/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                BotonTema(
+                  pListaSeleccionada: "iconos",
+                  pImagen: 'assets/imagenes/iconos/01.png',
+                  pSeleccionado: InfoJuego.temaSeleccionado == 0,
+                  pNumBoton: 0,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    InfoJuego.listaSeleccionada = "animales";
-                  },
-                  child: Image.asset('assets/imagenes/animales/01.png', width: 60, height: 60, fit: BoxFit.contain),
+
+                BotonTema(
+                  pListaSeleccionada: "animales",
+                  pImagen: 'assets/imagenes/animales/01.png',
+                  pSeleccionado: InfoJuego.temaSeleccionado == 1,
+                  pNumBoton: 1,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    InfoJuego.listaSeleccionada = "retratos";
-                  },
-                  child: Image.asset('assets/imagenes/retratos/01.png', width: 60, height: 60, fit: BoxFit.contain),
+
+                BotonTema(
+                  pListaSeleccionada: "retratos",
+                  pImagen: 'assets/imagenes/retratos/01.png',
+                  pSeleccionado: InfoJuego.temaSeleccionado == 2,
+                  pNumBoton: 2,
                 ),
               ],
             ),
@@ -61,23 +63,25 @@ class _PagHomeState extends State<PagHome> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    InfoJuego.listaSeleccionada = "coches";
-                  },
-                  child: Image.asset('assets/imagenes/coches/01.png', width: 60, height: 60, fit: BoxFit.contain),
+                BotonTema(
+                  pListaSeleccionada: "herramientas",
+                  pImagen: 'assets/imagenes/herramientas/01.png',
+                  pSeleccionado: InfoJuego.temaSeleccionado == 3,
+                  pNumBoton: 3,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    InfoJuego.listaSeleccionada = "herramientas";
-                  },
-                  child: Image.asset('assets/imagenes/herramientas/01.png', width: 60, height: 60, fit: BoxFit.contain),
+
+                BotonTema(
+                  pListaSeleccionada: "coches",
+                  pImagen: 'assets/imagenes/coches/01.png',
+                  pSeleccionado: InfoJuego.temaSeleccionado == 4,
+                  pNumBoton: 4,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    InfoJuego.listaSeleccionada = "ciudades";
-                  },
-                  child: Image.asset('assets/imagenes/ciudades/01.png', width: 60, height: 60, fit: BoxFit.contain),
+
+                BotonTema(
+                  pListaSeleccionada: "logos",
+                  pImagen: 'assets/imagenes/logos/01.png',
+                  pSeleccionado: InfoJuego.temaSeleccionado == 5,
+                  pNumBoton: 5,
                 ),
               ],
             ),
@@ -127,36 +131,36 @@ class _PagHomeState extends State<PagHome> {
 }
 
 //------------------------------------------------------------------------------
-// Botón Play
+// Botón Tema
 //------------------------------------------------------------------------------
-class BotonJugar extends StatelessWidget {
-  const BotonJugar({super.key});
+class BotonTema extends StatelessWidget {
+  final String pImagen;
+  final String pListaSeleccionada;
+  final bool pSeleccionado;
+  final int pNumBoton;
+
+  const BotonTema({
+    super.key,
+    required this.pImagen,
+    required this.pListaSeleccionada,
+    required this.pSeleccionado,
+    required this.pNumBoton,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () async {
-        Sonidos.play();
-
-        // Esperamos un poco para que se perciba el sonido
-        await Future.delayed(const Duration(milliseconds: 300));
-
-        if (context.mounted) {
-          Navigator.of(context).pushNamed(
-            '/game',
-            //arguments: {'pRows': InfoJuego.filasSeleccionadas, 'pCols': InfoJuego.columnasSeleccionadas},
-          );
-        }
+      onPressed: () {
+        Sonidos.level();
+        InfoJuego.listaSeleccionada = pListaSeleccionada;
+        InfoJuego.temaSeleccionado = pNumBoton;
       },
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        backgroundColor: Colores.primero,
+        backgroundColor: pSeleccionado ? Colores.segundo : null,
         foregroundColor: Colores.onPrimero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 10,
+        elevation: pSeleccionado ? 15 : 10,
       ),
-
-      child: Text('Start Playing!', style: Textos.textStyleOrange28, textAlign: TextAlign.center),
+      child: Image.asset(pImagen, width: 60, height: 60, fit: BoxFit.contain),
     );
   }
 }
@@ -200,6 +204,41 @@ class BotonDeNivel extends StatelessWidget {
         ),
         child: Text(pTitulo, style: Textos.textStyleYellow30, textAlign: TextAlign.center),
       ),
+    );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Botón Play
+//------------------------------------------------------------------------------
+class BotonJugar extends StatelessWidget {
+  const BotonJugar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        Sonidos.play();
+
+        // Esperamos un poco para que se perciba el sonido
+        await Future.delayed(const Duration(milliseconds: 300));
+
+        if (context.mounted) {
+          Navigator.of(context).pushNamed(
+            '/game',
+            //arguments: {'pRows': InfoJuego.filasSeleccionadas, 'pCols': InfoJuego.columnasSeleccionadas},
+          );
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        backgroundColor: Colores.primero,
+        foregroundColor: Colores.onPrimero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 10,
+      ),
+
+      child: Text('Start Playing!', style: Textos.textStyleOrange28, textAlign: TextAlign.center),
     );
   }
 }

@@ -72,7 +72,10 @@ flutter:
     - assets/imagenes/general/
     - assets/imagenes/iconos/
     - assets/imagenes/animales/
+    - assets/imagenes/herramientas/
     - assets/imagenes/retratos/
+    - assets/imagenes/coches/
+    - assets/imagenes/logos/
     - assets/sonidos/
 
   # An image asset can refer to one or more resolution-specific "variants", see

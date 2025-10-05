@@ -9,6 +9,7 @@ class DatosGenerales {
 class InfoJuego {
   static int filasSeleccionadas = 3;
   static int columnasSeleccionadas = 2;
+  static int temaSeleccionado = 0;
   static int nivelSeleccionado = 0;
   static String listaSeleccionada = "iconos";
   static const niveles = [
