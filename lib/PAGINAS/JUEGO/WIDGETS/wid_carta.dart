@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 class WidCarta extends StatelessWidget {
   final bool pEstaBocaArriba;
   final String pImagenCarta;
-  final VoidCallback pAlPresionar;
   final bool pDestello;
+  final VoidCallback pCallBackFunction;
 
   const WidCarta({
     super.key,
     required this.pEstaBocaArriba,
     required this.pImagenCarta,
-    required this.pAlPresionar,
     required this.pDestello,
+    required this.pCallBackFunction,
   });
 
   @override
@@ -22,7 +22,7 @@ class WidCarta extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Sonidos.flip();
-        pAlPresionar();
+        pCallBackFunction();
       },
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(
@@ -62,17 +62,19 @@ class WidCarta extends StatelessWidget {
 
                     final double dynamicPadding = dimensiones.maxHeight * 0.16;
 
-                    // Podemos establecer un límite mínimo y máximo:
-                    // final double finalPadding = dynamicPadding.clamp(4.0, 12.0);
-
-                    return Padding(
-                      // 👈 2. Aplicamos el padding calculado
-                      padding: EdgeInsets.all(dynamicPadding),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: mostrarCarta
-                            ? Image.asset(pImagenCarta)
-                            : Image.asset('assets/imagenes/general/interrogacion.png'),
+                    return Transform(
+                      // Aplicamos una rotación para compensar el giro 3D si es la cara frontal
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()
+                        ..rotateY(mostrarCarta ? pi : 0), // Aplica PI (180 grados) solo si mostramos la carta
+                      child: Padding(
+                        padding: EdgeInsets.all(dynamicPadding),
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: mostrarCarta
+                              ? Image.asset(pImagenCarta)
+                              : Image.asset('assets/imagenes/general/interrogacion.png'),
+                        ),
                       ),
                     );
                   },

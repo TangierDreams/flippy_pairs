@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 class DatosGenerales {
   static const String nombreApp = "Flippy Pairs";
   static const String logoApp = "assets/imagenes/general/app_logo.png";
+  static const String supabaseUrl = "https://nygzlnrhbrdvjjhrbsdz.supabase.co";
+  static const String supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55Z3psbnJoYnJkdmpqaHJic2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE3MDQ3MTMsImV4cCI6MjAxNzI4MDcxM30.0ioZe3S_uqanr_Ulm_yWVxYEOHi7pHCNHKyu9zsq8fE";
 }
 
 class InfoJuego {

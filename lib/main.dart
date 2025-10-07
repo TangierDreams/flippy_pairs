@@ -1,16 +1,19 @@
 import 'package:flippy_pairs/PAGINAS/JUEGO/pag_juego.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_id_dispositivo.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/_HOME/pag_home.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Diskette.inicializar();
   await Sonidos.inicializar();
   await Dispositivo.obtenerId();
+  await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
+
   runApp(const MyApp());
 }
 
@@ -23,7 +26,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: true,
       title: DatosGenerales.nombreApp,
 
+      //---------------------------------
       // ROUTING A LAS DISTINTAS PAGINAS:
+      //---------------------------------
       initialRoute: '/',
       routes: {
         //Home:
