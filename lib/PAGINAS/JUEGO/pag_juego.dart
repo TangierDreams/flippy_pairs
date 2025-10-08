@@ -2,7 +2,7 @@
 // MODULO DE UI DEL JUEGO.
 //==============================================================================
 
-import 'dart:ui';
+//import 'dart:ui';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
@@ -10,7 +10,7 @@ import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_contador.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
-import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_temporizador.dart';
+//import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_temporizador.dart';
 
 class PagJuego extends StatefulWidget {
   const PagJuego({super.key});
@@ -42,19 +42,19 @@ class _PagJuegoState extends State<PagJuego> {
 
     // Iniciar el timer
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_, dynamic timerKey) {
-            if (mounted) {
-              timerKey.currentState?.start();
-            }
-          }
-          as FrameCallback,
-    );
+    // WidgetsBinding.instance.addPostFrameCallback(
+    //   (_, dynamic timerKey) {
+    //         if (mounted) {
+    //           timerKey.currentState?.start();
+    //         }
+    //       }
+    //       as FrameCallback,
+    // );
   }
 
   @override
   void dispose() {
-    timerKey.currentState?.stop();
+    //timerKey.currentState?.stop();
     super.dispose();
   }
 
@@ -77,7 +77,7 @@ class _PagJuegoState extends State<PagJuego> {
               WidContador(pTexto: "Points: ", pContador: puntosTotales, pModo: 1),
               WidContador(pTexto: "Match: ", pContador: parejasAcertadas, pModo: 1),
               WidContador(pTexto: "Fail: ", pContador: parejasFalladas, pModo: 2),
-              WidTemporizador(key: timerKey, pModo: 1),
+              //WidTemporizador(key: timerKey, pModo: 1),
             ],
           ),
 
@@ -108,7 +108,7 @@ class _PagJuegoState extends State<PagJuego> {
                     // - Controlar si ha acabado el juego
                     //----------------------------------------------------------
                     pCallBackFunction: () async {
-                      Sonidos.flip();
+                      SrvSonidos.flip();
                       await manejarToqueCarta(index, setState);
                       if (context.mounted) {
                         await controlJuegoAcabado(context, setState);

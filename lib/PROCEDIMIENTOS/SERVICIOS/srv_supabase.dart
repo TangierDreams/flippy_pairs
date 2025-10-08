@@ -9,6 +9,7 @@ class SrvSupabase {
     required int pNivel,
     required String pNombre,
     required String pPais,
+    required String pCiudad,
     required int pPuntos,
     required String pTiempo,
     required String pActualizado,
@@ -20,6 +21,7 @@ class SrvSupabase {
       '_nivel': pNivel,
       '_nombre': pNombre,
       '_pais': pPais,
+      '_ciudad': pCiudad,
       '_puntos': pPuntos,
       '_tiempo': pTiempo,
       '_actualizado': pActualizado,
@@ -27,11 +29,12 @@ class SrvSupabase {
 
     try {
       await supabase.rpc("upsert_flippy_points", params: params);
+      debugPrint('Registro de Supabase grabado');
     } on PostgrestException catch (e) {
       debugPrint('Error de Supabase (RPC): ${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('Error inesperado al guardar el registro: $e');
+      debugPrint('Error inesperado de Supabase al guardar el registro: $e');
       rethrow;
     }
   }

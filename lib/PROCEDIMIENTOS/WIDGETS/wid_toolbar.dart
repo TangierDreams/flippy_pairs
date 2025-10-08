@@ -59,7 +59,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
             child: GestureDetector(
               onTap: () async {
                 // play sound
-                await Sonidos.goback();
+                await SrvSonidos.goback();
 
                 // wait a bit
                 await Future.delayed(const Duration(milliseconds: 250));

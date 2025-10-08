@@ -2,18 +2,24 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Diskette {
-  //==============================================================================
+//------------------------------------------------------------------------------
+// Posibles claves para el diskette
+//------------------------------------------------------------------------------
+
+enum DisketteKey { ciudad, deviceId, deviceName, idPais, nombrePais, puntuacion }
+
+class SrvDiskette {
+  //============================================================================
   // VARIABLES GLOBALES PARA SHARED PREFERENCES
-  //==============================================================================
+  //============================================================================
 
   static const String _nombreDiskette = 'flippy_pairs';
-  static Map<String, dynamic> _datos = {};
+  static Map<DisketteKey, dynamic> _datos = {};
   static bool _inicializado = false;
 
-  // ============================================================================
+  // ===========================================================================
   // FUNCIONES DE INICIALIZACIÓN Y CARGA
-  // ============================================================================
+  // ===========================================================================
 
   // Inicializa y carga los datos desde SharedPreferences
   // Llamar desde main.dart antes de usar cualquier otra función
@@ -33,7 +39,7 @@ class Diskette {
 
     if (jsonData != null) {
       try {
-        _datos = json.decode(jsonData) as Map<String, dynamic>;
+        _datos = json.decode(jsonData) as Map<DisketteKey, dynamic>;
       } catch (e) {
         debugPrint('Error cargando datos: $e');
         _datos = {};
@@ -50,26 +56,26 @@ class Diskette {
   // Lee un valor del disco
   // Devuelve defaultValue si la clave no existe
 
-  static dynamic leerValor(String clave, {dynamic defaultValue}) {
+  static dynamic leerValor(DisketteKey clave, {dynamic defaultValue}) {
     return _datos[clave] ?? defaultValue;
   }
 
   // Verifica si existe una clave
 
-  static bool existeClave(String clave) {
+  static bool existeClave(DisketteKey clave) {
     return _datos.containsKey(clave);
   }
 
   // Obtiene todas las claves guardadas
 
-  static List<String> obtenerClaves() {
+  static List<DisketteKey> obtenerClaves() {
     return _datos.keys.toList();
   }
 
   // Obtiene todos los datos como mapa
 
-  static Map<String, dynamic> obtenerMapaDeDatos() {
-    return Map<String, dynamic>.from(_datos);
+  static Map<DisketteKey, dynamic> obtenerMapaDeDatos() {
+    return Map<DisketteKey, dynamic>.from(_datos);
   }
 
   // ============================================================================
@@ -78,14 +84,14 @@ class Diskette {
 
   // Guarda un valor (crea si no existe, actualiza si existe)
 
-  static Future<void> guardarValor(String clave, dynamic valor) async {
+  static Future<void> guardarValor(DisketteKey clave, dynamic valor) async {
     _datos[clave] = valor;
     await _guardarEnDisco();
   }
 
   // Elimina una clave
 
-  static Future<void> eliminarClave(String clave) async {
+  static Future<void> eliminarClave(DisketteKey clave) async {
     _datos.remove(clave);
     await _guardarEnDisco();
   }

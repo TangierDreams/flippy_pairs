@@ -236,6 +236,13 @@ class _PagHomeState extends State<PagHome> {
             // Botón para comenzar a jugar
             //------------------------------------------------------------------
             BotonJugar(),
+
+            const SizedBox(height: 25),
+
+            //------------------------------------------------------------------
+            // Botón para ir a la configuración
+            //------------------------------------------------------------------
+            BotonConfiguracion(),
           ],
         ),
       ),
@@ -260,7 +267,7 @@ class BotonTema extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: () {
-        Sonidos.level();
+        SrvSonidos.level();
         pCallBackFunction();
       },
       style: ElevatedButton.styleFrom(
@@ -303,7 +310,7 @@ class BotonNivel extends StatelessWidget {
       curve: Curves.easeOutBack,
       child: ElevatedButton(
         onPressed: () async {
-          Sonidos.level();
+          SrvSonidos.level();
           pCallBackFunction();
         },
         style: ElevatedButton.styleFrom(
@@ -329,7 +336,7 @@ class BotonJugar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () async {
-        Sonidos.play();
+        SrvSonidos.play();
 
         // Esperamos un poco para que se perciba el sonido
         await Future.delayed(const Duration(milliseconds: 300));
@@ -350,6 +357,38 @@ class BotonJugar extends StatelessWidget {
       ),
 
       child: Text('Start Playing!', style: Textos.textStyleOrange28, textAlign: TextAlign.center),
+    );
+  }
+}
+
+//------------------------------------------------------------------------------
+// Botón Para ir a la configuración
+//------------------------------------------------------------------------------
+class BotonConfiguracion extends StatelessWidget {
+  const BotonConfiguracion({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        SrvSonidos.play();
+
+        // Esperamos un poco para que se perciba el sonido
+        await Future.delayed(const Duration(milliseconds: 300));
+
+        if (context.mounted) {
+          Navigator.of(context).pushNamed('/config');
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        backgroundColor: Colores.primero,
+        foregroundColor: Colores.onPrimero,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 10,
+      ),
+
+      child: Text('Config...', style: Textos.textStyleYellow14, textAlign: TextAlign.center),
     );
   }
 }

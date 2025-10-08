@@ -69,7 +69,7 @@ void inicializarJuego(int pFilas, int pColumnas) async {
   cartasDestello = {};
 
   // Cargar puntos guardados del disco
-  puntosTotales = await Diskette.leerValor("puntuacion", defaultValue: 0);
+  puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion, defaultValue: 0);
 }
 
 void resetearJuego() {
@@ -162,7 +162,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
     });
 
     // Emitimos sonido y "destello" si hemos acertado la pareja:
-    Sonidos.level();
+    SrvSonidos.level();
     await Future.delayed(const Duration(milliseconds: 900));
 
     pSetState(() {
@@ -171,7 +171,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
 
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
-      Diskette.guardarValor("puntuacion", puntosTotales);
+      SrvDiskette.guardarValor(DisketteKey.puntuacion, puntosTotales);
     }
   } else {
     //----------------------------
@@ -186,7 +186,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
 
     await Future.delayed(const Duration(milliseconds: 900));
 
-    Sonidos.goback();
+    SrvSonidos.goback();
 
     // Las volvemos a ocultar
     pSetState(() {
@@ -209,12 +209,13 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
     // Anotamos el resultado en Supabase:
 
     SrvSupabase.grabarPartida(
-      pId: Diskette.leerValor("deviceId", defaultValue: "???"),
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: "???"),
       pNivel: InfoJuego.nivelSeleccionado,
-      pNombre: Diskette.leerValor("deviceName", defaultValue: "Cocinero Ryback"),
-      pPais: "ES",
+      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "Cocinero Ryback"),
+      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: "99"),
+      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: "Murmansk"),
       pPuntos: puntosTotales,
-      pTiempo: timerKey.currentState!.getTiempoFormateado,
+      pTiempo: '10:30', //timerKey.currentState!.getTiempoFormateado,
       pActualizado: Fechas.hoyEnYYYYMMDD(),
     );
 
@@ -225,7 +226,8 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
         pContexto,
         puntosPartida,
         puntosTotales,
-        timerKey.currentState!.getTiempoFormateado,
+        '10:30',
+        //timerKey.currentState!.getTiempoFormateado,
         pAlJugarOtraVez: () {
           pSetState(() {
             resetearJuego();

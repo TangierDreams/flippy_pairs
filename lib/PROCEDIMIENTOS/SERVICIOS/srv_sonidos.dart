@@ -1,6 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 
-class Sonidos {
+class SrvSonidos {
   // ============================================================================
   // VARIABLES GLOBALES PARA AUDIO
   // ============================================================================

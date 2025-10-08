@@ -21,7 +21,7 @@ class WidCarta extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Sonidos.flip();
+        SrvSonidos.flip();
         pCallBackFunction();
       },
       child: TweenAnimationBuilder<double>(
