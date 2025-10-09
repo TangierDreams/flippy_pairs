@@ -3,13 +3,13 @@
 //==============================================================================
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
-import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_temporizador.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_cronometro.dart';
 import 'package:flutter/material.dart';
 
 //------------------------------------------------------------------------------
@@ -40,7 +40,11 @@ int parejasFalladas = 0;
 // Para el efecto visual de flash
 Set<int> cartasDestello = {};
 
-final GlobalKey<WidTemporizadorState> timerKey = GlobalKey<WidTemporizadorState>();
+// Para manejar las funciones del cronometro desde aquí:
+
+final GlobalKey<WidCronometroState> cronometroKey = GlobalKey();
+
+bool initCronometro = true;
 
 //------------------------------------------------------------------------------
 // FUNCIONES DE INICIALIZACIÓN
@@ -69,7 +73,10 @@ void inicializarJuego(int pFilas, int pColumnas) async {
   cartasDestello = {};
 
   // Cargar puntos guardados del disco
-  puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion, defaultValue: 0);
+  puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion.name, defaultValue: 0);
+
+  //stopwatchKey.currentState?.resetStopwatch();
+  //stopwatchKey.currentState?.startStopwatch();
 }
 
 void resetearJuego() {
@@ -114,6 +121,12 @@ void restarPuntos() {
 //------------------------------------------------------------------------------
 
 Future<void> manejarToqueCarta(int index, Function pSetState) async {
+  if (initCronometro) {
+    initCronometro = false;
+    cronometroKey.currentState?.reset();
+    cronometroKey.currentState?.start();
+  }
+
   // 1. VERIFICACIONES BÁSICAS
 
   // Si no puedo girar, ignoro el toque
@@ -171,7 +184,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
 
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
-      SrvDiskette.guardarValor(DisketteKey.puntuacion, puntosTotales);
+      SrvDiskette.guardarValor(DisketteKey.puntuacion.name, puntosTotales);
     }
   } else {
     //----------------------------
@@ -204,18 +217,19 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
 
 Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) async {
   if (juegoTerminado()) {
-    timerKey.currentState?.stop();
+    cronometroKey.currentState?.stop();
+    initCronometro = true;
 
     // Anotamos el resultado en Supabase:
 
     SrvSupabase.grabarPartida(
-      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: "???"),
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId.name, defaultValue: "???"),
       pNivel: InfoJuego.nivelSeleccionado,
-      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "Cocinero Ryback"),
-      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: "99"),
-      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: "Murmansk"),
+      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName.name, defaultValue: "Cocinero Ryback"),
+      pPais: SrvDiskette.leerValor(DisketteKey.idPais.name, defaultValue: "99"),
+      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad.name, defaultValue: "Murmansk"),
       pPuntos: puntosTotales,
-      pTiempo: '10:30', //timerKey.currentState!.getTiempoFormateado,
+      pTiempo: cronometroKey.currentState!.obtenerTiempo(),
       pActualizado: Fechas.hoyEnYYYYMMDD(),
     );
 
@@ -226,13 +240,10 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
         pContexto,
         puntosPartida,
         puntosTotales,
-        '10:30',
-        //timerKey.currentState!.getTiempoFormateado,
-        pAlJugarOtraVez: () {
+        cronometroKey.currentState!.obtenerTiempo(),
+        pFuncionDeCallback: () {
           pSetState(() {
             resetearJuego();
-            timerKey.currentState?.reset();
-            timerKey.currentState?.start();
           });
         },
       );

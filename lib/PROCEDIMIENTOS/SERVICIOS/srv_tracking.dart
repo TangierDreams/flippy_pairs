@@ -12,9 +12,9 @@ class SrvTracking {
     final response = await http.get(uri);
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      SrvDiskette.guardarValor(DisketteKey.idPais, data['country_code']);
-      SrvDiskette.guardarValor(DisketteKey.nombrePais, data['country_name']);
-      SrvDiskette.guardarValor(DisketteKey.ciudad, data['city']);
+      SrvDiskette.guardarValor(DisketteKey.idPais.name, data['country_code']);
+      SrvDiskette.guardarValor(DisketteKey.nombrePais.name, data['country_name']);
+      SrvDiskette.guardarValor(DisketteKey.ciudad.name, data['city']);
     } else {
       debugPrint('Fallo al cargar la información de la IP: ${response.statusCode}');
     }

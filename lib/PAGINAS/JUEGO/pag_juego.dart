@@ -10,7 +10,7 @@ import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_contador.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
-//import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_temporizador.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_cronometro.dart';
 
 class PagJuego extends StatefulWidget {
   const PagJuego({super.key});
@@ -77,6 +77,7 @@ class _PagJuegoState extends State<PagJuego> {
               WidContador(pTexto: "Points: ", pContador: puntosTotales, pModo: 1),
               WidContador(pTexto: "Match: ", pContador: parejasAcertadas, pModo: 1),
               WidContador(pTexto: "Fail: ", pContador: parejasFalladas, pModo: 2),
+              WidCronometro(key: cronometroKey),
               //WidTemporizador(key: timerKey, pModo: 1),
             ],
           ),

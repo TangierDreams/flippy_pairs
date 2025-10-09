@@ -7,7 +7,7 @@ Future<void> widJuegoAcabado(
   int puntosDelJuego,
   int pTotalPuntos,
   String pTiempo, {
-  VoidCallback? pAlJugarOtraVez,
+  VoidCallback? pFuncionDeCallback,
 }) {
   bool gana = puntosDelJuego > 0 ? true : false;
 
@@ -89,7 +89,7 @@ Future<void> widJuegoAcabado(
                     ),
                     onPressed: () {
                       Navigator.of(context).pop(); // close dialog
-                      if (pAlJugarOtraVez != null) pAlJugarOtraVez();
+                      if (pFuncionDeCallback != null) pFuncionDeCallback();
                     },
                     child: const Text("Play Again"),
                   ),
