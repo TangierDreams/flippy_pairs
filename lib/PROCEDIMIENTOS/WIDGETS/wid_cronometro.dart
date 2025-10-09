@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // --------------------------------------------------------------------------
 // CLASE PRINCIPAL DEL WIDGET (Punto de entrada)
@@ -49,7 +51,8 @@ class WidCronometroState extends State<WidCronometro> {
   // 3. FUNCIONES DE CONTROL PÚBLICAS (Llamadas por el componente padre)
   // ------------------------------------------------------------------------
 
-  /// Inicia el cronómetro.
+  // Inicia el cronómetro.
+
   void start() {
     if (_cronometro.isRunning) return;
 
@@ -65,7 +68,8 @@ class WidCronometroState extends State<WidCronometro> {
     });
   }
 
-  /// Detiene (pausa) el cronómetro.
+  // Detiene el cronómetro.
+
   void stop() {
     _timer?.cancel();
     _cronometro.stop();
@@ -108,19 +112,25 @@ class WidCronometroState extends State<WidCronometro> {
   Widget build(BuildContext context) {
     // La UI es un Container simple con el texto en formato MM:SS.
     return Container(
-      padding: const EdgeInsets.all(12.0),
+      width: 70,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(color: Colors.blueGrey),
+        color: Colores.quinto,
+        borderRadius: BorderRadius.circular(12.0),
+        border: Border.all(color: Colores.primero, width: 3),
+        boxShadow: [
+          BoxShadow(color: Colores.primero, blurRadius: 8, offset: const Offset(4, 4)),
+          BoxShadow(color: Colores.blanco, blurRadius: 4, offset: Offset(-2, -2)),
+        ],
       ),
       child: Text(
         _tiempoEnMMSS,
-        style: const TextStyle(
-          fontSize: 32,
+        style: GoogleFonts.comicNeue(
+          fontSize: 16,
           fontWeight: FontWeight.bold,
-          fontFamily: 'Monospace',
-          color: Colors.black87,
+          color: Colores.blanco,
+          shadows: [Shadow(color: Colores.primero, blurRadius: 3, offset: const Offset(2, 2))],
         ),
       ),
     );
