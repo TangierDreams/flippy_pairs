@@ -73,7 +73,7 @@ void inicializarJuego(int pFilas, int pColumnas) async {
   cartasDestello = {};
 
   // Cargar puntos guardados del disco
-  puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion.name, defaultValue: 0);
+  puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion, defaultValue: 0);
 
   //stopwatchKey.currentState?.resetStopwatch();
   //stopwatchKey.currentState?.startStopwatch();
@@ -184,7 +184,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
 
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
-      SrvDiskette.guardarValor(DisketteKey.puntuacion.name, puntosTotales);
+      SrvDiskette.guardarValor(DisketteKey.puntuacion, puntosTotales);
     }
   } else {
     //----------------------------
@@ -223,11 +223,11 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
     // Anotamos el resultado en Supabase:
 
     SrvSupabase.grabarPartida(
-      pId: SrvDiskette.leerValor(DisketteKey.deviceId.name, defaultValue: "???"),
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: "???"),
       pNivel: InfoJuego.nivelSeleccionado,
-      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName.name, defaultValue: "Cocinero Ryback"),
-      pPais: SrvDiskette.leerValor(DisketteKey.idPais.name, defaultValue: "99"),
-      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad.name, defaultValue: "Murmansk"),
+      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "Cocinero Ryback"),
+      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: "99"),
+      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: "Murmansk"),
       pPuntos: puntosTotales,
       pTiempo: cronometroKey.currentState!.obtenerTiempo(),
       pActualizado: Fechas.hoyEnYYYYMMDD(),

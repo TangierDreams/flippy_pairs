@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Posibles claves para el diskette
 //------------------------------------------------------------------------------
 
-enum DisketteKey { ciudad, deviceId, deviceName, idPais, nombrePais, puntuacion }
+enum DisketteKey { alias, ciudad, deviceId, deviceName, idPais, musicaActivada, nombrePais, puntuacion, sonidoActivado }
 
 class SrvDiskette {
   //============================================================================
@@ -49,21 +49,21 @@ class SrvDiskette {
     }
   }
 
-  // ============================================================================
+  //============================================================================
   // FUNCIONES DE LECTURA
-  // ============================================================================
+  //============================================================================
 
   // Lee un valor del disco
   // Devuelve defaultValue si la clave no existe
 
-  static dynamic leerValor(String clave, {dynamic defaultValue}) {
-    return _datos[clave] ?? defaultValue;
+  static dynamic leerValor(DisketteKey clave, {dynamic defaultValue}) {
+    return _datos[clave.name] ?? defaultValue;
   }
 
   // Verifica si existe una clave
 
-  static bool existeClave(String clave) {
-    return _datos.containsKey(clave);
+  static bool existeClave(DisketteKey clave) {
+    return _datos.containsKey(clave.name);
   }
 
   // Obtiene todas las claves guardadas
@@ -78,21 +78,21 @@ class SrvDiskette {
     return Map<String, dynamic>.from(_datos);
   }
 
-  // ============================================================================
+  //============================================================================
   // FUNCIONES DE ESCRITURA
-  // ============================================================================
+  //============================================================================
 
   // Guarda un valor (crea si no existe, actualiza si existe)
 
-  static Future<void> guardarValor(String clave, dynamic valor) async {
-    _datos[clave] = valor;
+  static Future<void> guardarValor(DisketteKey clave, dynamic valor) async {
+    _datos[clave.name] = valor;
     await _guardarEnDisco();
   }
 
   // Elimina una clave
 
-  static Future<void> eliminarClave(String clave) async {
-    _datos.remove(clave);
+  static Future<void> eliminarClave(DisketteKey clave) async {
+    _datos.remove(clave.name);
     await _guardarEnDisco();
   }
 

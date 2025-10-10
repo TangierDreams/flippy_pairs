@@ -11,7 +11,7 @@ class SrvDispositivo {
   static Future<String> obtenerId() async {
     // Miramos si ya tenemos un id del dispositivo:
 
-    String existingDeviceId = SrvDiskette.leerValor(DisketteKey.deviceId.name, defaultValue: "");
+    String existingDeviceId = SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: "");
 
     if (existingDeviceId != "") {
       return existingDeviceId;
@@ -20,7 +20,7 @@ class SrvDispositivo {
     // Si no lo tenemos, lo creamos y nos lo guardamos:
 
     String newDeviceId = _uuid.v4(); // Generates a unique ID
-    SrvDiskette.guardarValor(DisketteKey.deviceId.name, newDeviceId);
+    SrvDiskette.guardarValor(DisketteKey.deviceId, newDeviceId);
 
     return newDeviceId;
   }
