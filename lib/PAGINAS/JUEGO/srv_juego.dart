@@ -231,11 +231,24 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
 
     await Future.delayed(const Duration(milliseconds: 100));
 
+    // Recogemos los resultados del usuario:
+
+    final datosDispositivo = await SrvSupabase.obtenerRegFlippy(
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ""),
+    );
+
+    // Busca el registro del nivel que se ha jugado:
+
+    final registroNivel = datosDispositivo.firstWhere(
+      (reg) => reg['nivel'] == InfoJuego.nivelSeleccionado,
+      orElse: () => <String, dynamic>{},
+    );
+
     if (pContexto.mounted) {
       widJuegoAcabado(
         pContexto,
         puntosPartida,
-        puntosPartida,
+        registroNivel['puntos'],
         cronometroKey.currentState!.obtenerTiempo(),
         pFuncionDeCallback: () {
           pSetState(() {

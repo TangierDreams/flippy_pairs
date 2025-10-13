@@ -1,5 +1,5 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_digit_roller_step.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_digit_roller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -32,15 +32,6 @@ class WidContador extends StatelessWidget {
         ],
       ),
 
-      // decoration: BoxDecoration(
-      //   color: pModo == 1 ? const Color.fromARGB(255, 226, 206, 27) : const Color.fromARGB(255, 169, 239, 252),
-      //   borderRadius: BorderRadius.circular(12),
-      //   border: Border.all(color: pModo == 1 ? Colores.segundo : Colores.primero, width: 3),
-      //   boxShadow: [
-      //     BoxShadow(color: pModo == 1 ? Colores.cuarto : Colores.primero, blurRadius: 8, offset: const Offset(4, 4)),
-      //     BoxShadow(color: Colores.blanco, blurRadius: 4, offset: Offset(-2, -2)),
-      //   ],
-      // ),
       child: SizedBox(
         width: 50,
         child: Column(
@@ -60,7 +51,7 @@ class WidContador extends StatelessWidget {
                 ],
               ),
             ),
-            WidDigitRollerStep(
+            WidDigitRoller(
               key: ValueKey("${pModo}_roller"),
               value: pContador,
               style: GoogleFonts.comicNeue(

@@ -41,7 +41,7 @@ class SrvSupabase {
   // Obtenemos las puntuaciones de un dispositivo.
   //----------------------------------------------------------------------------
 
-  Future<List<Map<String, dynamic>>> obtenerRegFlippy(String pId) async {
+  static Future<List<Map<String, dynamic>>> obtenerRegFlippy({required String pId}) async {
     try {
       final response = await supabase.rpc('obtener_reg_flippy', params: {'p_id': pId});
 
