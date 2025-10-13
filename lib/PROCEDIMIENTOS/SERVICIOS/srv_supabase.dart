@@ -36,4 +36,24 @@ class SrvSupabase {
       rethrow;
     }
   }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos las puntuaciones de un dispositivo.
+  //----------------------------------------------------------------------------
+
+  Future<List<Map<String, dynamic>>> obtenerRegFlippy(String pId) async {
+    try {
+      final response = await supabase.rpc('obtener_reg_flippy', params: {'p_id': pId});
+
+      final output = (response as List).map((e) => Map<String, dynamic>.from(e)).toList();
+
+      return output;
+    } on PostgrestException catch (e) {
+      debugPrint('Error obteniendo los datos: ${e.message}');
+      rethrow;
+    } catch (e) {
+      debugPrint('Error inesperado: $e');
+      rethrow;
+    }
+  }
 }

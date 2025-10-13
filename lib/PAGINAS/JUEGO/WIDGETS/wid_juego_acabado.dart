@@ -37,7 +37,7 @@ Future<void> widJuegoAcabado(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: gana ? [Colores.segundo, Colores.tercero] : [Colores.quinto, Colores.primero],
+                  colors: [Colores.quinto, Colores.primero],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -67,7 +67,7 @@ Future<void> widJuegoAcabado(
                   Text(
                     gana
                         ? "You've won $puntosDelJuego points in this game. Congratulations!"
-                        : "You've lost $puntosDelJuego points in this game.",
+                        : "You've lost $puntosDelJuego points in this game. You can do it better...",
                     style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                     textAlign: TextAlign.center,
                   ),
