@@ -31,53 +31,51 @@ class WidCarta extends StatelessWidget {
         ),
         duration: const Duration(milliseconds: 500),
         builder: (context, value, child) {
-          // Rotate Y axis from 0 → π
           double angle = value * pi;
           bool mostrarCarta = value > 0.5;
 
-          // Determine the base color based on face-up status
           final Color colorBase = mostrarCarta ? Colores.onPrimero : Colores.primero;
 
-          // Apply the flash color if flashing is true, otherwise use the base color.
-          final Color colorFinal = pDestello ? Colores.tercero : colorBase;
-
-          return Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001) // perspective
-              ..rotateY(angle),
-            child: Container(
+          // --- NUEVO BLOQUE: animación de brillo y escala pulsante ---
+          return AnimatedScale(
+            scale: pDestello ? 1.15 : 1.0,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOut,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
               decoration: BoxDecoration(
-                color: colorFinal,
+                color: pDestello ? colorBase.withValues(alpha: 0.95) : colorBase,
+                boxShadow: pDestello
+                    ? [BoxShadow(color: Colores.cuarto.withValues(alpha: 0.80), blurRadius: 20, spreadRadius: 4)]
+                    : [],
                 borderRadius: BorderRadius.circular(12),
-
-                // Añadimos un borde al destello:
-                border: pDestello ? Border.all(color: Colores.cuarto, width: 4) : null,
               ),
-              child: Center(
-                child: LayoutBuilder(
-                  // Utilizamos LayoutBuilder para conocer el tamaño del contenedor:
-                  builder: (BuildContext context, BoxConstraints dimensiones) {
-                    // Definimos el padding como un porcentaje del tamaño del contenedor.
+              child: Transform(
+                alignment: Alignment.center,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.001)
+                  ..rotateY(angle),
+                child: Center(
+                  child: LayoutBuilder(
+                    builder: (context, dimensiones) {
+                      final double dynamicPadding = dimensiones.maxHeight * 0.16;
 
-                    final double dynamicPadding = dimensiones.maxHeight * 0.16;
-
-                    return Transform(
-                      // Aplicamos una rotación para compensar el giro 3D si es la cara frontal
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..rotateY(mostrarCarta ? pi : 0), // Aplica PI (180 grados) solo si mostramos la carta
-                      child: Padding(
-                        padding: EdgeInsets.all(dynamicPadding),
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: mostrarCarta
-                              ? Image.asset(pImagenCarta)
-                              : Image.asset('assets/imagenes/general/interrogacion.png'),
+                      return Transform(
+                        alignment: Alignment.center,
+                        transform: Matrix4.identity()..rotateY(mostrarCarta ? pi : 0),
+                        child: Padding(
+                          padding: EdgeInsets.all(dynamicPadding),
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: mostrarCarta
+                                ? Image.asset(pImagenCarta)
+                                : Image.asset('assets/imagenes/general/interrogacion.png'),
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

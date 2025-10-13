@@ -39,17 +39,6 @@ class _PagJuegoState extends State<PagJuego> {
     setState(() {
       _juegoInicializado = true;
     });
-
-    // Iniciar el timer
-
-    // WidgetsBinding.instance.addPostFrameCallback(
-    //   (_, dynamic timerKey) {
-    //         if (mounted) {
-    //           timerKey.currentState?.start();
-    //         }
-    //       }
-    //       as FrameCallback,
-    // );
   }
 
   @override
@@ -74,9 +63,9 @@ class _PagJuegoState extends State<PagJuego> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              WidContador(pTexto: "Points: ", pContador: puntosTotales, pModo: 1),
-              WidContador(pTexto: "Match: ", pContador: parejasAcertadas, pModo: 1),
-              WidContador(pTexto: "Fail: ", pContador: parejasFalladas, pModo: 2),
+              WidContador(pTexto: "Points", pContador: puntosPartida, pModo: 1),
+              WidContador(pTexto: "Match", pContador: parejasAcertadas, pModo: 1),
+              WidContador(pTexto: "Fail", pContador: parejasFalladas, pModo: 2),
               WidCronometro(key: cronometroKey),
               //WidTemporizador(key: timerKey, pModo: 1),
             ],

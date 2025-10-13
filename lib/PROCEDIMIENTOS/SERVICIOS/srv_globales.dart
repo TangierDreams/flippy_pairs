@@ -16,12 +16,12 @@ class InfoJuego {
   static int nivelSeleccionado = 0;
   static String listaSeleccionada = "iconos";
   static const niveles = [
-    {"titulo": "3x2", "filas": 3, "columnas": 2, "puntosMas": 10, "puntosMenos": 7},
-    {"titulo": "4x3", "filas": 4, "columnas": 3, "puntosMas": 10, "puntosMenos": 6},
-    {"titulo": "5x4", "filas": 5, "columnas": 4, "puntosMas": 10, "puntosMenos": 5},
-    {"titulo": "6x5", "filas": 6, "columnas": 5, "puntosMas": 10, "puntosMenos": 4},
-    {"titulo": "8x7", "filas": 8, "columnas": 7, "puntosMas": 10, "puntosMenos": 3},
-    {"titulo": "9x8", "filas": 9, "columnas": 8, "puntosMas": 10, "puntosMenos": 2},
+    {"titulo": "3x2", "filas": 3, "columnas": 2, "puntosMas": 10, "puntosMenos": 11},
+    {"titulo": "4x3", "filas": 4, "columnas": 3, "puntosMas": 10, "puntosMenos": 9},
+    {"titulo": "5x4", "filas": 5, "columnas": 4, "puntosMas": 10, "puntosMenos": 7},
+    {"titulo": "6x5", "filas": 6, "columnas": 5, "puntosMas": 10, "puntosMenos": 8},
+    {"titulo": "8x7", "filas": 8, "columnas": 7, "puntosMas": 10, "puntosMenos": 8},
+    {"titulo": "9x8", "filas": 9, "columnas": 8, "puntosMas": 10, "puntosMenos": 7},
   ];
 }
 

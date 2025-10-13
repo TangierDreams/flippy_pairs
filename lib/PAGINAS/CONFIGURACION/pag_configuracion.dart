@@ -111,13 +111,13 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
   }
 
   void _cargarDatos() {
-    _nombreUsuario.text = SrvDiskette.leerValor(DisketteKey.alias, defaultValue: "");
+    _nombreUsuario.text = SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "");
     _sonidoActivado = SrvDiskette.leerValor(DisketteKey.sonidoActivado, defaultValue: true);
     _musicaActivada = SrvDiskette.leerValor(DisketteKey.musicaActivada, defaultValue: true);
   }
 
   void _guardarDatos(BuildContext pContexto) async {
-    SrvDiskette.guardarValor(DisketteKey.alias, _nombreUsuario.text);
+    SrvDiskette.guardarValor(DisketteKey.deviceName, _nombreUsuario.text);
     SrvDiskette.guardarValor(DisketteKey.sonidoActivado, _sonidoActivado);
     SrvDiskette.guardarValor(DisketteKey.musicaActivada, _musicaActivada);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Datos correctamente guardados')));

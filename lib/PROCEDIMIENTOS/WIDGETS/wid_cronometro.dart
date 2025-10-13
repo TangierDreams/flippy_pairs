@@ -98,6 +98,10 @@ class WidCronometroState extends State<WidCronometro> {
     return _formatearTiempoEnMMSS(_cronometro.elapsed);
   }
 
+  int obtenerSegundos() {
+    return _cronometro.elapsed.inSeconds;
+  }
+
   // ------------------------------------------------------------------------
   // 4. CICLO DE VIDA Y UI
   // ------------------------------------------------------------------------
@@ -124,14 +128,27 @@ class WidCronometroState extends State<WidCronometro> {
           BoxShadow(color: Colores.blanco, blurRadius: 4, offset: Offset(-2, -2)),
         ],
       ),
-      child: Text(
-        _tiempoEnMMSS,
-        style: GoogleFonts.comicNeue(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colores.blanco,
-          shadows: [Shadow(color: Colores.primero, blurRadius: 3, offset: const Offset(2, 2))],
-        ),
+      child: Column(
+        children: [
+          Text(
+            "Timer",
+            style: GoogleFonts.comicNeue(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colores.blanco,
+              shadows: [Shadow(color: Colores.primero, blurRadius: 3, offset: const Offset(2, 2))],
+            ),
+          ),
+          Text(
+            _tiempoEnMMSS,
+            style: GoogleFonts.comicNeue(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colores.blanco,
+              shadows: [Shadow(color: Colores.primero, blurRadius: 3, offset: const Offset(2, 2))],
+            ),
+          ),
+        ],
       ),
     );
   }

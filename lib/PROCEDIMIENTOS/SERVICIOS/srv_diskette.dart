@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Posibles claves para el diskette
 //------------------------------------------------------------------------------
 
-enum DisketteKey { alias, ciudad, deviceId, deviceName, idPais, musicaActivada, nombrePais, puntuacion, sonidoActivado }
+enum DisketteKey { ciudad, deviceId, deviceName, idPais, musicaActivada, nombrePais, puntuacion, sonidoActivado }
 
 class SrvDiskette {
   //============================================================================

@@ -11,11 +11,36 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SrvDiskette.inicializar();
-  await SrvSonidos.inicializar();
-  await SrvDispositivo.obtenerId();
-  await SrvTracking.obtenerDatos();
-  await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
+  try {
+    await SrvDiskette.inicializar();
+    debugPrint('Diskette inicializado');
+  } catch (e, st) {
+    debugPrint('Error Diskette: $e\n$st');
+  }
+  try {
+    await SrvSonidos.inicializar();
+    debugPrint('Sonidos inicializados');
+  } catch (e, st) {
+    debugPrint('Error Sonidos: $e\n$st');
+  }
+  try {
+    await SrvDispositivo.obtenerId();
+    debugPrint('ID Dispositivo obtenido');
+  } catch (e, st) {
+    debugPrint('Error Dispositivo: $e\n$st');
+  }
+  try {
+    await SrvTracking.obtenerDatos();
+    debugPrint('Datos de tracking obtenidos');
+  } catch (e, st) {
+    debugPrint('Error Tracking: $e\n$st');
+  }
+  try {
+    await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
+    debugPrint('Supabase inicializado');
+  } catch (e, st) {
+    debugPrint('Error Supabase: $e\n$st');
+  }
 
   runApp(const MyApp());
 }
@@ -25,6 +50,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Si no tenemos nombre de dispositivo empezamos por la pagina de configuración:
+
+    String rutaInicial = "/";
+    String nomDispositivo = SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '');
+    debugPrint('Dispositivo: $nomDispositivo');
+    if (nomDispositivo == '') {
+      rutaInicial = "/config";
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       title: DatosGenerales.nombreApp,
@@ -32,7 +66,7 @@ class MyApp extends StatelessWidget {
       //---------------------------------
       // ROUTING A LAS DISTINTAS PAGINAS:
       //---------------------------------
-      initialRoute: '/',
+      initialRoute: rutaInicial,
       routes: {
         //Home:
         '/': (context) => const PagHome(),

@@ -43,6 +43,14 @@ class SrvSonidos {
 
   static Future<void> goback() => _reproducirSonido('goback.wav');
 
+  // Reproduce el sonido de éxito:
+
+  static Future<void> sucess() => _reproducirSonido('success.wav');
+
+  // Reproduce el sonido de error:
+
+  static Future<void> error() => _reproducirSonido('error.wav');
+
   // Reproduce un archivo de sonido desde assets/sonidos/
 
   static Future<void> _reproducirSonido(String nombreArchivo) async {

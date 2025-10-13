@@ -14,7 +14,7 @@ class WidContador extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: pModo == 1 ? Colores.tercero : const Color.fromARGB(255, 169, 239, 252),
+        color: pModo == 1 ? const Color.fromARGB(255, 226, 206, 27) : const Color.fromARGB(255, 169, 239, 252),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: pModo == 1 ? Colores.segundo : Colores.primero, width: 3),
         boxShadow: [
@@ -22,32 +22,42 @@ class WidContador extends StatelessWidget {
           BoxShadow(color: Colores.blanco, blurRadius: 4, offset: Offset(-2, -2)),
         ],
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            pTexto,
-            style: GoogleFonts.comicNeue(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colores.blanco,
-              shadows: [
-                Shadow(color: pModo == 1 ? Colores.cuarto : Colores.primero, blurRadius: 3, offset: const Offset(2, 2)),
-              ],
+      child: SizedBox(
+        width: 50,
+        child: Column(
+          children: [
+            Text(
+              pTexto,
+              style: GoogleFonts.comicNeue(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colores.blanco,
+                shadows: [
+                  Shadow(
+                    color: pModo == 1 ? Colores.cuarto : Colores.primero,
+                    blurRadius: 3,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(
-            "$pContador${pModo == 1 ? '\u200B' : '\u200C'}",
-            style: GoogleFonts.comicNeue(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colores.blanco,
-              shadows: [
-                Shadow(color: pModo == 1 ? Colores.cuarto : Colores.primero, blurRadius: 3, offset: const Offset(2, 2)),
-              ],
+            Text(
+              "$pContador${pModo == 1 ? '\u200B' : '\u200C'}",
+              style: GoogleFonts.comicNeue(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colores.blanco,
+                shadows: [
+                  Shadow(
+                    color: pModo == 1 ? Colores.cuarto : Colores.primero,
+                    blurRadius: 3,
+                    offset: const Offset(2, 2),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

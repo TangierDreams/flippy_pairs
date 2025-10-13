@@ -4,7 +4,6 @@
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
@@ -32,7 +31,7 @@ int? _primeraCarta; // índice de la primera carta volteada
 bool _puedoGirarLaCarta = true; // false = esperando a que se oculten las cartas
 
 // Puntuaciones
-int puntosTotales = 0; // Puntos acumulados (se guardan en disco)
+//int puntosTotales = 0; // Puntos acumulados (se guardan en disco)
 int puntosPartida = 0; // Puntos solo de esta partida
 int parejasAcertadas = 0;
 int parejasFalladas = 0;
@@ -69,14 +68,12 @@ void inicializarJuego(int pFilas, int pColumnas) async {
   parejasAcertadas = 0;
   parejasFalladas = 0;
   puntosPartida = 0;
-
+  cronometroKey.currentState?.reset();
   cartasDestello = {};
 
   // Cargar puntos guardados del disco
-  puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion, defaultValue: 0);
 
-  //stopwatchKey.currentState?.resetStopwatch();
-  //stopwatchKey.currentState?.startStopwatch();
+  //puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion, defaultValue: 0);
 }
 
 void resetearJuego() {
@@ -105,14 +102,14 @@ bool juegoTerminado() {
 // Sumamos puntos:
 
 void sumarPuntos() {
-  puntosTotales += InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMas"] as int;
+  //puntosTotales += InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMas"] as int;
   puntosPartida += InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMas"] as int;
 }
 
 // Restamos puntos:
 
 void restarPuntos() {
-  puntosTotales -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMenos"] as int;
+  //puntosTotales -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMenos"] as int;
   puntosPartida -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMenos"] as int;
 }
 
@@ -184,7 +181,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
 
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
-      SrvDiskette.guardarValor(DisketteKey.puntuacion, puntosTotales);
+      //SrvDiskette.guardarValor(DisketteKey.puntuacion, puntosTotales);
     }
   } else {
     //----------------------------
@@ -225,21 +222,20 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
     SrvSupabase.grabarPartida(
       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: "???"),
       pNivel: InfoJuego.nivelSeleccionado,
-      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "Cocinero Ryback"),
-      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: "99"),
-      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: "Murmansk"),
-      pPuntos: puntosTotales,
-      pTiempo: cronometroKey.currentState!.obtenerTiempo(),
-      pActualizado: Fechas.hoyEnYYYYMMDD(),
+      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "?"),
+      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: "?"),
+      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: "?"),
+      pPuntos: puntosPartida,
+      pTiempo: cronometroKey.currentState!.obtenerSegundos(),
     );
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 100));
 
     if (pContexto.mounted) {
       widJuegoAcabado(
         pContexto,
         puntosPartida,
-        puntosTotales,
+        puntosPartida,
         cronometroKey.currentState!.obtenerTiempo(),
         pFuncionDeCallback: () {
           pSetState(() {
