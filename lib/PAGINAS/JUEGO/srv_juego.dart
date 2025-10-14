@@ -71,6 +71,10 @@ void inicializarJuego(int pFilas, int pColumnas) async {
   cronometroKey.currentState?.reset();
   cartasDestello = {};
 
+  // Empezamos la música:
+
+  SrvSonidos.iniciarMusicaFondo();
+
   // Cargar puntos guardados del disco
 
   //puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion, defaultValue: 0);
@@ -181,6 +185,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
 
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
+      SrvSonidos.detenerMusicaFondo();
       //SrvDiskette.guardarValor(DisketteKey.puntuacion, puntosTotales);
     }
   } else {

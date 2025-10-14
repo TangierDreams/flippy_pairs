@@ -58,7 +58,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () async {
-                // play sound
+                await SrvSonidos.detenerMusicaFondo();
                 await SrvSonidos.goback();
 
                 // wait a bit

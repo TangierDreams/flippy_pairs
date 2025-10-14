@@ -388,7 +388,21 @@ class BotonConfiguracion extends StatelessWidget {
         elevation: 10,
       ),
 
-      child: Text('Config...', style: Textos.textStyleYellow14, textAlign: TextAlign.center),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.settings,
+            color: Colores.tercero, // Match the text color
+            size: 25, // Adjust size as needed
+          ),
+
+          // 2. Add a small space between the icon and the text
+          const SizedBox(width: 12),
+
+          Text('Configuración...', style: Textos.textStyleYellow14, textAlign: TextAlign.center),
+        ],
+      ),
     );
   }
 }
