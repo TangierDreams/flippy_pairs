@@ -1,8 +1,10 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Importa este paquete para TextInputFormatter
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart'; // Importa este paquete para TextInputFormatter
 
 class PagConfiguracion extends StatefulWidget {
   const PagConfiguracion({super.key});
@@ -36,13 +38,46 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
             //------------------------------------------------------------------
             // Pedimos el alias del usuario
             //------------------------------------------------------------------
+            Text(
+              "Por favor, introduce el alias con el que quieres aparecer en la Competición Mundial Flippy...",
+              style: GoogleFonts.luckiestGuy(
+                fontSize: 20,
+                color: Colores.primero,
+                shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
             TextField(
               controller: _nombreUsuario,
               inputFormatters: [LengthLimitingTextInputFormatter(25)],
+              style: GoogleFonts.luckiestGuy(color: Colors.black, fontSize: 16),
               decoration: InputDecoration(
                 labelText: 'Alias',
+                labelStyle: GoogleFonts.luckiestGuy(
+                  color: Colores.segundo, // Your desired color
+                  fontSize: 18, // Your desired size
+                ),
                 hintText: 'Introduce un nombre que te guste...',
-                border: const OutlineInputBorder(),
+                hintStyle: GoogleFonts.luckiestGuy(color: Colores.primero.withValues(alpha: 0.7), fontSize: 14),
+
+                // 1. Define the default border style
+                border: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colores.primero, // Default border color (blue)
+                    width: 2.0, // Match the button's border thickness
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)), // Optional: add rounded corners
+                ),
+
+                // 2. Define the focused border style (when the user taps it)
+                focusedBorder: const OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colores.primero, // Keep the border blue when focused
+                    width: 3.0, // Optional: make it slightly thicker when focused for emphasis
+                  ),
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -53,7 +88,14 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Text('Activar o desactivar sonidos...', style: TextStyle(fontSize: 16)),
+                Text(
+                  'Activar o desactivar sonidos...',
+                  style: GoogleFonts.luckiestGuy(
+                    fontSize: 16,
+                    color: Colores.primero,
+                    shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                  ),
+                ),
                 Switch(
                   // 1. Valor actual del estado
                   value: _sonidoActivado,
@@ -77,7 +119,14 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Text('Activar o desactivar música...', style: TextStyle(fontSize: 16)),
+                Text(
+                  'Activar o desactivar música...',
+                  style: GoogleFonts.luckiestGuy(
+                    fontSize: 16,
+                    color: Colores.primero,
+                    shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                  ),
+                ),
                 Switch(
                   // 1. Valor actual del estado
                   value: _musicaActivada,
@@ -102,7 +151,38 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
               onPressed: () async {
                 _guardarDatos(context);
               },
-              child: const Text('Guardar datos'),
+              style: ElevatedButton.styleFrom(
+                side: const BorderSide(
+                  color: Colores.primero, // Specify the color of the border
+                  width: 4.0, // Specify the thickness of the border
+                ),
+              ),
+              // START OF MODIFIED CHILD
+              child: Row(
+                mainAxisSize: MainAxisSize.min, // Essential: Keeps the Row size to its children
+                children: <Widget>[
+                  // 1. Add the Diskette (Save) Icon
+                  const Icon(
+                    Icons.save,
+                    color: Colores.segundo, // Match the text color
+                    size: 20, // Adjust size as needed
+                  ),
+
+                  // 2. Add a small space between the icon and the text
+                  const SizedBox(width: 8),
+
+                  // 3. Keep your existing Text widget
+                  Text(
+                    'Guardar datos',
+                    style: GoogleFonts.luckiestGuy(
+                      fontSize: 16,
+                      color: Colores.segundo,
+                      shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                    ),
+                  ),
+                ],
+              ),
+              // END OF MODIFIED CHILD
             ),
           ],
         ),

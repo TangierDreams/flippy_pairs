@@ -67,7 +67,7 @@ Future<void> widJuegoAcabado(
                   Text(
                     gana
                         ? "You've won $puntosDelJuego points in this game. Congratulations!"
-                        : "You've lost $puntosDelJuego points in this game. You can do it better...",
+                        : "You've lost ${puntosDelJuego.abs()} points in this game. You can do it better...",
                     style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                     textAlign: TextAlign.center,
                   ),
