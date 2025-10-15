@@ -62,7 +62,7 @@ class SrvSonidos {
     if (SrvDiskette.leerValor(DisketteKey.musicaActivada)) {
       // Configura para que se repita en bucle y ajusta el volumen.
       await _musicaFondoPlayer.setReleaseMode(ReleaseMode.loop);
-      await _musicaFondoPlayer.setVolume(0.1); // Volumen bajo
+      await _musicaFondoPlayer.setVolume(0.2); // Volumen bajo
 
       // Ruta de la música. Asumo que se llama 'musica_fondo.mp3'
       await _musicaFondoPlayer.play(AssetSource('sonidos/music.mp3'));
@@ -102,15 +102,6 @@ class SrvSonidos {
   static Future<void> error() => _reproducirSonido('error.wav');
 
   // Reproduce un archivo de sonido desde assets/sonidos/
-
-  // static Future<void> _reproducirSonido(String nombreArchivo) async {
-  //   if (SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {
-  //     final reproductor = _reproductorSFX[_indiceActual];
-  //     _indiceActual = (_indiceActual + 1) % _cantidadReproductores;
-  //     await reproductor.stop(); // Detener si aún está sonando
-  //     await reproductor.play(AssetSource('sonidos/$nombreArchivo'));
-  //   }
-  // }
 
   static Future<void> _reproducirSonido(String nombreArchivo) async {
     if (SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {

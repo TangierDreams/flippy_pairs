@@ -106,15 +106,13 @@ bool juegoTerminado() {
 // Sumamos puntos:
 
 void sumarPuntos() {
-  //puntosTotales += InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMas"] as int;
-  puntosPartida += InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMas"] as int;
+  puntosPartida += InfoJuego.niveles[InfoJuego.nivelSeleccionado]['puntosMas'] as int;
 }
 
 // Restamos puntos:
 
 void restarPuntos() {
-  //puntosTotales -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMenos"] as int;
-  puntosPartida -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]["puntosMenos"] as int;
+  puntosPartida -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]['puntosMenos'] as int;
 }
 
 //------------------------------------------------------------------------------
@@ -175,7 +173,7 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
       cartasDestello.add(indiceSegunda);
     });
 
-    // Emitimos sonido y "destello" si hemos acertado la pareja:
+    // Emitimos sonido y 'destello' si hemos acertado la pareja:
     SrvSonidos.level();
     await Future.delayed(const Duration(milliseconds: 900));
 
@@ -225,11 +223,11 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
     // Anotamos el resultado en Supabase:
 
     SrvSupabase.grabarPartida(
-      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: "???"),
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '???'),
       pNivel: InfoJuego.nivelSeleccionado,
-      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "?"),
-      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: "?"),
-      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: "?"),
+      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '?'),
+      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '?'),
+      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '?'),
       pPuntos: puntosPartida,
       pTiempo: cronometroKey.currentState!.obtenerSegundos(),
     );
@@ -239,7 +237,7 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
     // Recogemos los resultados del usuario:
 
     final datosDispositivo = await SrvSupabase.obtenerRegFlippy(
-      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ""),
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
     );
 
     // Busca el registro del nivel que se ha jugado:

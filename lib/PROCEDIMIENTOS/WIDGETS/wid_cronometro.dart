@@ -24,7 +24,7 @@ class WidCronometroState extends State<WidCronometro> {
 
   final Stopwatch _cronometro = Stopwatch();
   Timer? _timer;
-  String _tiempoEnMMSS = "00:00"; // Inicialización en 00:00 por defecto.
+  String _tiempoEnMMSS = '00:00'; // Inicialización en 00:00 por defecto.
 
   // ------------------------------------------------------------------------
   // 2. FUNCIÓN AUXILIAR PROCEDURAL
@@ -131,7 +131,7 @@ class WidCronometroState extends State<WidCronometro> {
       child: Column(
         children: [
           Text(
-            "Timer",
+            'Timer',
             style: GoogleFonts.comicNeue(
               fontSize: 14,
               fontWeight: FontWeight.bold,

@@ -22,7 +22,7 @@ Future<void> widJuegoAcabado(
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: false,
-    barrierLabel: "Fin del juego",
+    barrierLabel: 'Fin del juego',
     transitionDuration: const Duration(milliseconds: 800),
     pageBuilder: (context, anim1, anim2) => const SizedBox.shrink(),
     transitionBuilder: (context, anim1, anim2, child) {
@@ -55,7 +55,7 @@ Future<void> widJuegoAcabado(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    gana ? "🎉 Excellent!" : "😅 Oooppss!",
+                    gana ? '🎉 Excellent!' : '😅 Oooppss!',
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 36,
                       color: Colores.blanco,
@@ -73,13 +73,13 @@ Future<void> widJuegoAcabado(
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "Your total score is $pTotalPuntos points.",
+                    'Your total score is $pTotalPuntos points.',
                     style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    "You finished the game in $pTiempo minutes.",
+                    'You finished the game in $pTiempo minutes.',
                     style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                     textAlign: TextAlign.center,
                   ),
@@ -99,7 +99,7 @@ Future<void> widJuegoAcabado(
                             pFuncionDeCallback();
                           }
                         },
-                        child: Text("Play Again", style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text('Play Again', style: GoogleFonts.baloo2(fontSize: 18)),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -112,7 +112,7 @@ Future<void> widJuegoAcabado(
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                         },
-                        child: Text("Exit", style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text('Exit', style: GoogleFonts.baloo2(fontSize: 18)),
                       ),
                     ],
                   ),

@@ -4,7 +4,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart'; // Importa este paquete para TextInputFormatter
+import 'package:google_fonts/google_fonts.dart';
 
 class PagConfiguracion extends StatefulWidget {
   const PagConfiguracion({super.key});
@@ -28,7 +28,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
   Widget build(BuildContext context) {
     return Scaffold(
       //Toolbar:
-      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: "Harden Your Mind Once and for All!"),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: 'Harden Your Mind Once and for All!'),
 
       //resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -41,7 +41,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
               // Pedimos el alias del usuario
               //------------------------------------------------------------------
               Text(
-                "Por favor, introduce el alias con el que quieres aparecer en la Competición Mundial Flippy...",
+                'Por favor, introduce el alias con el que quieres aparecer en la Competición Mundial Flippy...',
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 20,
                   color: Colores.primero,
@@ -107,8 +107,6 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                       setState(() {
                         _sonidoActivado = newValue;
                       });
-                      // Aquí añadirías la lógica para guardar la preferencia (p. ej. en SharedPreferences)
-                      debugPrint('Sonidos: ${_sonidoActivado ? 'Activado' : 'Desactivado'}');
                     },
                   ),
                 ],
@@ -138,8 +136,6 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                       setState(() {
                         _musicaActivada = newValue;
                       });
-                      // Aquí añadirías la lógica para guardar la preferencia (p. ej. en SharedPreferences)
-                      debugPrint('Música: ${_sonidoActivado ? 'Activada' : 'Desactivada'}');
                     },
                   ),
                 ],
@@ -194,7 +190,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
   }
 
   void _cargarDatos() {
-    _nombreUsuario.text = SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: "");
+    _nombreUsuario.text = SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '');
     _sonidoActivado = SrvDiskette.leerValor(DisketteKey.sonidoActivado, defaultValue: true);
     _musicaActivada = SrvDiskette.leerValor(DisketteKey.musicaActivada, defaultValue: true);
   }

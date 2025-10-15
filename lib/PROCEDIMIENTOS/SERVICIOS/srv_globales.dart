@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DatosGenerales {
-  static const String nombreApp = "Flippy Pairs";
-  static const String logoApp = "assets/imagenes/general/app_logo.png";
-  static const String supabaseUrl = "https://nygzlnrhbrdvjjhrbsdz.supabase.co";
+  static const String nombreApp = 'Flippy Pairs';
+  static const String logoApp = 'assets/imagenes/general/app_logo.png';
+  static const String supabaseUrl = 'https://nygzlnrhbrdvjjhrbsdz.supabase.co';
   static const String supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55Z3psbnJoYnJkdmpqaHJic2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE3MDQ3MTMsImV4cCI6MjAxNzI4MDcxM30.0ioZe3S_uqanr_Ulm_yWVxYEOHi7pHCNHKyu9zsq8fE";
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55Z3psbnJoYnJkdmpqaHJic2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE3MDQ3MTMsImV4cCI6MjAxNzI4MDcxM30.0ioZe3S_uqanr_Ulm_yWVxYEOHi7pHCNHKyu9zsq8fE';
 }
 
 class InfoJuego {
@@ -14,14 +14,14 @@ class InfoJuego {
   static int columnasSeleccionadas = 2;
   static int temaSeleccionado = 0;
   static int nivelSeleccionado = 0;
-  static String listaSeleccionada = "iconos";
+  static String listaSeleccionada = 'iconos';
   static const niveles = [
-    {"titulo": "3x2", "filas": 3, "columnas": 2, "puntosMas": 10, "puntosMenos": 11},
-    {"titulo": "4x3", "filas": 4, "columnas": 3, "puntosMas": 10, "puntosMenos": 9},
-    {"titulo": "5x4", "filas": 5, "columnas": 4, "puntosMas": 10, "puntosMenos": 7},
-    {"titulo": "6x5", "filas": 6, "columnas": 5, "puntosMas": 10, "puntosMenos": 8},
-    {"titulo": "8x7", "filas": 8, "columnas": 7, "puntosMas": 10, "puntosMenos": 8},
-    {"titulo": "9x8", "filas": 9, "columnas": 8, "puntosMas": 10, "puntosMenos": 7},
+    {'titulo': '3x2', 'filas': 3, 'columnas': 2, 'puntosMas': 10, 'puntosMenos': 11},
+    {'titulo': '4x3', 'filas': 4, 'columnas': 3, 'puntosMas': 10, 'puntosMenos': 9},
+    {'titulo': '5x4', 'filas': 5, 'columnas': 4, 'puntosMas': 10, 'puntosMenos': 7},
+    {'titulo': '6x5', 'filas': 6, 'columnas': 5, 'puntosMas': 10, 'puntosMenos': 8},
+    {'titulo': '8x7', 'filas': 8, 'columnas': 7, 'puntosMas': 10, 'puntosMenos': 8},
+    {'titulo': '9x8', 'filas': 9, 'columnas': 8, 'puntosMas': 10, 'puntosMenos': 7},
   ];
 }
 

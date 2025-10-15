@@ -2,6 +2,7 @@ import 'package:flippy_pairs/PAGINAS/CONFIGURACION/pag_configuracion.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/pag_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_tracking.dart';
 import 'package:flutter/material.dart';
@@ -11,50 +12,88 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   try {
     await SrvDiskette.inicializar();
-    debugPrint('Diskette inicializado');
-  } catch (e, st) {
-    debugPrint('Error Diskette: $e\n$st');
+  } catch (e) {
+    SrvLogger.grabarLog("Main", "main()", 'Error Diskette: $e');
   }
   try {
     await SrvSonidos.inicializar();
-    debugPrint('Sonidos inicializados');
-  } catch (e, st) {
-    debugPrint('Error Sonidos: $e\n$st');
+  } catch (e) {
+    SrvLogger.grabarLog("Main", "main()", 'Error Sonidos: $e');
   }
   try {
     await SrvDispositivo.obtenerId();
-    debugPrint('ID Dispositivo obtenido');
-  } catch (e, st) {
-    debugPrint('Error Dispositivo: $e\n$st');
+    SrvLogger.grabarLog(
+      "Main",
+      "main()",
+      'El id del dispositivo es: ${SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '?')}',
+    );
+  } catch (e) {
+    SrvLogger.grabarLog("Main", "main()", 'Error Dispositivo: $e');
   }
   try {
     await SrvTracking.obtenerDatos();
-    debugPrint('Datos de tracking obtenidos');
-  } catch (e, st) {
-    debugPrint('Error Tracking: $e\n$st');
+  } catch (e) {
+    SrvLogger.grabarLog("Main", "main()", 'Error Tracking: $e');
   }
   try {
     await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
-    debugPrint('Supabase inicializado');
-  } catch (e, st) {
-    debugPrint('Error Supabase: $e\n$st');
+  } catch (e) {
+    SrvLogger.grabarLog("Main", "main()", 'Error Supabase: $e');
   }
 
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Si no tenemos nombre de dispositivo empezamos por la pagina de configuración:
+  State<MyApp> createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        SrvLogger.grabarLog("Main", "_MyAppState", "App en primer plano");
+        break;
+      case AppLifecycleState.inactive:
+        SrvSonidos.detenerMusicaFondo();
+        SrvLogger.grabarLog("Main", "_MyAppState", "App inactiva (por ejemplo, al cambiar de app)");
+        break;
+      case AppLifecycleState.paused:
+        SrvSonidos.detenerMusicaFondo();
+        SrvLogger.grabarLog("Main", "_MyAppState", "La app pasa a segundo plano");
+        break;
+      case AppLifecycleState.detached:
+        SrvSonidos.liberar();
+        SrvLogger.grabarLog("Main", "_MyAppState", "App cerrada");
+        break;
+      default:
+        SrvLogger.grabarLog("Main", "_MyAppState", "Otro estado del ciclo de vida...");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     String rutaInicial = "/";
     String nomDispositivo = SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '');
-    debugPrint('Dispositivo: $nomDispositivo');
     if (nomDispositivo == '') {
       rutaInicial = "/config";
     }
@@ -62,17 +101,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: true,
       title: DatosGenerales.nombreApp,
-
-      //---------------------------------
-      // ROUTING A LAS DISTINTAS PAGINAS:
-      //---------------------------------
       initialRoute: rutaInicial,
       routes: {
-        //Home:
         '/': (context) => const PagHome(),
-        //Juego:
         '/game': (context) => const PagJuego(),
-        //Configuracion:
         '/config': (context) => const PagConfiguracion(),
       },
     );

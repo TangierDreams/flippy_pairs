@@ -52,7 +52,7 @@ class WidContador extends StatelessWidget {
               ),
             ),
             WidDigitRoller(
-              key: ValueKey("${pModo}_roller"),
+              key: ValueKey('${pModo}_roller'),
               value: pContador,
               style: GoogleFonts.comicNeue(
                 fontSize: 18,

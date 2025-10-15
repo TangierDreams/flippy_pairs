@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 //------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ class SrvDiskette {
       try {
         _datos = json.decode(jsonData) as Map<String, dynamic>;
       } catch (e) {
-        debugPrint('Error cargando datos: $e');
+        SrvLogger.grabarLog('srv_diskette', '_cargarDesdeDiskette()', 'Error cargando datos: $e');
         _datos = {};
       }
     } else {

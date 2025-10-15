@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
@@ -26,13 +26,12 @@ class SrvSupabase {
     };
 
     try {
-      await supabase.rpc("upsert_flippy_points", params: params);
-      debugPrint('Registro de Supabase grabado');
+      await supabase.rpc('upsert_flippy_points', params: params);
     } on PostgrestException catch (e) {
-      debugPrint('Error de Supabase (RPC): ${e.message}');
+      SrvLogger.grabarLog('srv_supabase', 'grabarPartida()', 'Error de Supabase (RPC): ${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('Error inesperado de Supabase al guardar el registro: $e');
+      SrvLogger.grabarLog('srv_supabase', 'grabarPartida()', 'Error inesperado de Supabase al guardar el registro: $e');
       rethrow;
     }
   }
@@ -49,10 +48,10 @@ class SrvSupabase {
 
       return output;
     } on PostgrestException catch (e) {
-      debugPrint('Error obteniendo los datos: ${e.message}');
+      SrvLogger.grabarLog('srv_supabase', 'obtenerRegFlippy()', 'Error obteniendo los datos: ${e.message}');
       rethrow;
     } catch (e) {
-      debugPrint('Error inesperado: $e');
+      SrvLogger.grabarLog('srv_supabase', 'obtenerRegFlippy()', 'Error inesperado: $e');
       rethrow;
     }
   }

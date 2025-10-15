@@ -15,14 +15,14 @@ class _PagHomeState extends State<PagHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       //Toolbar:
-      appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: "Harden Your Mind Once and for All!"),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: 'Harden Your Mind Once and for All!'),
 
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text("Themes", textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+            Text('Themes', textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
             const SizedBox(height: 15),
 
@@ -33,33 +33,33 @@ class _PagHomeState extends State<PagHome> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 BotonTema(
-                  pListaImagenes: "iconos",
+                  pListaImagenes: 'iconos',
                   pNumBoton: 0,
                   pCallBackFunction: () {
                     setState(() {
-                      InfoJuego.listaSeleccionada = "iconos";
+                      InfoJuego.listaSeleccionada = 'iconos';
                       InfoJuego.temaSeleccionado = 0;
                     });
                   },
                 ),
 
                 BotonTema(
-                  pListaImagenes: "animales",
+                  pListaImagenes: 'animales',
                   pNumBoton: 1,
                   pCallBackFunction: () {
                     setState(() {
-                      InfoJuego.listaSeleccionada = "animales";
+                      InfoJuego.listaSeleccionada = 'animales';
                       InfoJuego.temaSeleccionado = 1;
                     });
                   },
                 ),
 
                 BotonTema(
-                  pListaImagenes: "retratos",
+                  pListaImagenes: 'retratos',
                   pNumBoton: 2,
                   pCallBackFunction: () {
                     setState(() {
-                      InfoJuego.listaSeleccionada = "retratos";
+                      InfoJuego.listaSeleccionada = 'retratos';
                       InfoJuego.temaSeleccionado = 2;
                     });
                   },
@@ -76,33 +76,33 @@ class _PagHomeState extends State<PagHome> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 BotonTema(
-                  pListaImagenes: "herramientas",
+                  pListaImagenes: 'herramientas',
                   pNumBoton: 3,
                   pCallBackFunction: () {
                     setState(() {
-                      InfoJuego.listaSeleccionada = "herramientas";
+                      InfoJuego.listaSeleccionada = 'herramientas';
                       InfoJuego.temaSeleccionado = 3;
                     });
                   },
                 ),
 
                 BotonTema(
-                  pListaImagenes: "coches",
+                  pListaImagenes: 'coches',
                   pNumBoton: 4,
                   pCallBackFunction: () {
                     setState(() {
-                      InfoJuego.listaSeleccionada = "coches";
+                      InfoJuego.listaSeleccionada = 'coches';
                       InfoJuego.temaSeleccionado = 4;
                     });
                   },
                 ),
 
                 BotonTema(
-                  pListaImagenes: "logos",
+                  pListaImagenes: 'logos',
                   pNumBoton: 5,
                   pCallBackFunction: () {
                     setState(() {
-                      InfoJuego.listaSeleccionada = "logos";
+                      InfoJuego.listaSeleccionada = 'logos';
                       InfoJuego.temaSeleccionado = 5;
                     });
                   },
@@ -263,7 +263,7 @@ class BotonTema extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool estaSeleccionado = pNumBoton == InfoJuego.temaSeleccionado;
-    String rutaImagen = "assets/imagenes/$pListaImagenes/01.png";
+    String rutaImagen = 'assets/imagenes/$pListaImagenes/01.png';
 
     return ElevatedButton(
       onPressed: () {
@@ -301,7 +301,7 @@ class BotonNivel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String titulo = "${pFilas}x$pColumnas";
+    String titulo = '${pFilas}x$pColumnas';
     bool estaSeleccionado = pNivel == InfoJuego.nivelSeleccionado;
 
     return AnimatedScale(
