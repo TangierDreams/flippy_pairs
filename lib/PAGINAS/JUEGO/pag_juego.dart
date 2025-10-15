@@ -6,6 +6,7 @@
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_contador.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
@@ -54,7 +55,7 @@ class _PagJuegoState extends State<PagJuego> {
     }
 
     return Scaffold(
-      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: 'Harden Your Mind Once and for All!'),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraduccion.get('subtitulo_app')),
       body: Column(
         children: [
           const SizedBox(height: 10),
@@ -63,9 +64,9 @@ class _PagJuegoState extends State<PagJuego> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              WidContador(pTexto: 'Points', pContador: puntosPartida, pModo: 1),
-              WidContador(pTexto: 'Match', pContador: parejasAcertadas, pModo: 1),
-              WidContador(pTexto: 'Fail', pContador: parejasFalladas, pModo: 2),
+              WidContador(pTexto: SrvTraduccion.get('puntos'), pContador: puntosPartida, pModo: 1),
+              WidContador(pTexto: SrvTraduccion.get('aciertos'), pContador: parejasAcertadas, pModo: 1),
+              WidContador(pTexto: SrvTraduccion.get('errores'), pContador: parejasFalladas, pModo: 2),
               WidCronometro(key: cronometroKey),
               //WidTemporizador(key: timerKey, pModo: 1),
             ],

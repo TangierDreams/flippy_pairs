@@ -1,6 +1,7 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
   Widget build(BuildContext context) {
     return Scaffold(
       //Toolbar:
-      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: 'Harden Your Mind Once and for All!'),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraduccion.get('subtitulo_app')),
 
       //resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
@@ -41,7 +42,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
               // Pedimos el alias del usuario
               //------------------------------------------------------------------
               Text(
-                'Por favor, introduce el alias con el que quieres aparecer en la Competición Mundial Flippy...',
+                SrvTraduccion.get('texto_alias'),
                 style: GoogleFonts.luckiestGuy(
                   fontSize: 20,
                   color: Colores.primero,
@@ -55,29 +56,20 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                 inputFormatters: [LengthLimitingTextInputFormatter(25)],
                 style: GoogleFonts.luckiestGuy(color: Colors.black, fontSize: 16),
                 decoration: InputDecoration(
-                  labelText: 'Alias',
-                  labelStyle: GoogleFonts.luckiestGuy(
-                    color: Colores.segundo, // Your desired color
-                    fontSize: 18, // Your desired size
-                  ),
-                  hintText: 'Introduce un nombre que te guste...',
+                  labelText: SrvTraduccion.get('alias'),
+                  labelStyle: GoogleFonts.luckiestGuy(color: Colores.segundo, fontSize: 18),
+                  hintText: SrvTraduccion.get('alias_hint'),
                   hintStyle: GoogleFonts.luckiestGuy(color: Colores.primero.withValues(alpha: 0.7), fontSize: 14),
 
                   // 1. Define the default border style
                   border: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colores.primero, // Default border color (blue)
-                      width: 2.0, // Match the button's border thickness
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(8.0)), // Optional: add rounded corners
+                    borderSide: BorderSide(color: Colores.primero, width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   ),
 
                   // 2. Define the focused border style (when the user taps it)
                   focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colores.primero, // Keep the border blue when focused
-                      width: 3.0, // Optional: make it slightly thicker when focused for emphasis
-                    ),
+                    borderSide: BorderSide(color: Colores.primero, width: 3.0),
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   ),
                 ),
@@ -91,7 +83,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'Activar o desactivar sonidos...',
+                    SrvTraduccion.get('activar_sonidos'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 16,
                       color: Colores.primero,
@@ -120,7 +112,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
-                    'Activar o desactivar música...',
+                    SrvTraduccion.get('activar_musica'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 16,
                       color: Colores.primero,
@@ -171,7 +163,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
 
                     // 3. Keep your existing Text widget
                     Text(
-                      'Guardar datos',
+                      SrvTraduccion.get('grabar_datos'),
                       style: GoogleFonts.luckiestGuy(
                         fontSize: 16,
                         color: Colores.segundo,
@@ -199,7 +191,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
     SrvDiskette.guardarValor(DisketteKey.deviceName, _nombreUsuario.text);
     SrvDiskette.guardarValor(DisketteKey.sonidoActivado, _sonidoActivado);
     SrvDiskette.guardarValor(DisketteKey.musicaActivada, _musicaActivada);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Datos correctamente guardados')));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(SrvTraduccion.get('datos_guardados'))));
     await Future.delayed(const Duration(milliseconds: 100));
     await SrvSonidos.goback();
     await Future.delayed(const Duration(milliseconds: 250));

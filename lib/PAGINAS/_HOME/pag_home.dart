@@ -1,5 +1,6 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 
@@ -15,14 +16,14 @@ class _PagHomeState extends State<PagHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       //Toolbar:
-      appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: 'Harden Your Mind Once and for All!'),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: SrvTraduccion.get('subtitulo_app')),
 
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Themes', textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+            Text(SrvTraduccion.get('temas'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
             const SizedBox(height: 15),
 
@@ -112,7 +113,7 @@ class _PagHomeState extends State<PagHome> {
 
             const SizedBox(height: 25),
 
-            Text('Difficulty', textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+            Text(SrvTraduccion.get('dificultad'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
             const SizedBox(height: 15),
 
@@ -356,7 +357,7 @@ class BotonJugar extends StatelessWidget {
         elevation: 10,
       ),
 
-      child: Text('Start Playing!', style: Textos.textStyleOrange28, textAlign: TextAlign.center),
+      child: Text(SrvTraduccion.get('comenzar_juego'), style: Textos.textStyleOrange28, textAlign: TextAlign.center),
     );
   }
 }
@@ -400,7 +401,7 @@ class BotonConfiguracion extends StatelessWidget {
           // 2. Add a small space between the icon and the text
           const SizedBox(width: 12),
 
-          Text('Configuración...', style: Textos.textStyleYellow14, textAlign: TextAlign.center),
+          Text(SrvTraduccion.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
         ],
       ),
     );
