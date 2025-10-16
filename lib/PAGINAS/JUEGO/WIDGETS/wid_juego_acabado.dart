@@ -1,16 +1,20 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 Future<void> widJuegoAcabado(
   BuildContext context,
-  int puntosDelJuego,
-  int pTotalPuntos,
-  String pTiempo, {
+  int pPuntosPartida,
+  int pPuntosDelNivel,
+  int pPartidasDelNivel,
+  String pTiempoPartida,
+  String pTiempoMedio,
+  String pTiempoRecord, {
   VoidCallback? pFuncionDeCallback,
 }) async {
-  bool gana = puntosDelJuego > 0 ? true : false;
+  bool gana = pPuntosPartida > 0 ? true : false;
 
   // 🔊 Reproducir sonido divertido según resultado
   if (gana) {
@@ -22,7 +26,7 @@ Future<void> widJuegoAcabado(
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: false,
-    barrierLabel: 'Fin del juego',
+    barrierLabel: SrvTraduccion.get('fin_del_juego'),
     transitionDuration: const Duration(milliseconds: 800),
     pageBuilder: (context, anim1, anim2) => const SizedBox.shrink(),
     transitionBuilder: (context, anim1, anim2, child) {
@@ -55,7 +59,7 @@ Future<void> widJuegoAcabado(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    gana ? '🎉 Excellent!' : '😅 Oooppss!',
+                    gana ? SrvTraduccion.get('excelente') : SrvTraduccion.get('ops'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 36,
                       color: Colores.blanco,
@@ -66,24 +70,104 @@ Future<void> widJuegoAcabado(
                   const SizedBox(height: 16),
                   Text(
                     gana
-                        ? "You've won $puntosDelJuego points in this game. Congratulations!"
-                        : "You've lost ${puntosDelJuego.abs()} points in this game. You can do it better...",
+                        ? SrvTraduccion.get('has_ganado', pArgumento: pPuntosPartida.toString())
+                        : SrvTraduccion.get('has_perdido', pArgumento: pPuntosPartida.abs().toString()),
                     style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+
+                  Table(
+                    columnWidths: const {
+                      0: FlexColumnWidth(2.5), // Columna de descripción
+                      1: FlexColumnWidth(1), // Columna de valores
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+                            child: Text(
+                              SrvTraduccion.get('partidas_jugadas'),
+                              style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              pPartidasDelNivel.toString(),
+                              style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+                            child: Text(
+                              SrvTraduccion.get('puntuacion_total'),
+                              style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              pPuntosDelNivel.toString(),
+                              style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
+                            ),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+                            child: Text(
+                              SrvTraduccion.get('finalizado_en'),
+                              style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(pTiempoPartida, style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco)),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+                            child: Text(
+                              SrvTraduccion.get('tiempo_medio'),
+                              style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(pTiempoMedio, style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco)),
+                          ),
+                        ],
+                      ),
+                      TableRow(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
+                            child: Text(
+                              SrvTraduccion.get('tiempo_record'),
+                              style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(pTiempoRecord, style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco)),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
-                  Text(
-                    'Your total score is $pTotalPuntos points.',
-                    style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'You finished the game in $pTiempo minutes.',
-                    style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -99,7 +183,7 @@ Future<void> widJuegoAcabado(
                             pFuncionDeCallback();
                           }
                         },
-                        child: Text('Play Again', style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text(SrvTraduccion.get('volver_a_jugar'), style: GoogleFonts.baloo2(fontSize: 18)),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -112,7 +196,7 @@ Future<void> widJuegoAcabado(
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                         },
-                        child: Text('Exit', style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text(SrvTraduccion.get('salir'), style: GoogleFonts.baloo2(fontSize: 18)),
                       ),
                     ],
                   ),

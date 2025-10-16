@@ -8,6 +8,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_cronometro.dart';
 import 'package:flutter/material.dart';
 
@@ -184,7 +185,6 @@ Future<void> manejarToqueCarta(int index, Function pSetState) async {
     // Verificar si hemos terminado el juego
     if (juegoTerminado()) {
       SrvSonidos.detenerMusicaFondo();
-      //SrvDiskette.guardarValor(DisketteKey.puntuacion, puntosTotales);
     }
   } else {
     //----------------------------
@@ -223,13 +223,14 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
     // Anotamos el resultado en Supabase:
 
     SrvSupabase.grabarPartida(
-      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '???'),
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '?'),
       pNivel: InfoJuego.nivelSeleccionado,
       pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '?'),
       pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '?'),
       pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '?'),
       pPuntos: puntosPartida,
       pTiempo: cronometroKey.currentState!.obtenerSegundos(),
+      pGanada: puntosPartida > 0 ? true : false,
     );
 
     await Future.delayed(const Duration(milliseconds: 100));
@@ -252,7 +253,10 @@ Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) asy
         pContexto,
         puntosPartida,
         registroNivel['puntos'],
+        registroNivel['partidas'],
         cronometroKey.currentState!.obtenerTiempo(),
+        Fechas.segundosAMinutosYSegundos(InfoJuego.niveles[InfoJuego.nivelSeleccionado]['tiempo'] as int),
+        Fechas.segundosAMinutosYSegundos(registroNivel['tiempo_record']),
         pFuncionDeCallback: () {
           pSetState(() {
             resetearJuego();
