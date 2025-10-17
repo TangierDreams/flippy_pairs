@@ -1,6 +1,7 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 
@@ -243,7 +244,19 @@ class _PagHomeState extends State<PagHome> {
             //------------------------------------------------------------------
             // Botón para ir a la configuración
             //------------------------------------------------------------------
-            BotonConfiguracion(),
+            //BotonConfiguracion(),
+            //const SizedBox(height: 10),
+            WidBotonStandard(
+              pTexto: SrvTraduccion.get('configuracion'),
+              pTipoDeLetra: 'Chewy',
+              pTamanyoLetra: 14,
+              pColorLetra: Colores.tercero,
+              pIcono: Icons.settings,
+              pColorIcono: Colores.tercero,
+              pSombra: true,
+              pEsquinasRedondeadas: true,
+              pNavegarA: '/config',
+            ),
           ],
         ),
       ),
@@ -365,45 +378,45 @@ class BotonJugar extends StatelessWidget {
 //------------------------------------------------------------------------------
 // Botón Para ir a la configuración
 //------------------------------------------------------------------------------
-class BotonConfiguracion extends StatelessWidget {
-  const BotonConfiguracion({super.key});
+// class BotonConfiguracion extends StatelessWidget {
+//   const BotonConfiguracion({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        SrvSonidos.play();
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//       onPressed: () async {
+//         SrvSonidos.play();
 
-        // Esperamos un poco para que se perciba el sonido
-        await Future.delayed(const Duration(milliseconds: 300));
+//         // Esperamos un poco para que se perciba el sonido
+//         await Future.delayed(const Duration(milliseconds: 300));
 
-        if (context.mounted) {
-          Navigator.of(context).pushNamed('/config');
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        backgroundColor: Colores.primero,
-        foregroundColor: Colores.onPrimero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 10,
-      ),
+//         if (context.mounted) {
+//           Navigator.of(context).pushNamed('/config');
+//         }
+//       },
+//       style: ElevatedButton.styleFrom(
+//         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+//         backgroundColor: Colores.primero,
+//         foregroundColor: Colores.onPrimero,
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+//         elevation: 10,
+//       ),
 
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(
-            Icons.settings,
-            color: Colores.tercero, // Match the text color
-            size: 25, // Adjust size as needed
-          ),
+//       child: Row(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           const Icon(
+//             Icons.settings,
+//             color: Colores.tercero, // Match the text color
+//             size: 25, // Adjust size as needed
+//           ),
 
-          // 2. Add a small space between the icon and the text
-          const SizedBox(width: 12),
+//           // 2. Add a small space between the icon and the text
+//           const SizedBox(width: 12),
 
-          Text(SrvTraduccion.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
-        ],
-      ),
-    );
-  }
-}
+//           Text(SrvTraduccion.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
+//         ],
+//       ),
+//     );
+//   }
+// }
