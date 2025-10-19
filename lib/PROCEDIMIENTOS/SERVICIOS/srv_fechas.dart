@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class Fechas {
+class SrvFechas {
   //----------------------------------------------------------------------------
   // Devolvemos la fecha actual en formato yyyy-mm-dd:
   //----------------------------------------------------------------------------
@@ -12,6 +11,14 @@ class Fechas {
   }
 
   //----------------------------------------------------------------------------
+  // Devolvemos la hora actual en formato hh:mm:ss:
+  //----------------------------------------------------------------------------
+  static String ahoraEnHHMMSS() {
+    final DateTime ahora = DateTime.now();
+    return "${ahora.hour.toString().padLeft(2, '0')}:${ahora.minute.toString().padLeft(2, '0')}:${ahora.second.toString().padLeft(2, '0')}";
+  }
+
+  //----------------------------------------------------------------------------
   // Convertimos un valor en segundos a minutos:segundos.
   //----------------------------------------------------------------------------
   static String segundosAMinutosYSegundos(int pSegundos) {
@@ -19,8 +26,6 @@ class Fechas {
     int segundos = pSegundos % 60;
     String sMinutos = minutos.toString().padLeft(2, '0');
     String sSegundos = segundos.toString().padLeft(2, '0');
-    final output = '$sMinutos:$sSegundos';
-    debugPrint("Minutos y segundos: $output");
-    return output;
+    return '$sMinutos:$sSegundos';
   }
 }

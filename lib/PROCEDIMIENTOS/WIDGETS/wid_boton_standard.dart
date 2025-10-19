@@ -9,6 +9,7 @@ class WidBotonStandard extends StatelessWidget {
   final bool pEsquinasRedondeadas;
   final bool pSombra;
   final bool pEmitirSonido;
+  final VoidCallback? pFuncionSonido;
   final String? pNavegarA;
   final VoidCallback? pFuncionCallBack;
 
@@ -31,6 +32,7 @@ class WidBotonStandard extends StatelessWidget {
     this.pEsquinasRedondeadas = false,
     this.pSombra = false,
     this.pEmitirSonido = true,
+    this.pFuncionSonido,
     this.pNavegarA,
     this.pFuncionCallBack,
 
@@ -52,7 +54,11 @@ class WidBotonStandard extends StatelessWidget {
     return ElevatedButton(
       onPressed: () async {
         if (pEmitirSonido) {
-          SrvSonidos.play();
+          if (pFuncionSonido != null) {
+            pFuncionSonido!();
+          } else {
+            SrvSonidos.boton();
+          }
           await Future.delayed(const Duration(milliseconds: 300));
         }
         if (pFuncionCallBack != null) {

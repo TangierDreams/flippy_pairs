@@ -6,7 +6,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 // Posibles claves para el diskette
 //------------------------------------------------------------------------------
 
-enum DisketteKey { ciudad, deviceId, deviceName, idPais, musicaActivada, nombrePais, puntuacion, sonidoActivado }
+enum DisketteKey {
+  ciudad,
+  deviceId,
+  deviceName,
+  idioma,
+  idPais,
+  musicaActivada,
+  nombrePais,
+  puntuacion,
+  sonidoActivado,
+}
 
 class SrvDiskette {
   //============================================================================
@@ -104,9 +114,9 @@ class SrvDiskette {
     _datos = {};
   }
 
-  // ============================================================================
+  //============================================================================
   // FUNCIÓN INTERNA PARA GUARDAR EN DISCO
-  // ============================================================================
+  //============================================================================
 
   static Future<void> _guardarEnDisco() async {
     final prefs = await SharedPreferences.getInstance();

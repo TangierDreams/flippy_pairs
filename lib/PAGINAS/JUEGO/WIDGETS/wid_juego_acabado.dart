@@ -1,6 +1,6 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -26,7 +26,7 @@ Future<void> widJuegoAcabado(
   return showGeneralDialog<void>(
     context: context,
     barrierDismissible: false,
-    barrierLabel: SrvTraduccion.get('fin_del_juego'),
+    barrierLabel: SrvIdiomas.get('fin_del_juego'),
     transitionDuration: const Duration(milliseconds: 800),
     pageBuilder: (context, anim1, anim2) => const SizedBox.shrink(),
     transitionBuilder: (context, anim1, anim2, child) {
@@ -59,7 +59,7 @@ Future<void> widJuegoAcabado(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    gana ? SrvTraduccion.get('excelente') : SrvTraduccion.get('ops'),
+                    gana ? SrvIdiomas.get('excelente') : SrvIdiomas.get('ops'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 36,
                       color: Colores.blanco,
@@ -70,8 +70,8 @@ Future<void> widJuegoAcabado(
                   const SizedBox(height: 16),
                   Text(
                     gana
-                        ? SrvTraduccion.get('has_ganado', pArgumento: pPuntosPartida.toString())
-                        : SrvTraduccion.get('has_perdido', pArgumento: pPuntosPartida.abs().toString()),
+                        ? SrvIdiomas.get('has_ganado', pArgumento: pPuntosPartida.toString())
+                        : SrvIdiomas.get('has_perdido', pArgumento: pPuntosPartida.abs().toString()),
                     style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                     textAlign: TextAlign.center,
                   ),
@@ -89,7 +89,7 @@ Future<void> widJuegoAcabado(
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
-                              SrvTraduccion.get('partidas_jugadas'),
+                              SrvIdiomas.get('partidas_jugadas'),
                               style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                             ),
                           ),
@@ -107,7 +107,7 @@ Future<void> widJuegoAcabado(
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
-                              SrvTraduccion.get('puntuacion_total'),
+                              SrvIdiomas.get('puntuacion_total'),
                               style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                             ),
                           ),
@@ -125,7 +125,7 @@ Future<void> widJuegoAcabado(
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
-                              SrvTraduccion.get('finalizado_en'),
+                              SrvIdiomas.get('finalizado_en'),
                               style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                             ),
                           ),
@@ -140,7 +140,7 @@ Future<void> widJuegoAcabado(
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
-                              SrvTraduccion.get('tiempo_medio'),
+                              SrvIdiomas.get('tiempo_medio'),
                               style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                             ),
                           ),
@@ -155,7 +155,7 @@ Future<void> widJuegoAcabado(
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
-                              SrvTraduccion.get('tiempo_record'),
+                              SrvIdiomas.get('tiempo_record'),
                               style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco),
                             ),
                           ),
@@ -183,7 +183,7 @@ Future<void> widJuegoAcabado(
                             pFuncionDeCallback();
                           }
                         },
-                        child: Text(SrvTraduccion.get('volver_a_jugar'), style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text(SrvIdiomas.get('volver_a_jugar'), style: GoogleFonts.baloo2(fontSize: 18)),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -196,7 +196,7 @@ Future<void> widJuegoAcabado(
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                         },
-                        child: Text(SrvTraduccion.get('salir'), style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text(SrvIdiomas.get('salir'), style: GoogleFonts.baloo2(fontSize: 18)),
                       ),
                     ],
                   ),

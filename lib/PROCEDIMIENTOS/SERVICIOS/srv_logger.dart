@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 class SrvLogger {
   static late File _logFile;
@@ -8,53 +9,34 @@ class SrvLogger {
   static const int _maxSizeBytes = 100 * 1024; // 100 KB
   static bool _inicializado = false;
 
-  /// Inicializa el logger (solo se ejecuta una vez)
-  static Future<void> inicializar({String nombreArchivo = 'FlippyPairs.csv'}) async {
-    if (_inicializado) return;
-
-    final Directory dir = await getApplicationDocumentsDirectory();
-    final String logPath = '${dir.path}/$nombreArchivo';
-    final String oldLogPath = '${dir.path}/$nombreArchivo.old';
-
-    _logFile = File(logPath);
-    _oldLogFile = File(oldLogPath);
-
-    if (!(await _logFile.exists())) {
-      await _logFile.create(recursive: true);
-    }
-
-    _inicializado = true;
-  }
-
-  /// Graba una línea de log con formato:
-  /// YYYY-MM-DD HH:MM:SS | modulo | funcion | mensaje
+  //----------------------------------------------------------------------------
+  // Graba una línea de log:
+  //----------------------------------------------------------------------------
   static Future<void> grabarLog(String modulo, String funcion, String mensaje) async {
-    if (!_inicializado) {
-      await inicializar();
+    if (!DatosGenerales.logsActivados) {
+      return;
     }
-
+    if (!_inicializado) {
+      await _inicializar();
+    }
     try {
-      await _verificarTamano();
-
-      final DateTime ahora = DateTime.now();
-      final String fecha =
-          "${ahora.year.toString().padLeft(4, '0')}-${ahora.month.toString().padLeft(2, '0')}-${ahora.day.toString().padLeft(2, '0')}";
-      final String hora =
-          "${ahora.hour.toString().padLeft(2, '0')}:${ahora.minute.toString().padLeft(2, '0')}:${ahora.second.toString().padLeft(2, '0')}";
+      await _verificarTamanyo();
+      final String fecha = SrvFechas.hoyEnYYYYMMDD();
+      final String hora = SrvFechas.ahoraEnHHMMSS();
       final String linea = '$fecha;$hora;$modulo;$funcion;$mensaje\n';
-
-      await _logFile.writeAsString(linea, mode: FileMode.append);
+      //await _logFile.writeAsString(linea, mode: FileMode.append);
+      await _logFile.writeAsString(linea, mode: FileMode.append, flush: true);
     } catch (e) {
       // No lanzamos excepción para no romper la app
       debugPrint('Error al grabar log: $e');
     }
   }
 
-  /// Si el archivo supera 100 KB:
-  /// - elimina el .old si existe
-  /// - renombra el actual a .old
-  /// - crea uno nuevo vacío
-  static Future<void> _verificarTamano() async {
+  //----------------------------------------------------------------------------
+  // Si el archivo supera 100 KB, lo grabamos como "_old.csv" y creamos uno
+  // nuevo.
+  //----------------------------------------------------------------------------
+  static Future<void> _verificarTamanyo() async {
     if (await _logFile.exists()) {
       final int tamano = await _logFile.length();
       if (tamano > _maxSizeBytes) {
@@ -65,5 +47,29 @@ class SrvLogger {
         await _logFile.create(recursive: true);
       }
     }
+  }
+
+  //----------------------------------------------------------------------------
+  //Inicializa el logger (solo se ejecuta una vez)
+  //----------------------------------------------------------------------------
+  static Future<void> _inicializar({String nombreArchivo = 'FlippyPairs.csv'}) async {
+    if (_inicializado) return;
+
+    final Directory dir = Directory('/storage/emulated/0/Download/FlippyLogs');
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+
+    final String logPath = '${dir.path}/$nombreArchivo';
+    final String oldLogPath = '${dir.path}/${nombreArchivo.split('.').first}_old.${nombreArchivo.split('.').last}';
+
+    _logFile = File(logPath);
+    _oldLogFile = File(oldLogPath);
+
+    if (!(await _logFile.exists())) {
+      await _logFile.create(recursive: true);
+    }
+
+    _inicializado = true;
   }
 }

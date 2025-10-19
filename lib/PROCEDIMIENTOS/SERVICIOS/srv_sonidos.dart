@@ -79,6 +79,10 @@ class SrvSonidos {
 
   // Reproduce el sonido de play
 
+  static Future<void> boton() => _reproducirSonido('boton.wav');
+
+  // Reproduce el sonido de play
+
   static Future<void> play() => _reproducirSonido('play.wav');
 
   // Reproduce el sonido de nivel completado
@@ -101,7 +105,9 @@ class SrvSonidos {
 
   static Future<void> error() => _reproducirSonido('error.wav');
 
+  //----------------------------------------------------------------------------
   // Reproduce un archivo de sonido desde assets/sonidos/
+  //----------------------------------------------------------------------------
 
   static Future<void> _reproducirSonido(String nombreArchivo) async {
     if (SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {
@@ -111,8 +117,8 @@ class SrvSonidos {
 
       // ⚠️ IMPORTANTE: Configurar los SFX para que no interfieran con la música.
       // Usamos ReleaseMode.release para que se libere al terminar el SFX.
-      await reproductor.setReleaseMode(ReleaseMode.release);
 
+      await reproductor.setReleaseMode(ReleaseMode.release);
       await reproductor.play(AssetSource('sonidos/$nombreArchivo'));
     }
   }

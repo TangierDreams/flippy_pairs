@@ -5,8 +5,9 @@
 //import 'dart:ui';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_contador.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
@@ -26,7 +27,16 @@ class _PagJuegoState extends State<PagJuego> {
   @override
   void initState() {
     super.initState();
+    SrvLogger.grabarLog('pag_juego', 'initState()', 'Entramos en la pagina de jugar');
     _inicializarPantalla();
+  }
+
+  @override
+  void dispose() async {
+    await SrvSonidos.detenerMusicaFondo();
+    InfoJuego.musicaActiva = false;
+    SrvLogger.grabarLog('pag_juego', 'dispose()', 'Salimos de la pagina de jugar');
+    super.dispose();
   }
 
   void _inicializarPantalla() async {
@@ -35,17 +45,11 @@ class _PagJuegoState extends State<PagJuego> {
 
     // Inicializar el juego con las variables globales
 
-    inicializarJuego(InfoJuego.filasSeleccionadas, InfoJuego.columnasSeleccionadas);
+    SrvJuego.inicializarJuego(InfoJuego.filasSeleccionadas, InfoJuego.columnasSeleccionadas);
 
     setState(() {
       _juegoInicializado = true;
     });
-  }
-
-  @override
-  void dispose() {
-    //timerKey.currentState?.stop();
-    super.dispose();
   }
 
   @override
@@ -55,7 +59,7 @@ class _PagJuegoState extends State<PagJuego> {
     }
 
     return Scaffold(
-      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraduccion.get('subtitulo_app')),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvIdiomas.get('subtitulo_app')),
       body: Column(
         children: [
           const SizedBox(height: 10),
@@ -64,10 +68,10 @@ class _PagJuegoState extends State<PagJuego> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              WidContador(pTexto: SrvTraduccion.get('puntos'), pContador: puntosPartida, pModo: 1),
-              WidContador(pTexto: SrvTraduccion.get('aciertos'), pContador: parejasAcertadas, pModo: 1),
-              WidContador(pTexto: SrvTraduccion.get('errores'), pContador: parejasFalladas, pModo: 2),
-              WidCronometro(key: cronometroKey),
+              WidContador(pTexto: SrvIdiomas.get('puntos'), pContador: SrvJuego.puntosPartida, pModo: 1),
+              WidContador(pTexto: SrvIdiomas.get('aciertos'), pContador: SrvJuego.parejasAcertadas, pModo: 1),
+              WidContador(pTexto: SrvIdiomas.get('errores'), pContador: SrvJuego.parejasFalladas, pModo: 2),
+              WidCronometro(key: SrvJuego.cronometroKey),
               //WidTemporizador(key: timerKey, pModo: 1),
             ],
           ),
@@ -80,16 +84,16 @@ class _PagJuegoState extends State<PagJuego> {
               padding: const EdgeInsets.all(12.0),
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columnas,
+                  crossAxisCount: SrvJuego.columnas,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
-                itemCount: cartasTotales,
+                itemCount: SrvJuego.cartasTotales,
                 itemBuilder: (context, index) {
                   return WidCarta(
-                    pEstaBocaArriba: cartasGiradas[index] || cartasEmparejadas[index],
-                    pImagenCarta: imagenes[index],
-                    pDestello: cartasDestello.contains(index),
+                    pEstaBocaArriba: SrvJuego.listaDeCartasGiradas[index] || SrvJuego.listaDeCartasEmparejadas[index],
+                    pImagenCarta: SrvJuego.listaDeImagenes[index],
+                    pDestello: SrvJuego.cartasDestello.contains(index),
 
                     //----------------------------------------------------------
                     // A cada carta, le pasamos una función de callback para que
@@ -99,10 +103,10 @@ class _PagJuegoState extends State<PagJuego> {
                     // - Controlar si ha acabado el juego
                     //----------------------------------------------------------
                     pCallBackFunction: () async {
-                      SrvSonidos.flip();
-                      await manejarToqueCarta(index, setState);
+                      //SrvSonidos.flip();
+                      await SrvJuego.manejarToqueCarta(index, setState);
                       if (context.mounted) {
-                        await controlJuegoAcabado(context, setState);
+                        await SrvJuego.controlJuegoAcabado(context, setState);
                       }
                     },
                   );

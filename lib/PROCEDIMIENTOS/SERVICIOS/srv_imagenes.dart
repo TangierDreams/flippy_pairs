@@ -241,28 +241,37 @@ class SrvImagenes {
 
   static List<String> obtenerImagenes(int pNumParejas) {
     final random = Random();
+    const int totalCartas = 36;
+
+    // Miramos en qué punto de la lista podemos comenzar a coger cartas:
+
+    int startIndex = 0;
+    if (pNumParejas < totalCartas) {
+      int maxStartIndex = totalCartas - pNumParejas;
+      startIndex = random.nextInt(maxStartIndex + 1);
+    }
 
     // Cogemos los primeros n iconos de la lista base:
 
     List<String> seleccionados = [];
     switch (InfoJuego.listaSeleccionada) {
       case 'animales':
-        seleccionados = listaAnimales.take(pNumParejas).toList();
+        seleccionados = listaAnimales.sublist(startIndex, startIndex + pNumParejas).toList();
         break;
       case 'retratos':
-        seleccionados = listaRetratos.take(pNumParejas).toList();
+        seleccionados = listaRetratos.sublist(startIndex, startIndex + pNumParejas).toList();
         break;
       case 'herramientas':
-        seleccionados = listaHerramientas.take(pNumParejas).toList();
+        seleccionados = listaHerramientas.sublist(startIndex, startIndex + pNumParejas).toList();
         break;
       case 'coches':
-        seleccionados = listaCoches.take(pNumParejas).toList();
+        seleccionados = listaCoches.sublist(startIndex, startIndex + pNumParejas).toList();
         break;
       case 'logos':
-        seleccionados = listaLogos.take(pNumParejas).toList();
+        seleccionados = listaLogos.sublist(startIndex, startIndex + pNumParejas).toList();
         break;
       default:
-        seleccionados = listaIconos.take(pNumParejas).toList();
+        seleccionados = listaIconos.sublist(startIndex, startIndex + pNumParejas).toList();
     }
 
     // Los duplicamos para hacer pares:

@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flutter/material.dart';
 
 class WidCarta extends StatelessWidget {
@@ -21,7 +20,7 @@ class WidCarta extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        SrvSonidos.flip();
+        //SrvSonidos.flip();
         pCallBackFunction();
       },
       child: TweenAnimationBuilder<double>(

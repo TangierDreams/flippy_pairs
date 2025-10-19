@@ -19,7 +19,7 @@ class SrvTracking {
       SrvLogger.grabarLog(
         'srv_tracking',
         'obtenerDatos()',
-        'Fallo al cargar la información de la IP: ${response.statusCode}',
+        'Fallo al cargar la informacion de la IP: ${response.statusCode}',
       );
     }
   }

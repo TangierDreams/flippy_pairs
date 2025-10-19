@@ -1,6 +1,7 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traduccion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
@@ -14,252 +15,277 @@ class PagHome extends StatefulWidget {
 
 class _PagHomeState extends State<PagHome> {
   @override
+  void initState() {
+    super.initState();
+    SrvLogger.grabarLog('pag_home', 'initState()', 'Entramos en la pagina Home');
+  }
+
+  @override
+  void dispose() {
+    SrvLogger.grabarLog('pag_home', 'dispose()', 'Salimos de la pagina Home');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //Toolbar:
-      appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: SrvTraduccion.get('subtitulo_app')),
+    //Si cambia el SrvIdiomas.idiomaSeleccionado, se reconstruye la página:
+    return ValueListenableBuilder<String>(
+      valueListenable: SrvIdiomas.idiomaSeleccionado,
+      builder: (context, idiomaActual, _) {
+        return Scaffold(
+          //Toolbar:
+          appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: SrvIdiomas.get('subtitulo_app')),
 
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(SrvTraduccion.get('temas'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
-
-            const SizedBox(height: 15),
-
-            //------------------------------------------------------------------
-            // Primera línea de imagenes
-            //------------------------------------------------------------------
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                BotonTema(
-                  pListaImagenes: 'iconos',
-                  pNumBoton: 0,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.listaSeleccionada = 'iconos';
-                      InfoJuego.temaSeleccionado = 0;
-                    });
-                  },
+                Text(SrvIdiomas.get('temas'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+
+                const SizedBox(height: 15),
+
+                //------------------------------------------------------------------
+                // Primera línea de imagenes
+                //------------------------------------------------------------------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    BotonTema(
+                      pListaImagenes: 'iconos',
+                      pNumBoton: 0,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.listaSeleccionada = 'iconos';
+                          InfoJuego.temaSeleccionado = 0;
+                        });
+                      },
+                    ),
+
+                    BotonTema(
+                      pListaImagenes: 'animales',
+                      pNumBoton: 1,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.listaSeleccionada = 'animales';
+                          InfoJuego.temaSeleccionado = 1;
+                        });
+                      },
+                    ),
+
+                    BotonTema(
+                      pListaImagenes: 'retratos',
+                      pNumBoton: 2,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.listaSeleccionada = 'retratos';
+                          InfoJuego.temaSeleccionado = 2;
+                        });
+                      },
+                    ),
+                  ],
                 ),
 
-                BotonTema(
-                  pListaImagenes: 'animales',
-                  pNumBoton: 1,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.listaSeleccionada = 'animales';
-                      InfoJuego.temaSeleccionado = 1;
-                    });
-                  },
+                const SizedBox(height: 15),
+
+                //------------------------------------------------------------------
+                // Segunda línea de imagenes
+                //------------------------------------------------------------------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    BotonTema(
+                      pListaImagenes: 'herramientas',
+                      pNumBoton: 3,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.listaSeleccionada = 'herramientas';
+                          InfoJuego.temaSeleccionado = 3;
+                        });
+                      },
+                    ),
+
+                    BotonTema(
+                      pListaImagenes: 'coches',
+                      pNumBoton: 4,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.listaSeleccionada = 'coches';
+                          InfoJuego.temaSeleccionado = 4;
+                        });
+                      },
+                    ),
+
+                    BotonTema(
+                      pListaImagenes: 'logos',
+                      pNumBoton: 5,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.listaSeleccionada = 'logos';
+                          InfoJuego.temaSeleccionado = 5;
+                        });
+                      },
+                    ),
+                  ],
                 ),
 
-                BotonTema(
-                  pListaImagenes: 'retratos',
-                  pNumBoton: 2,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.listaSeleccionada = 'retratos';
-                      InfoJuego.temaSeleccionado = 2;
-                    });
-                  },
+                const SizedBox(height: 25),
+
+                Text(SrvIdiomas.get('dificultad'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+
+                const SizedBox(height: 15),
+
+                //------------------------------------------------------------------
+                // Primera fila de niveles de juego:
+                //------------------------------------------------------------------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    //-----------
+                    // Nivel 3x2:
+                    //-----------
+                    BotonNivel(
+                      pFilas: 3,
+                      pColumnas: 2,
+                      pNivel: 0,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.nivelSeleccionado = 0;
+                          InfoJuego.filasSeleccionadas = 3;
+                          InfoJuego.columnasSeleccionadas = 2;
+                        });
+                      },
+                    ),
+
+                    //-----------
+                    // Nivel 4x3:
+                    //-----------
+                    BotonNivel(
+                      pFilas: 4,
+                      pColumnas: 3,
+                      pNivel: 1,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.nivelSeleccionado = 1;
+                          InfoJuego.filasSeleccionadas = 4;
+                          InfoJuego.columnasSeleccionadas = 3;
+                        });
+                      },
+                    ),
+
+                    //-----------
+                    // Nivel 5x4:
+                    //-----------
+                    BotonNivel(
+                      pFilas: 5,
+                      pColumnas: 4,
+                      pNivel: 2,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.nivelSeleccionado = 2;
+                          InfoJuego.filasSeleccionadas = 5;
+                          InfoJuego.columnasSeleccionadas = 4;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 15),
+
+                //------------------------------------------------------------------
+                // Segunda fila de niveles de juego:
+                //------------------------------------------------------------------
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    //-----------
+                    // Nivel 6x5:
+                    //-----------
+                    BotonNivel(
+                      pFilas: 6,
+                      pColumnas: 5,
+                      pNivel: 3,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.nivelSeleccionado = 3;
+                          InfoJuego.filasSeleccionadas = 6;
+                          InfoJuego.columnasSeleccionadas = 5;
+                        });
+                      },
+                    ),
+
+                    //-----------
+                    // Nivel 8x7:
+                    //-----------
+                    BotonNivel(
+                      pFilas: 8,
+                      pColumnas: 7,
+                      pNivel: 4,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.nivelSeleccionado = 4;
+                          InfoJuego.filasSeleccionadas = 8;
+                          InfoJuego.columnasSeleccionadas = 7;
+                        });
+                      },
+                    ),
+
+                    //-----------
+                    // Nivel 9x8:
+                    //-----------
+                    BotonNivel(
+                      pFilas: 9,
+                      pColumnas: 8,
+                      pNivel: 5,
+                      pCallBackFunction: () {
+                        setState(() {
+                          InfoJuego.nivelSeleccionado = 5;
+                          InfoJuego.filasSeleccionadas = 9;
+                          InfoJuego.columnasSeleccionadas = 8;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 25),
+
+                //------------------------------------------------------------------
+                // Botón para comenzar a jugar
+                //------------------------------------------------------------------
+                WidBotonStandard(
+                  pTexto: SrvIdiomas.get('comenzar_juego'),
+                  pTipoDeLetra: 'Luckiest Guy',
+                  pTamanyoLetra: 28,
+                  pColorLetra: Colores.segundo,
+                  pSombra: true,
+                  pEsquinasRedondeadas: true,
+                  pFuncionSonido: SrvSonidos.play,
+                  pNavegarA: '/game',
+                ),
+
+                const SizedBox(height: 25),
+
+                //------------------------------------------------------------------
+                // Botón para ir a la configuración
+                //------------------------------------------------------------------
+                WidBotonStandard(
+                  pTexto: SrvIdiomas.get('configuracion'),
+                  pTipoDeLetra: 'Chewy',
+                  pTamanyoLetra: 16,
+                  pColorLetra: Colores.tercero,
+                  pIcono: Icons.settings,
+                  pColorIcono: Colores.tercero,
+                  pSombra: true,
+                  pEsquinasRedondeadas: true,
+                  pNavegarA: '/config',
                 ),
               ],
             ),
-
-            const SizedBox(height: 15),
-
-            //------------------------------------------------------------------
-            // Segunda línea de imagenes
-            //------------------------------------------------------------------
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                BotonTema(
-                  pListaImagenes: 'herramientas',
-                  pNumBoton: 3,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.listaSeleccionada = 'herramientas';
-                      InfoJuego.temaSeleccionado = 3;
-                    });
-                  },
-                ),
-
-                BotonTema(
-                  pListaImagenes: 'coches',
-                  pNumBoton: 4,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.listaSeleccionada = 'coches';
-                      InfoJuego.temaSeleccionado = 4;
-                    });
-                  },
-                ),
-
-                BotonTema(
-                  pListaImagenes: 'logos',
-                  pNumBoton: 5,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.listaSeleccionada = 'logos';
-                      InfoJuego.temaSeleccionado = 5;
-                    });
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 25),
-
-            Text(SrvTraduccion.get('dificultad'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
-
-            const SizedBox(height: 15),
-
-            //------------------------------------------------------------------
-            // Primera fila de niveles de juego:
-            //------------------------------------------------------------------
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                //-----------
-                // Nivel 3x2:
-                //-----------
-                BotonNivel(
-                  pFilas: 3,
-                  pColumnas: 2,
-                  pNivel: 0,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.nivelSeleccionado = 0;
-                      InfoJuego.filasSeleccionadas = 3;
-                      InfoJuego.columnasSeleccionadas = 2;
-                    });
-                  },
-                ),
-
-                //-----------
-                // Nivel 4x3:
-                //-----------
-                BotonNivel(
-                  pFilas: 4,
-                  pColumnas: 3,
-                  pNivel: 1,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.nivelSeleccionado = 1;
-                      InfoJuego.filasSeleccionadas = 4;
-                      InfoJuego.columnasSeleccionadas = 3;
-                    });
-                  },
-                ),
-
-                //-----------
-                // Nivel 5x4:
-                //-----------
-                BotonNivel(
-                  pFilas: 5,
-                  pColumnas: 4,
-                  pNivel: 2,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.nivelSeleccionado = 2;
-                      InfoJuego.filasSeleccionadas = 5;
-                      InfoJuego.columnasSeleccionadas = 4;
-                    });
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 15),
-
-            //------------------------------------------------------------------
-            // Segunda fila de niveles de juego:
-            //------------------------------------------------------------------
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                //-----------
-                // Nivel 6x5:
-                //-----------
-                BotonNivel(
-                  pFilas: 6,
-                  pColumnas: 5,
-                  pNivel: 3,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.nivelSeleccionado = 3;
-                      InfoJuego.filasSeleccionadas = 6;
-                      InfoJuego.columnasSeleccionadas = 5;
-                    });
-                  },
-                ),
-
-                //-----------
-                // Nivel 8x7:
-                //-----------
-                BotonNivel(
-                  pFilas: 8,
-                  pColumnas: 7,
-                  pNivel: 4,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.nivelSeleccionado = 4;
-                      InfoJuego.filasSeleccionadas = 8;
-                      InfoJuego.columnasSeleccionadas = 7;
-                    });
-                  },
-                ),
-
-                //-----------
-                // Nivel 9x8:
-                //-----------
-                BotonNivel(
-                  pFilas: 9,
-                  pColumnas: 8,
-                  pNivel: 5,
-                  pCallBackFunction: () {
-                    setState(() {
-                      InfoJuego.nivelSeleccionado = 5;
-                      InfoJuego.filasSeleccionadas = 9;
-                      InfoJuego.columnasSeleccionadas = 8;
-                    });
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 25),
-
-            //------------------------------------------------------------------
-            // Botón para comenzar a jugar
-            //------------------------------------------------------------------
-            BotonJugar(),
-
-            const SizedBox(height: 25),
-
-            //------------------------------------------------------------------
-            // Botón para ir a la configuración
-            //------------------------------------------------------------------
-            //BotonConfiguracion(),
-            //const SizedBox(height: 10),
-            WidBotonStandard(
-              pTexto: SrvTraduccion.get('configuracion'),
-              pTipoDeLetra: 'Chewy',
-              pTamanyoLetra: 14,
-              pColorLetra: Colores.tercero,
-              pIcono: Icons.settings,
-              pColorIcono: Colores.tercero,
-              pSombra: true,
-              pEsquinasRedondeadas: true,
-              pNavegarA: '/config',
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
@@ -343,37 +369,37 @@ class BotonNivel extends StatelessWidget {
 //------------------------------------------------------------------------------
 // Botón Play
 //------------------------------------------------------------------------------
-class BotonJugar extends StatelessWidget {
-  const BotonJugar({super.key});
+// class BotonJugar extends StatelessWidget {
+//   const BotonJugar({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        SrvSonidos.play();
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//       onPressed: () async {
+//         SrvSonidos.play();
 
-        // Esperamos un poco para que se perciba el sonido
-        await Future.delayed(const Duration(milliseconds: 300));
+//         // Esperamos un poco para que se perciba el sonido
+//         await Future.delayed(const Duration(milliseconds: 300));
 
-        if (context.mounted) {
-          Navigator.of(context).pushNamed(
-            '/game',
-            //arguments: {'pRows': InfoJuego.filasSeleccionadas, 'pCols': InfoJuego.columnasSeleccionadas},
-          );
-        }
-      },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-        backgroundColor: Colores.primero,
-        foregroundColor: Colores.onPrimero,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        elevation: 10,
-      ),
+//         if (context.mounted) {
+//           Navigator.of(context).pushNamed(
+//             '/game',
+//             //arguments: {'pRows': InfoJuego.filasSeleccionadas, 'pCols': InfoJuego.columnasSeleccionadas},
+//           );
+//         }
+//       },
+//       style: ElevatedButton.styleFrom(
+//         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+//         backgroundColor: Colores.primero,
+//         foregroundColor: Colores.onPrimero,
+//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+//         elevation: 10,
+//       ),
 
-      child: Text(SrvTraduccion.get('comenzar_juego'), style: Textos.textStyleOrange28, textAlign: TextAlign.center),
-    );
-  }
-}
+//       child: Text(SrvIdiomas.get('comenzar_juego'), style: Textos.textStyleOrange28, textAlign: TextAlign.center),
+//     );
+//   }
+// }
 
 //------------------------------------------------------------------------------
 // Botón Para ir a la configuración
@@ -414,7 +440,7 @@ class BotonJugar extends StatelessWidget {
 //           // 2. Add a small space between the icon and the text
 //           const SizedBox(width: 12),
 
-//           Text(SrvTraduccion.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
+//           Text(SrvIdiomas.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
 //         ],
 //       ),
 //     );
