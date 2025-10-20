@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------------
 
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 class SrvDispositivo {
@@ -22,6 +23,13 @@ class SrvDispositivo {
     String newDeviceId = _uuid.v4(); // Generates a unique ID
     SrvDiskette.guardarValor(DisketteKey.deviceId, newDeviceId);
 
+    return newDeviceId;
+  }
+
+  static Future<String> obtenerId2() async {
+    String newDeviceId = _uuid.v4(); // Generates a unique ID
+    SrvDiskette.guardarValor(DisketteKey.deviceId, newDeviceId);
+    debugPrint(newDeviceId);
     return newDeviceId;
   }
 }
