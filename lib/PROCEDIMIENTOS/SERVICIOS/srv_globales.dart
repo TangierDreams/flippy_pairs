@@ -38,8 +38,8 @@ class Colores {
   static const Color onPrimero = Colors.white;
   static final Color fondo = Colors.grey.shade300;
   static final Color textos = Colors.grey.shade800;
-  static final Color blanco = Colors.white;
-  static final Color negro = Colors.black;
+  static const Color blanco = Colors.white;
+  static const Color negro = Colors.black;
 }
 
 class Textos {

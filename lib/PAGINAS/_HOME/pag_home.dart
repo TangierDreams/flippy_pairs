@@ -2,6 +2,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
@@ -34,14 +35,18 @@ class _PagHomeState extends State<PagHome> {
       builder: (context, idiomaActual, _) {
         return Scaffold(
           //Toolbar:
-          appBar: WidToolbar(showMenuButton: false, showBackButton: false, subtitle: SrvIdiomas.get('subtitulo_app')),
+          appBar: WidToolbar(
+            showMenuButton: false,
+            showBackButton: false,
+            subtitle: SrvTraducciones.get('subtitulo_app'),
+          ),
 
           body: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(SrvIdiomas.get('temas'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+                Text(SrvTraducciones.get('temas'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
                 const SizedBox(height: 15),
 
@@ -131,7 +136,7 @@ class _PagHomeState extends State<PagHome> {
 
                 const SizedBox(height: 25),
 
-                Text(SrvIdiomas.get('dificultad'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+                Text(SrvTraducciones.get('dificultad'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
                 const SizedBox(height: 15),
 
@@ -255,7 +260,7 @@ class _PagHomeState extends State<PagHome> {
                 // Botón para comenzar a jugar
                 //------------------------------------------------------------------
                 WidBotonStandard(
-                  pTexto: SrvIdiomas.get('comenzar_juego'),
+                  pTexto: SrvTraducciones.get('comenzar_juego'),
                   pTipoDeLetra: 'Luckiest Guy',
                   pTamanyoLetra: 28,
                   pColorLetra: Colores.segundo,
@@ -271,7 +276,7 @@ class _PagHomeState extends State<PagHome> {
                 // Botón para ir a la configuración
                 //------------------------------------------------------------------
                 WidBotonStandard(
-                  pTexto: SrvIdiomas.get('configuracion'),
+                  pTexto: SrvTraducciones.get('configuracion'),
                   pTipoDeLetra: 'Chewy',
                   pTamanyoLetra: 16,
                   pColorLetra: Colores.tercero,
@@ -396,7 +401,7 @@ class BotonNivel extends StatelessWidget {
 //         elevation: 10,
 //       ),
 
-//       child: Text(SrvIdiomas.get('comenzar_juego'), style: Textos.textStyleOrange28, textAlign: TextAlign.center),
+//       child: Text(SrvTraducciones.get('comenzar_juego'), style: Textos.textStyleOrange28, textAlign: TextAlign.center),
 //     );
 //   }
 // }
@@ -440,7 +445,7 @@ class BotonNivel extends StatelessWidget {
 //           // 2. Add a small space between the icon and the text
 //           const SizedBox(width: 12),
 
-//           Text(SrvIdiomas.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
+//           Text(SrvTraducciones.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
 //         ],
 //       ),
 //     );

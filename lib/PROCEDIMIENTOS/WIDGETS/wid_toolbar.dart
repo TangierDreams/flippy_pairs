@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_flecha_atras.dart';
 import 'package:flutter/material.dart';
@@ -58,15 +59,13 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () async {
-                //await SrvSonidos.detenerMusicaFondo();
+                SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'Volvemos atras desde la toolbar');
                 await SrvSonidos.goback();
-
-                // wait a bit
                 await Future.delayed(const Duration(milliseconds: 250));
-
-                // go back
                 if (context.mounted) {
                   Navigator.pop(context);
+                } else {
+                  SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'No hemos encontrado el contexto');
                 }
               },
               child: const WidFlechaAtras(),

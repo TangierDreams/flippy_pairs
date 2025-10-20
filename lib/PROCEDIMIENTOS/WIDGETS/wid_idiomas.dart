@@ -6,7 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidIdiomas extends StatefulWidget {
-  const WidIdiomas({super.key});
+  final String pLabel;
+  final Color pColorLabel;
+  final String pTipoDeLetra;
+  final double pTamanyoLetra;
+  final bool pLetraBold;
+  final Color pColorLetra;
+  final bool pEmitirSonido;
+  final VoidCallback? pFuncionSonido;
+
+  const WidIdiomas({
+    super.key,
+    required this.pLabel,
+    this.pColorLabel = Colores.primero,
+    this.pTipoDeLetra = 'Roboto',
+    this.pTamanyoLetra = 14,
+    this.pLetraBold = false,
+    this.pColorLetra = Colores.negro,
+    this.pEmitirSonido = true,
+    this.pFuncionSonido,
+  });
 
   @override
   State<WidIdiomas> createState() => WidIdiomasState();
@@ -39,26 +58,33 @@ class WidIdiomasState extends State<WidIdiomas> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          "Seleccione un idioma",
-          style: GoogleFonts.luckiestGuy(
-            fontSize: 16,
-            color: Colores.primero,
-            shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+          widget.pLabel,
+          // style: GoogleFonts.luckiestGuy(
+          //   fontSize: 16,
+          //   color: Colores.primero,
+          //   shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+          // ),
+          style: GoogleFonts.getFont(
+            widget.pTipoDeLetra,
+            textStyle: TextStyle(
+              color: widget.pColorLabel,
+              fontSize: widget.pTamanyoLetra,
+              fontWeight: widget.pLetraBold ? FontWeight.bold : FontWeight.normal,
+            ),
           ),
         ),
 
         DropdownButton<String>(
-          // En el combo mostramos el valor actual del idioma:
           value: _idiomaActual,
-
-          // Icono de la flecha
           icon: const Icon(Icons.language),
 
-          // Estilo del texto
-          style: GoogleFonts.luckiestGuy(
-            fontSize: 16,
-            color: Colores.negro,
-            shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+          style: GoogleFonts.getFont(
+            widget.pTipoDeLetra,
+            textStyle: TextStyle(
+              color: widget.pColorLetra,
+              fontSize: widget.pTamanyoLetra,
+              fontWeight: widget.pLetraBold ? FontWeight.bold : FontWeight.normal,
+            ),
           ),
 
           // Montamos la lista de idiomas:
@@ -67,8 +93,17 @@ class WidIdiomasState extends State<WidIdiomas> {
           }).toList(),
 
           // Función que se ejecuta cuando el usuario selecciona una nueva opción:
-          onChanged: (String? nuevoIdioma) {
+          onChanged: (String? nuevoIdioma) async {
             SrvSonidos.boton();
+            if (widget.pEmitirSonido) {
+              if (widget.pFuncionSonido != null) {
+                widget.pFuncionSonido!();
+              } else {
+                SrvSonidos.boton();
+              }
+              await Future.delayed(const Duration(milliseconds: 300));
+            }
+
             _idiomaActual = nuevoIdioma!;
             SrvIdiomas.cambiarIdioma(nuevoIdioma);
           },

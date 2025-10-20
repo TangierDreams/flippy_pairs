@@ -3,6 +3,7 @@
 //==============================================================================
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
@@ -10,7 +11,6 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_cronometro.dart';
 import 'package:flutter/material.dart';
 
 class SrvJuego {
@@ -41,10 +41,6 @@ class SrvJuego {
   // Para el efecto visual de flash
   static Set<int> cartasDestello = {};
 
-  // Para manejar las funciones del cronometro desde aquí:
-
-  static final GlobalKey<WidCronometroState> cronometroKey = GlobalKey();
-
   static bool initCronometro = true;
 
   //------------------------------------------------------------------------------
@@ -71,7 +67,7 @@ class SrvJuego {
     parejasAcertadas = 0;
     parejasFalladas = 0;
     puntosPartida = 0;
-    cronometroKey.currentState?.reset();
+    SrvCronometro.reset();
     initCronometro = true;
     cartasDestello = {};
 
@@ -79,10 +75,6 @@ class SrvJuego {
 
     SrvSonidos.iniciarMusicaFondo();
     InfoJuego.musicaActiva = true;
-
-    // Cargar puntos guardados del disco
-
-    //puntosTotales = await SrvDiskette.leerValor(DisketteKey.puntuacion, defaultValue: 0);
   }
 
   static void resetearJuego() {
@@ -92,7 +84,7 @@ class SrvJuego {
 
   static void pausarCronometro() {
     if (InfoJuego.juegoEnCurso && !InfoJuego.juegoPausado) {
-      cronometroKey.currentState?.stop();
+      SrvCronometro.stop();
       InfoJuego.juegoPausado = true;
       SrvLogger.grabarLog("srv_juego", "pausarCronometro()", "Cronometro pausado");
     }
@@ -100,7 +92,7 @@ class SrvJuego {
 
   static void reanudarCronometro() {
     if (InfoJuego.juegoEnCurso && InfoJuego.juegoPausado) {
-      cronometroKey.currentState?.start();
+      SrvCronometro.start();
       InfoJuego.juegoPausado = false;
       SrvLogger.grabarLog("srv_juego", "reanudarCronometro()", "Cronometro reanudado");
     }
@@ -141,12 +133,12 @@ class SrvJuego {
   // FUNCIÓN PRINCIPAL: MANEJAR EL TOQUE EN UNA CARTA
   //------------------------------------------------------------------------------
 
-  static Future<void> manejarToqueCarta(int index, Function pSetState) async {
+  static Future<void> cartaPulsada(int index, Function pSetState) async {
     if (initCronometro) {
       initCronometro = false;
-      cronometroKey.currentState?.reset();
-      cronometroKey.currentState?.start();
-      SrvLogger.grabarLog('srv_juego', 'manejarToqueCarta()', 'Cronometro reseteado e iniciado');
+      SrvCronometro.reset();
+      SrvCronometro.start();
+      SrvLogger.grabarLog('srv_juego', 'cartaPulsada()', 'Cronometro reseteado e iniciado');
       InfoJuego.juegoEnCurso = true;
       InfoJuego.juegoPausado = false;
     }
@@ -248,7 +240,7 @@ class SrvJuego {
   static Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) async {
     if (juegoTerminado()) {
       SrvLogger.grabarLog("srv_juego", "controlJuegoAcabado()", "Juego acabado. Stop cronometro");
-      cronometroKey.currentState?.stop();
+      SrvCronometro.stop();
       initCronometro = true;
       InfoJuego.juegoEnCurso = false;
       InfoJuego.juegoPausado = false;
@@ -262,7 +254,7 @@ class SrvJuego {
         pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '?'),
         pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '?'),
         pPuntos: puntosPartida,
-        pTiempo: cronometroKey.currentState!.obtenerSegundos(),
+        pTiempo: SrvCronometro.obtenerSegundos(),
         pGanada: puntosPartida > 0 ? true : false,
       );
 
@@ -273,6 +265,15 @@ class SrvJuego {
       final datosDispositivo = await SrvSupabase.obtenerRegFlippy(
         pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
       );
+
+      // Obtenemos la posición del usuario en el ranking Flippy:
+
+      final posicionFlippy = await SrvSupabase.obtenerRankingFlippy(
+        pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
+        pLevel: InfoJuego.nivelSeleccionado,
+      );
+
+      final nivelJugado = InfoJuego.niveles[InfoJuego.nivelSeleccionado]['titulo'] as String;
 
       // Busca el registro del nivel que se ha jugado:
 
@@ -285,10 +286,12 @@ class SrvJuego {
         SrvLogger.grabarLog("srv_juego", "controlJuegoAcabado()", "Mostramos el popup de final de partida");
         widJuegoAcabado(
           pContexto,
+          nivelJugado,
           puntosPartida,
+          posicionFlippy,
           registroNivel['puntos'],
           registroNivel['partidas'],
-          cronometroKey.currentState!.obtenerTiempo(),
+          SrvCronometro.obtenerTiempo(),
           SrvFechas.segundosAMinutosYSegundos(InfoJuego.niveles[InfoJuego.nivelSeleccionado]['tiempo'] as int),
           SrvFechas.segundosAMinutosYSegundos(registroNivel['tiempo_record']),
           pFuncionDeCallback: () {

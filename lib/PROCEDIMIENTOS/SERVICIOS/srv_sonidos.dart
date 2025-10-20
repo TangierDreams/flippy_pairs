@@ -1,5 +1,6 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 
 class SrvSonidos {
   // ============================================================================
@@ -59,13 +60,21 @@ class SrvSonidos {
   // ============================================================================
 
   static Future<void> iniciarMusicaFondo() async {
-    if (SrvDiskette.leerValor(DisketteKey.musicaActivada)) {
-      // Configura para que se repita en bucle y ajusta el volumen.
-      await _musicaFondoPlayer.setReleaseMode(ReleaseMode.loop);
-      await _musicaFondoPlayer.setVolume(0.2); // Volumen bajo
+    try {
+      if (SrvDiskette.leerValor(DisketteKey.musicaActivada)) {
+        // Configura para que se repita en bucle y ajusta el volumen.
+        await _musicaFondoPlayer.setReleaseMode(ReleaseMode.loop);
+        await _musicaFondoPlayer.setVolume(0.2); // Volumen bajo
 
-      // Ruta de la música. Asumo que se llama 'musica_fondo.mp3'
-      await _musicaFondoPlayer.play(AssetSource('sonidos/music.mp3'));
+        // Ruta de la música. Asumo que se llama 'musica_fondo.mp3'
+        await _musicaFondoPlayer.play(AssetSource('sonidos/music.mp3'));
+      }
+    } catch (e) {
+      SrvLogger.grabarLog(
+        'srv_sonidos',
+        '_reproducirSonido()',
+        'Fallo al reproducir la musica de fondo -> ${e.toString()}',
+      );
     }
   }
 
@@ -109,17 +118,52 @@ class SrvSonidos {
   // Reproduce un archivo de sonido desde assets/sonidos/
   //----------------------------------------------------------------------------
 
+  // static Future<void> _reproducirSonido(String nombreArchivo) async {
+  //   if (SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {
+  //     final reproductor = _reproductorSFX[_indiceActual];
+  //     _indiceActual = (_indiceActual + 1) % _cantidadReproductores;
+  //     await reproductor.stop(); // Detener si aún está sonando
+
+  //     // ⚠️ IMPORTANTE: Configurar los SFX para que no interfieran con la música.
+  //     // Usamos ReleaseMode.release para que se libere al terminar el SFX.
+
+  //     await reproductor.setReleaseMode(ReleaseMode.release);
+  //     await reproductor.play(AssetSource('sonidos/$nombreArchivo'));
+  //   }
+  // }
+
   static Future<void> _reproducirSonido(String nombreArchivo) async {
-    if (SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {
+    // Check the initial condition outside the try block if it's a simple synchronous check
+    if (!SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {
+      return; // Exit if sound is not active
+    }
+
+    try {
+      // 1. Get the player instance and update the index
       final reproductor = _reproductorSFX[_indiceActual];
       _indiceActual = (_indiceActual + 1) % _cantidadReproductores;
+
+      // 2. Awaitable operations are placed inside the try block
       await reproductor.stop(); // Detener si aún está sonando
 
       // ⚠️ IMPORTANTE: Configurar los SFX para que no interfieran con la música.
       // Usamos ReleaseMode.release para que se libere al terminar el SFX.
-
       await reproductor.setReleaseMode(ReleaseMode.release);
+
+      // The play operation is where an exception is most likely to occur (e.g., file not found)
       await reproductor.play(AssetSource('sonidos/$nombreArchivo'));
+    } catch (e) {
+      SrvLogger.grabarLog(
+        'srv_sonidos',
+        '_reproducirSonido()',
+        'Fallo al reproducir SFX: $nombreArchivo -> ${e.toString()}',
+      );
+      // SrvLog.guardarLog(
+      //   'ERROR',
+      //   'Fallo al reproducir SFX: $nombreArchivo',
+      //   detalles: e.toString(),
+      //   stackTrace: stackTrace.toString()
+      // );
     }
   }
 

@@ -2,12 +2,11 @@
 // MODULO DE UI DEL JUEGO.
 //==============================================================================
 
-//import 'dart:ui';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_contador.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
@@ -59,7 +58,7 @@ class _PagJuegoState extends State<PagJuego> {
     }
 
     return Scaffold(
-      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvIdiomas.get('subtitulo_app')),
+      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
       body: Column(
         children: [
           const SizedBox(height: 10),
@@ -68,11 +67,10 @@ class _PagJuegoState extends State<PagJuego> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              WidContador(pTexto: SrvIdiomas.get('puntos'), pContador: SrvJuego.puntosPartida, pModo: 1),
-              WidContador(pTexto: SrvIdiomas.get('aciertos'), pContador: SrvJuego.parejasAcertadas, pModo: 1),
-              WidContador(pTexto: SrvIdiomas.get('errores'), pContador: SrvJuego.parejasFalladas, pModo: 2),
-              WidCronometro(key: SrvJuego.cronometroKey),
-              //WidTemporizador(key: timerKey, pModo: 1),
+              WidContador(pTexto: SrvTraducciones.get('puntos'), pContador: SrvJuego.puntosPartida, pModo: 1),
+              WidContador(pTexto: SrvTraducciones.get('aciertos'), pContador: SrvJuego.parejasAcertadas, pModo: 1),
+              WidContador(pTexto: SrvTraducciones.get('errores'), pContador: SrvJuego.parejasFalladas, pModo: 2),
+              WidCronometro(),
             ],
           ),
 
@@ -103,8 +101,7 @@ class _PagJuegoState extends State<PagJuego> {
                     // - Controlar si ha acabado el juego
                     //----------------------------------------------------------
                     pCallBackFunction: () async {
-                      //SrvSonidos.flip();
-                      await SrvJuego.manejarToqueCarta(index, setState);
+                      await SrvJuego.cartaPulsada(index, setState);
                       if (context.mounted) {
                         await SrvJuego.controlJuegoAcabado(context, setState);
                       }

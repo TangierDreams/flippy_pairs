@@ -3,6 +3,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_idiomas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,11 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
       builder: (context, idiomaActual, _) {
         return Scaffold(
           //Toolbar:
-          appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvIdiomas.get('subtitulo_app')),
+          appBar: WidToolbar(
+            showMenuButton: false,
+            showBackButton: true,
+            subtitle: SrvTraducciones.get('subtitulo_app'),
+          ),
 
           //resizeToAvoidBottomInset: true,
           body: SingleChildScrollView(
@@ -67,7 +72,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   // Pedimos el alias del usuario
                   //------------------------------------------------------------------
                   Text(
-                    SrvIdiomas.get('texto_alias'),
+                    SrvTraducciones.get('texto_alias'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 20,
                       color: Colores.primero,
@@ -82,9 +87,9 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     inputFormatters: [LengthLimitingTextInputFormatter(25)],
                     style: GoogleFonts.luckiestGuy(color: Colors.black, fontSize: 16),
                     decoration: InputDecoration(
-                      labelText: SrvIdiomas.get('alias'),
+                      labelText: SrvTraducciones.get('alias'),
                       labelStyle: GoogleFonts.luckiestGuy(color: Colores.segundo, fontSize: 18),
-                      hintText: SrvIdiomas.get('alias_hint'),
+                      hintText: SrvTraducciones.get('alias_hint'),
                       hintStyle: GoogleFonts.luckiestGuy(color: Colores.primero.withValues(alpha: 0.7), fontSize: 14),
 
                       // 1. Define the default border style
@@ -109,7 +114,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        SrvIdiomas.get('activar_sonidos'),
+                        SrvTraducciones.get('activar_sonidos'),
                         style: GoogleFonts.luckiestGuy(
                           fontSize: 16,
                           color: Colores.primero,
@@ -142,7 +147,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        SrvIdiomas.get('activar_musica'),
+                        SrvTraducciones.get('activar_musica'),
                         style: GoogleFonts.luckiestGuy(
                           fontSize: 16,
                           color: Colores.primero,
@@ -168,53 +173,18 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   ),
                   const SizedBox(height: 15),
 
-                  //------------------------
-                  // Aquí pedimos el idioma:
-                  //------------------------
-                  WidIdiomas(),
+                  //-----------------------------------------
+                  // Aquí llamamos al widget de pedir idioma:
+                  //-----------------------------------------
+                  WidIdiomas(
+                    pLabel: SrvTraducciones.get('selec_idioma'),
+                    pColorLabel: Colores.primero,
+                    pTipoDeLetra: "Luckiest Guy",
+                    pTamanyoLetra: 16,
+                    pColorLetra: Colores.negro,
+                  ),
 
                   const SizedBox(height: 15),
-
-                  //------------------------------------------------------------------
-                  // Botón de confirmación de datos
-                  //------------------------------------------------------------------
-                  // ElevatedButton(
-                  //   onPressed: () async {
-                  //     _guardarDatos(context);
-                  //   },
-                  //   style: ElevatedButton.styleFrom(
-                  //     side: const BorderSide(
-                  //       color: Colores.primero, // Specify the color of the border
-                  //       width: 4.0, // Specify the thickness of the border
-                  //     ),
-                  //   ),
-                  //   // START OF MODIFIED CHILD
-                  //   child: Row(
-                  //     mainAxisSize: MainAxisSize.min, // Essential: Keeps the Row size to its children
-                  //     children: <Widget>[
-                  //       // 1. Add the Diskette (Save) Icon
-                  //       const Icon(
-                  //         Icons.save,
-                  //         color: Colores.segundo, // Match the text color
-                  //         size: 25, // Adjust size as needed
-                  //       ),
-
-                  //       // 2. Add a small space between the icon and the text
-                  //       const SizedBox(width: 12),
-
-                  //       // 3. Keep your existing Text widget
-                  //       Text(
-                  //         SrvIdiomas.get('grabar_datos'),
-                  //         style: GoogleFonts.luckiestGuy(
-                  //           fontSize: 16,
-                  //           color: Colores.segundo,
-                  //           shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   // END OF MODIFIED CHILD
-                  // ),
                 ],
               ),
             ),
@@ -229,17 +199,4 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
     _sonidoActivado = SrvDiskette.leerValor(DisketteKey.sonidoActivado, defaultValue: true);
     _musicaActivada = SrvDiskette.leerValor(DisketteKey.musicaActivada, defaultValue: true);
   }
-
-  // void _guardarDatos(BuildContext pContexto) async {
-  //   SrvDiskette.guardarValor(DisketteKey.deviceName, _nombreUsuario.text);
-  //   SrvDiskette.guardarValor(DisketteKey.sonidoActivado, _sonidoActivado);
-  //   SrvDiskette.guardarValor(DisketteKey.musicaActivada, _musicaActivada);
-  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(SrvIdiomas.get('datos_guardados'))));
-  //   await Future.delayed(const Duration(milliseconds: 100));
-  //   await SrvSonidos.goback();
-  //   await Future.delayed(const Duration(milliseconds: 250));
-  //   if (pContexto.mounted) {
-  //     Navigator.pop(pContexto);
-  //   }
-  // }
 }

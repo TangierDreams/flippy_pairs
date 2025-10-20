@@ -57,4 +57,22 @@ class SrvSupabase {
       rethrow;
     }
   }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos las puntuaciones de un dispositivo.
+  //----------------------------------------------------------------------------
+
+  static Future<int> obtenerRankingFlippy({required String pId, required int pLevel}) async {
+    try {
+      final response = await supabase.rpc('obtener_ranking_flippy', params: {'p_id': pId, 'p_level': pLevel});
+      final output = response as int;
+      return output;
+    } on PostgrestException catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerRankingFlippy()', 'Error obteniendo los datos: ${e.message}');
+      rethrow;
+    } catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerRankingFlippy()', 'Error inesperado: $e');
+      rethrow;
+    }
+  }
 }
