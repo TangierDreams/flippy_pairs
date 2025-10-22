@@ -1,249 +1,91 @@
 //import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+final supabase = Supabase.instance.client;
 
 class SrvImagenes {
-  static final List<String> listaIconos = [
-    'assets/imagenes/iconos/01.png',
-    'assets/imagenes/iconos/02.png',
-    'assets/imagenes/iconos/03.png',
-    'assets/imagenes/iconos/04.png',
-    'assets/imagenes/iconos/05.png',
-    'assets/imagenes/iconos/06.png',
-    'assets/imagenes/iconos/07.png',
-    'assets/imagenes/iconos/08.png',
-    'assets/imagenes/iconos/09.png',
-    'assets/imagenes/iconos/10.png',
-    'assets/imagenes/iconos/11.png',
-    'assets/imagenes/iconos/12.png',
-    'assets/imagenes/iconos/13.png',
-    'assets/imagenes/iconos/14.png',
-    'assets/imagenes/iconos/15.png',
-    'assets/imagenes/iconos/16.png',
-    'assets/imagenes/iconos/17.png',
-    'assets/imagenes/iconos/18.png',
-    'assets/imagenes/iconos/19.png',
-    'assets/imagenes/iconos/20.png',
-    'assets/imagenes/iconos/21.png',
-    'assets/imagenes/iconos/22.png',
-    'assets/imagenes/iconos/23.png',
-    'assets/imagenes/iconos/24.png',
-    'assets/imagenes/iconos/25.png',
-    'assets/imagenes/iconos/26.png',
-    'assets/imagenes/iconos/27.png',
-    'assets/imagenes/iconos/28.png',
-    'assets/imagenes/iconos/29.png',
-    'assets/imagenes/iconos/30.png',
-    'assets/imagenes/iconos/31.png',
-    'assets/imagenes/iconos/32.png',
-    'assets/imagenes/iconos/33.png',
-    'assets/imagenes/iconos/34.png',
-    'assets/imagenes/iconos/35.png',
-    'assets/imagenes/iconos/36.png',
+  //Rutas a las imágenes:
+
+  static const List<String> _categoriasRutas = [
+    'flippy/animales',
+    'flippy/coches',
+    'flippy/logos',
+    'flippy/retratos',
+    'flippy/iconos',
+    'flippy/herramientas',
   ];
 
-  static final List<String> listaAnimales = [
-    'assets/imagenes/animales/01.png',
-    'assets/imagenes/animales/02.png',
-    'assets/imagenes/animales/03.png',
-    'assets/imagenes/animales/04.png',
-    'assets/imagenes/animales/05.png',
-    'assets/imagenes/animales/06.png',
-    'assets/imagenes/animales/07.png',
-    'assets/imagenes/animales/08.png',
-    'assets/imagenes/animales/09.png',
-    'assets/imagenes/animales/10.png',
-    'assets/imagenes/animales/11.png',
-    'assets/imagenes/animales/12.png',
-    'assets/imagenes/animales/13.png',
-    'assets/imagenes/animales/14.png',
-    'assets/imagenes/animales/15.png',
-    'assets/imagenes/animales/16.png',
-    'assets/imagenes/animales/17.png',
-    'assets/imagenes/animales/18.png',
-    'assets/imagenes/animales/19.png',
-    'assets/imagenes/animales/20.png',
-    'assets/imagenes/animales/21.png',
-    'assets/imagenes/animales/22.png',
-    'assets/imagenes/animales/23.png',
-    'assets/imagenes/animales/24.png',
-    'assets/imagenes/animales/25.png',
-    'assets/imagenes/animales/26.png',
-    'assets/imagenes/animales/27.png',
-    'assets/imagenes/animales/28.png',
-    'assets/imagenes/animales/29.png',
-    'assets/imagenes/animales/30.png',
-    'assets/imagenes/animales/31.png',
-    'assets/imagenes/animales/32.png',
-    'assets/imagenes/animales/33.png',
-    'assets/imagenes/animales/34.png',
-    'assets/imagenes/animales/35.png',
-    'assets/imagenes/animales/36.png',
-  ];
+  static final Map<String, List<String>> _urlsPorRuta = {};
 
-  static final List<String> listaRetratos = [
-    'assets/imagenes/retratos/01.png',
-    'assets/imagenes/retratos/02.png',
-    'assets/imagenes/retratos/03.png',
-    'assets/imagenes/retratos/04.png',
-    'assets/imagenes/retratos/05.png',
-    'assets/imagenes/retratos/06.png',
-    'assets/imagenes/retratos/07.png',
-    'assets/imagenes/retratos/08.png',
-    'assets/imagenes/retratos/09.png',
-    'assets/imagenes/retratos/10.png',
-    'assets/imagenes/retratos/11.png',
-    'assets/imagenes/retratos/12.png',
-    'assets/imagenes/retratos/13.png',
-    'assets/imagenes/retratos/14.png',
-    'assets/imagenes/retratos/15.png',
-    'assets/imagenes/retratos/16.png',
-    'assets/imagenes/retratos/17.png',
-    'assets/imagenes/retratos/18.png',
-    'assets/imagenes/retratos/19.png',
-    'assets/imagenes/retratos/20.png',
-    'assets/imagenes/retratos/21.png',
-    'assets/imagenes/retratos/22.png',
-    'assets/imagenes/retratos/23.png',
-    'assets/imagenes/retratos/24.png',
-    'assets/imagenes/retratos/25.png',
-    'assets/imagenes/retratos/26.png',
-    'assets/imagenes/retratos/27.png',
-    'assets/imagenes/retratos/28.png',
-    'assets/imagenes/retratos/29.png',
-    'assets/imagenes/retratos/30.png',
-    'assets/imagenes/retratos/31.png',
-    'assets/imagenes/retratos/32.png',
-    'assets/imagenes/retratos/33.png',
-    'assets/imagenes/retratos/34.png',
-    'assets/imagenes/retratos/35.png',
-    'assets/imagenes/retratos/36.png',
-  ];
+  //----------------------------------------------------------------------------
+  // Generamos las urls a cada una de las imagenes que hay en Supabase
+  //----------------------------------------------------------------------------
 
-  static final List<String> listaHerramientas = [
-    'assets/imagenes/herramientas/01.png',
-    'assets/imagenes/herramientas/02.png',
-    'assets/imagenes/herramientas/03.png',
-    'assets/imagenes/herramientas/04.png',
-    'assets/imagenes/herramientas/05.png',
-    'assets/imagenes/herramientas/06.png',
-    'assets/imagenes/herramientas/07.png',
-    'assets/imagenes/herramientas/08.png',
-    'assets/imagenes/herramientas/09.png',
-    'assets/imagenes/herramientas/10.png',
-    'assets/imagenes/herramientas/11.png',
-    'assets/imagenes/herramientas/12.png',
-    'assets/imagenes/herramientas/13.png',
-    'assets/imagenes/herramientas/14.png',
-    'assets/imagenes/herramientas/15.png',
-    'assets/imagenes/herramientas/16.png',
-    'assets/imagenes/herramientas/17.png',
-    'assets/imagenes/herramientas/18.png',
-    'assets/imagenes/herramientas/19.png',
-    'assets/imagenes/herramientas/20.png',
-    'assets/imagenes/herramientas/21.png',
-    'assets/imagenes/herramientas/22.png',
-    'assets/imagenes/herramientas/23.png',
-    'assets/imagenes/herramientas/24.png',
-    'assets/imagenes/herramientas/25.png',
-    'assets/imagenes/herramientas/26.png',
-    'assets/imagenes/herramientas/27.png',
-    'assets/imagenes/herramientas/28.png',
-    'assets/imagenes/herramientas/29.png',
-    'assets/imagenes/herramientas/30.png',
-    'assets/imagenes/herramientas/31.png',
-    'assets/imagenes/herramientas/32.png',
-    'assets/imagenes/herramientas/33.png',
-    'assets/imagenes/herramientas/34.png',
-    'assets/imagenes/herramientas/35.png',
-    'assets/imagenes/herramientas/36.png',
-  ];
+  static void _generarUrls() {
+    // Para cada una de las carpetas de imagenes:
+    for (final categoriaRuta in _categoriasRutas) {
+      List<String> urls = [];
+      // Generamos las urls de los archivos de esta carpeta:
+      for (int i = 1; i <= 36; i++) {
+        final fileName = i.toString().padLeft(2, '0');
+        final fullPath = '$categoriaRuta/$fileName.png';
+        final String publicUrl = supabase.storage.from("others").getPublicUrl(fullPath);
+        urls.add(publicUrl);
+      }
+      _urlsPorRuta[categoriaRuta] = urls;
+    }
+  }
 
-  static final List<String> listaCoches = [
-    'assets/imagenes/coches/01.png',
-    'assets/imagenes/coches/02.png',
-    'assets/imagenes/coches/03.png',
-    'assets/imagenes/coches/04.png',
-    'assets/imagenes/coches/05.png',
-    'assets/imagenes/coches/06.png',
-    'assets/imagenes/coches/07.png',
-    'assets/imagenes/coches/08.png',
-    'assets/imagenes/coches/09.png',
-    'assets/imagenes/coches/10.png',
-    'assets/imagenes/coches/11.png',
-    'assets/imagenes/coches/12.png',
-    'assets/imagenes/coches/13.png',
-    'assets/imagenes/coches/14.png',
-    'assets/imagenes/coches/15.png',
-    'assets/imagenes/coches/16.png',
-    'assets/imagenes/coches/17.png',
-    'assets/imagenes/coches/18.png',
-    'assets/imagenes/coches/19.png',
-    'assets/imagenes/coches/20.png',
-    'assets/imagenes/coches/21.png',
-    'assets/imagenes/coches/22.png',
-    'assets/imagenes/coches/23.png',
-    'assets/imagenes/coches/24.png',
-    'assets/imagenes/coches/25.png',
-    'assets/imagenes/coches/26.png',
-    'assets/imagenes/coches/27.png',
-    'assets/imagenes/coches/28.png',
-    'assets/imagenes/coches/29.png',
-    'assets/imagenes/coches/30.png',
-    'assets/imagenes/coches/31.png',
-    'assets/imagenes/coches/32.png',
-    'assets/imagenes/coches/33.png',
-    'assets/imagenes/coches/34.png',
-    'assets/imagenes/coches/35.png',
-    'assets/imagenes/coches/36.png',
-  ];
+  //----------------------------------------------------------------------------
+  // Precargamos las imagenes en la caché de Flutter
+  //----------------------------------------------------------------------------
 
-  static final List<String> listaLogos = [
-    'assets/imagenes/logos/01.png',
-    'assets/imagenes/logos/02.png',
-    'assets/imagenes/logos/03.png',
-    'assets/imagenes/logos/04.png',
-    'assets/imagenes/logos/05.png',
-    'assets/imagenes/logos/06.png',
-    'assets/imagenes/logos/07.png',
-    'assets/imagenes/logos/08.png',
-    'assets/imagenes/logos/09.png',
-    'assets/imagenes/logos/10.png',
-    'assets/imagenes/logos/11.png',
-    'assets/imagenes/logos/12.png',
-    'assets/imagenes/logos/13.png',
-    'assets/imagenes/logos/14.png',
-    'assets/imagenes/logos/15.png',
-    'assets/imagenes/logos/16.png',
-    'assets/imagenes/logos/17.png',
-    'assets/imagenes/logos/18.png',
-    'assets/imagenes/logos/19.png',
-    'assets/imagenes/logos/20.png',
-    'assets/imagenes/logos/21.png',
-    'assets/imagenes/logos/22.png',
-    'assets/imagenes/logos/23.png',
-    'assets/imagenes/logos/24.png',
-    'assets/imagenes/logos/25.png',
-    'assets/imagenes/logos/26.png',
-    'assets/imagenes/logos/27.png',
-    'assets/imagenes/logos/28.png',
-    'assets/imagenes/logos/29.png',
-    'assets/imagenes/logos/30.png',
-    'assets/imagenes/logos/31.png',
-    'assets/imagenes/logos/32.png',
-    'assets/imagenes/logos/33.png',
-    'assets/imagenes/logos/34.png',
-    'assets/imagenes/logos/35.png',
-    'assets/imagenes/logos/36.png',
-  ];
+  static Future<void> precargarImagenes(BuildContext context) async {
+    if (_urlsPorRuta.isEmpty) {
+      _generarUrls();
+    }
 
-  // Obtenemos un número de pares de iconos, desordenados:
+    List<Future> precargaFutures = [];
+    _urlsPorRuta.forEach((ruta, urls) {
+      for (final url in urls) {
+        final imageProvider = NetworkImage(url);
+        // precacheImage descarga la imagen y la almacena en la caché de Flutter
+        precargaFutures.add(precacheImage(imageProvider, context));
+      }
+    });
+    await Future.wait(precargaFutures);
+  }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos todas las urls de una determinada categoría
+  //----------------------------------------------------------------------------
+
+  static List<String> obtenerListaUrls(String nombreCategoria) {
+    // Mapea el nombre simple a la clave del mapa: 'animales' -> 'flippy/animales'
+    final baseKey = 'flippy/$nombreCategoria';
+
+    // Asume que _urlsPorRuta ya fue llenado por precargarTodasLasImagenes()
+    final List<String>? listaUrls = _urlsPorRuta[baseKey];
+
+    if (listaUrls == null || listaUrls.isEmpty) {
+      // Este error nunca debería ocurrir si la precarga se completó con éxito
+      throw Exception('Error: Lista de URLs no cargada para "$nombreCategoria".');
+    }
+    return listaUrls;
+  }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos un conjunto de imagenes para el juego.
+  //----------------------------------------------------------------------------
 
   static List<String> obtenerImagenes(int pNumParejas) {
     final random = Random();
     const int totalCartas = 36;
 
-    // Miramos en qué punto de la lista podemos comenzar a coger cartas:
+    // Empezamos a coger cartas desde un punto aleatorio:
 
     int startIndex = 0;
     if (pNumParejas < totalCartas) {
@@ -251,37 +93,77 @@ class SrvImagenes {
       startIndex = random.nextInt(maxStartIndex + 1);
     }
 
-    // Cogemos los primeros n iconos de la lista base:
+    // Obtenemos todas las url's de la lista seleccionada:
 
-    List<String> seleccionados = [];
-    switch (InfoJuego.listaSeleccionada) {
-      case 'animales':
-        seleccionados = listaAnimales.sublist(startIndex, startIndex + pNumParejas).toList();
-        break;
-      case 'retratos':
-        seleccionados = listaRetratos.sublist(startIndex, startIndex + pNumParejas).toList();
-        break;
-      case 'herramientas':
-        seleccionados = listaHerramientas.sublist(startIndex, startIndex + pNumParejas).toList();
-        break;
-      case 'coches':
-        seleccionados = listaCoches.sublist(startIndex, startIndex + pNumParejas).toList();
-        break;
-      case 'logos':
-        seleccionados = listaLogos.sublist(startIndex, startIndex + pNumParejas).toList();
-        break;
-      default:
-        seleccionados = listaIconos.sublist(startIndex, startIndex + pNumParejas).toList();
+    List<String> listaBase;
+    try {
+      listaBase = obtenerListaUrls(InfoJuego.listaSeleccionada);
+    } catch (e) {
+      return [];
     }
 
-    // Los duplicamos para hacer pares:
+    // A partir de la lista base, cogemos solo el número de imagenes que necesitamos:
+
+    List<String> seleccionados = listaBase.sublist(startIndex, startIndex + pNumParejas).toList();
+
+    // Los duplicamos para formasr las parejas:
 
     final duplicados = [...seleccionados, ...seleccionados];
 
     // Los desordenamos:
 
     duplicados.shuffle(random);
-
     return duplicados;
   }
-}
+}  
+
+
+
+  // Obtenemos un número de pares de iconos, desordenados:
+
+  // static List<String> obtenerImagenes(int pNumParejas) {
+  //   final random = Random();
+  //   const int totalCartas = 36;
+
+  //   // Miramos en qué punto de la lista podemos comenzar a coger cartas:
+
+  //   int startIndex = 0;
+  //   if (pNumParejas < totalCartas) {
+  //     int maxStartIndex = totalCartas - pNumParejas;
+  //     startIndex = random.nextInt(maxStartIndex + 1);
+  //   }
+
+  //   // Cogemos los primeros n iconos de la lista base:
+
+  //   List<String> seleccionados = [];
+  //   switch (InfoJuego.listaSeleccionada) {
+  //     case 'animales':
+  //       seleccionados = listaAnimales.sublist(startIndex, startIndex + pNumParejas).toList();
+  //       break;
+  //     case 'retratos':
+  //       seleccionados = listaRetratos.sublist(startIndex, startIndex + pNumParejas).toList();
+  //       break;
+  //     case 'herramientas':
+  //       seleccionados = listaHerramientas.sublist(startIndex, startIndex + pNumParejas).toList();
+  //       break;
+  //     case 'coches':
+  //       seleccionados = listaCoches.sublist(startIndex, startIndex + pNumParejas).toList();
+  //       break;
+  //     case 'logos':
+  //       seleccionados = listaLogos.sublist(startIndex, startIndex + pNumParejas).toList();
+  //       break;
+  //     default:
+  //       seleccionados = listaIconos.sublist(startIndex, startIndex + pNumParejas).toList();
+  //   }
+
+  //   // Los duplicamos para hacer pares:
+
+  //   final duplicados = [...seleccionados, ...seleccionados];
+
+  //   // Los desordenamos:
+
+  //   duplicados.shuffle(random);
+
+  //   return duplicados;
+  // }
+

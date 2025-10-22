@@ -4,6 +4,7 @@ import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_tracking.dart';
@@ -14,6 +15,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
+  } catch (e) {
+    SrvLogger.grabarLog('Main', 'main()', 'Error Supabase: $e');
+  }
 
   try {
     await SrvDiskette.inicializar();
@@ -46,11 +53,6 @@ Future<void> main() async {
     await SrvTracking.obtenerDatos();
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Tracking: $e');
-  }
-  try {
-    await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
-  } catch (e) {
-    SrvLogger.grabarLog('Main', 'main()', 'Error Supabase: $e');
   }
 
   SrvLogger.grabarLog('Main', 'main()', 'App iniciada');

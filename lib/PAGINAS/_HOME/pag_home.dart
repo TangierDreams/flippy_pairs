@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
@@ -15,10 +16,13 @@ class PagHome extends StatefulWidget {
 }
 
 class _PagHomeState extends State<PagHome> {
+  bool _isLoaded = false;
+
   @override
   void initState() {
     super.initState();
     SrvLogger.grabarLog('pag_home', 'initState()', 'Entramos en la pagina Home');
+    _iniciarPrecarga();
   }
 
   @override
@@ -27,8 +31,43 @@ class _PagHomeState extends State<PagHome> {
     super.dispose();
   }
 
+  // 💡 NUEVO MÉTODO: Llama a la precarga y actualiza el estado
+  void _iniciarPrecarga() async {
+    // 1. Ejecutamos la función de precarga. Ya tenemos el 'context' aquí.
+    try {
+      await SrvImagenes.precargarImagenes(context);
+    } catch (e) {
+      // 2. Manejo de error si la conexión falla (puedes mostrar un diálogo de error aquí)
+      SrvLogger.grabarLog('pag_home', '_iniciarPrecarga()', 'Error al precargar imágenes: $e');
+    }
+
+    // 3. Una vez terminado, actualizamos el estado para mostrar el contenido de la Home Page.
+    if (mounted) {
+      setState(() {
+        _isLoaded = true;
+        SrvLogger.grabarLog('pag_home', '_iniciarPrecarga()', 'Precarga de imágenes finalizada.');
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Si _isLoaded es false, mostramos el indicador de carga.
+    if (!_isLoaded) {
+      return const Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [CircularProgressIndicator(), SizedBox(height: 16), Text('Cargando imágenes de Supabase...')],
+          ),
+        ),
+      );
+    }
+
+    // ------------------------------------------------------------------
+    // Si _isLoaded es true, mostramos el contenido original de la Home Page.
+    // ------------------------------------------------------------------
+
     //Si cambia el SrvIdiomas.idiomaSeleccionado, se reconstruye la página:
     return ValueListenableBuilder<String>(
       valueListenable: SrvIdiomas.idiomaSeleccionado,
@@ -370,84 +409,3 @@ class BotonNivel extends StatelessWidget {
     );
   }
 }
-
-//------------------------------------------------------------------------------
-// Botón Play
-//------------------------------------------------------------------------------
-// class BotonJugar extends StatelessWidget {
-//   const BotonJugar({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: () async {
-//         SrvSonidos.play();
-
-//         // Esperamos un poco para que se perciba el sonido
-//         await Future.delayed(const Duration(milliseconds: 300));
-
-//         if (context.mounted) {
-//           Navigator.of(context).pushNamed(
-//             '/game',
-//             //arguments: {'pRows': InfoJuego.filasSeleccionadas, 'pCols': InfoJuego.columnasSeleccionadas},
-//           );
-//         }
-//       },
-//       style: ElevatedButton.styleFrom(
-//         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-//         backgroundColor: Colores.primero,
-//         foregroundColor: Colores.onPrimero,
-//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-//         elevation: 10,
-//       ),
-
-//       child: Text(SrvTraducciones.get('comenzar_juego'), style: Textos.textStyleOrange28, textAlign: TextAlign.center),
-//     );
-//   }
-// }
-
-//------------------------------------------------------------------------------
-// Botón Para ir a la configuración
-//------------------------------------------------------------------------------
-// class BotonConfiguracion extends StatelessWidget {
-//   const BotonConfiguracion({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: () async {
-//         SrvSonidos.play();
-
-//         // Esperamos un poco para que se perciba el sonido
-//         await Future.delayed(const Duration(milliseconds: 300));
-
-//         if (context.mounted) {
-//           Navigator.of(context).pushNamed('/config');
-//         }
-//       },
-//       style: ElevatedButton.styleFrom(
-//         padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-//         backgroundColor: Colores.primero,
-//         foregroundColor: Colores.onPrimero,
-//         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-//         elevation: 10,
-//       ),
-
-//       child: Row(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           const Icon(
-//             Icons.settings,
-//             color: Colores.tercero, // Match the text color
-//             size: 25, // Adjust size as needed
-//           ),
-
-//           // 2. Add a small space between the icon and the text
-//           const SizedBox(width: 12),
-
-//           Text(SrvTraducciones.get('configuracion'), style: Textos.textStyleYellow14, textAlign: TextAlign.center),
-//         ],
-//       ),
-//     );
-//   }
-// }
