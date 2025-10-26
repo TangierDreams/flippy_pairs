@@ -13,7 +13,7 @@ class WidContador extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [Colores.quinto, Colores.primero],

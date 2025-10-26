@@ -2,6 +2,8 @@
 // MÓDULO DE LÓGICA DEL JUEGO.
 //==============================================================================
 
+import 'dart:io';
+
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
@@ -11,6 +13,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_resumen.dart';
 import 'package:flutter/material.dart';
 
 class SrvJuego {
@@ -25,7 +28,7 @@ class SrvJuego {
   static late int parejasTotales;
 
   // Las cartas y su estado
-  static late List<String> listaDeImagenes; // Los iconos de cada carta
+  static late List<File> listaDeImagenes; // Las imagenes de cada carta
   static late List<bool> listaDeCartasGiradas; // true = carta boca arriba
   static late List<bool> listaDeCartasEmparejadas; // true = ya hizo match
 
@@ -42,6 +45,9 @@ class SrvJuego {
   static Set<int> cartasDestello = {};
 
   static bool initCronometro = true;
+  static List<Map<String, dynamic>> datosResumenTodo = [];
+  static Map<String, dynamic> datosResumenNivel = {};
+  static int posicionCMF = 0;
 
   //------------------------------------------------------------------------------
   // FUNCIONES DE INICIALIZACIÓN
@@ -55,7 +61,7 @@ class SrvJuego {
     parejasTotales = cartasTotales ~/ 2;
 
     // Conseguir los iconos aleatorios
-    listaDeImagenes = SrvImagenes.obtenerImagenes(parejasTotales);
+    listaDeImagenes = SrvImagenes.obtenerImagenesParaJugar(parejasTotales);
 
     // Resetear todos los estados
     listaDeCartasGiradas = List.filled(cartasTotales, false);
@@ -70,6 +76,22 @@ class SrvJuego {
     SrvCronometro.reset();
     initCronometro = true;
     cartasDestello = {};
+
+    // Obtenemos los datos del dispositivo para este nivel:
+
+    // datosResumenTodo = await SrvSupabase.obtenerRegFlippy(
+    //   pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
+    // );
+    // datosResumenNivel = datosResumenTodo.firstWhere(
+    //   (reg) => reg['nivel'] == InfoJuego.nivelSeleccionado,
+    //   orElse: () => <String, dynamic>{},
+    // );
+    // posicionCMF = await SrvSupabase.obtenerRankingFlippy(
+    //   pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
+    //   pLevel: InfoJuego.nivelSeleccionado,
+    // );
+
+    WidResumen.refrescarDatosStatic();
 
     // Empezamos la música:
 
@@ -159,7 +181,7 @@ class SrvJuego {
     // SONIDO DE GIRAR LA CARTA
 
     SrvSonidos.flip();
-    await Future.delayed(const Duration(milliseconds: 900));
+    //await Future.delayed(const Duration(milliseconds: 900));
 
     // 3. ¿ES LA PRIMERA O LA SEGUNDA CARTA?
 
@@ -213,22 +235,39 @@ class SrvJuego {
       // LAS 2 CARTAS SON DIFERENTES
       //----------------------------
 
-      _puedoGirarLaCarta = false; // Bloqueamos más toques
+      //_puedoGirarLaCarta = false; // Bloqueamos más toques
       parejasFalladas++;
       _restarPuntos();
 
+      // Guardamos los índices en variables locales
+      final i1 = indicePrimera;
+      final i2 = indiceSegunda;
+      _primeraCarta = null;
+
+      // Temporarily disable only the two cards just flipped
+      listaDeCartasEmparejadas[i1] = false;
+      listaDeCartasEmparejadas[i2] = false;
+
       // Esperamos para que el jugador las vea las cartas desparejadas:
 
-      await Future.delayed(const Duration(milliseconds: 900));
+      //await Future.delayed(const Duration(milliseconds: 900));
 
-      SrvSonidos.goback();
+      Future.delayed(const Duration(milliseconds: 900), () {
+        // Si ya están emparejadas (puede pasar si el usuario las vuelve a girar y acierta)
+        if (listaDeCartasEmparejadas[i1] || listaDeCartasEmparejadas[i2]) return;
 
-      // Las volvemos a ocultar
-      pSetState(() {
-        listaDeCartasGiradas[indicePrimera] = false;
-        listaDeCartasGiradas[indiceSegunda] = false;
-        _primeraCarta = null;
-        _puedoGirarLaCarta = true;
+        SrvSonidos.goback();
+
+        // Las volvemos a ocultar
+        pSetState(() {
+          listaDeCartasGiradas[i1] = false;
+          listaDeCartasGiradas[i2] = false;
+
+          // listaDeCartasGiradas[indicePrimera] = false;
+          // listaDeCartasGiradas[indiceSegunda] = false;
+          // _primeraCarta = null;
+          // _puedoGirarLaCarta = true;
+        });
       });
     }
   }
@@ -247,7 +286,7 @@ class SrvJuego {
 
       // Anotamos el resultado en Supabase:
 
-      SrvSupabase.grabarPartida(
+      await SrvSupabase.grabarPartida(
         pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '?'),
         pNivel: InfoJuego.nivelSeleccionado,
         pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '?'),
@@ -258,7 +297,7 @@ class SrvJuego {
         pGanada: puntosPartida > 0 ? true : false,
       );
 
-      await Future.delayed(const Duration(milliseconds: 100));
+      //await Future.delayed(const Duration(milliseconds: 100));
 
       // Recogemos los resultados del usuario:
 
@@ -284,22 +323,24 @@ class SrvJuego {
 
       if (pContexto.mounted) {
         SrvLogger.grabarLog("srv_juego", "controlJuegoAcabado()", "Mostramos el popup de final de partida");
-        widJuegoAcabado(
-          pContexto,
-          nivelJugado,
-          puntosPartida,
-          posicionFlippy,
-          registroNivel['puntos'],
-          registroNivel['partidas'],
-          SrvCronometro.obtenerTiempo(),
-          SrvFechas.segundosAMinutosYSegundos(InfoJuego.niveles[InfoJuego.nivelSeleccionado]['tiempo'] as int),
-          SrvFechas.segundosAMinutosYSegundos(registroNivel['tiempo_record']),
-          pFuncionDeCallback: () {
-            pSetState(() {
-              resetearJuego();
-            });
-          },
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          widJuegoAcabado(
+            pContexto,
+            nivelJugado,
+            puntosPartida,
+            posicionFlippy,
+            registroNivel['puntos'],
+            registroNivel['partidas'],
+            SrvCronometro.obtenerTiempo(),
+            SrvFechas.segundosAMinutosYSegundos(InfoJuego.niveles[InfoJuego.nivelSeleccionado]['tiempo'] as int),
+            SrvFechas.segundosAMinutosYSegundos(registroNivel['tiempo_record']),
+            pFuncionDeCallback: () {
+              pSetState(() {
+                resetearJuego();
+              });
+            },
+          );
+        });
       } else {
         SrvLogger.grabarLog("srv_juego", "controlJuegoAcabado()", "No se encuentra el contexto");
       }

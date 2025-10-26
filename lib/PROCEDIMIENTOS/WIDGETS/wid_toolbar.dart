@@ -60,8 +60,8 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
             child: GestureDetector(
               onTap: () async {
                 SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'Volvemos atras desde la toolbar');
-                await SrvSonidos.goback();
-                await Future.delayed(const Duration(milliseconds: 250));
+                await SrvSonidos.boton();
+                //await Future.delayed(const Duration(milliseconds: 250));
                 if (context.mounted) {
                   Navigator.pop(context);
                 } else {

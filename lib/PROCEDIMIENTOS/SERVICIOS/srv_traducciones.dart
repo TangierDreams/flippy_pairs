@@ -7,11 +7,11 @@ class SrvTraducciones {
     'comenzar_juego': 'Start Playing!',
     'temas': 'Themes',
     'dificultad': 'Difficulty',
-    'texto_alias': 'Please enter the alias you wish to use in the Flippy World Competition...',
+    'texto_alias': 'Please enter the alias you wish to use in the FWC (Flippy World Competition)...',
     'alias': 'Alias',
     'alias_hint': 'Enter a name you like...',
     'activar_sonidos': 'Turn Sounds On or Off...',
-    'activar_musica': 'Turn Music On of Off...',
+    'activar_musica': 'Turn Music On or Off...',
     'grabar_datos': 'Save Data',
     'datos_guardados': 'Data saved successfully',
     'puntos': 'Points',
@@ -20,8 +20,10 @@ class SrvTraducciones {
     'timer': 'Timer',
     'excelente': '🎉 Excellent!',
     'ops': '😅 Oooppss!',
+    'empate': '🎯 In the middle!',
     'has_ganado': "You've won ### points in this game. Congratulations!",
     'has_perdido': "You've lost ### points in this game. You can do it better...",
+    'has_empatado': "No points gained… no points lost. Just in the middle! Give it another go!",
     'puntuacion_total': 'Your total score:',
     'finalizado_en': 'Game finished in:',
     'volver_a_jugar': 'Play again',
@@ -41,7 +43,8 @@ class SrvTraducciones {
     'comenzar_juego': 'Jugar!',
     'temas': 'Temas',
     'dificultad': 'Dificultad',
-    'texto_alias': 'Por favor, introduce el alias con el que quieres aparecer en la Competición Mundial Flippy...',
+    'texto_alias':
+        'Por favor, introduce el alias con el que quieres aparecer en la CMF (Competición Mundial Flippy)...',
     'alias': 'Alias',
     'alias_hint': 'Introduce un nombre que te guste...',
     'activar_sonidos': 'Activar o desactivar sonidos...',
@@ -54,8 +57,10 @@ class SrvTraducciones {
     'timer': 'Timer',
     'excelente': '🎉 Excelente!',
     'ops': '😅 Oooppss!',
+    'empate': '🎯 En el medio!',
     'has_ganado': "Has ganado ### puntos en esta partida. Felicidades!",
     'has_perdido': "Has perdido ### puntos en esta partida. Puedes hacerlo mejor...",
+    'has_empatado': "Ni puntos ganados ni perdidos. Justo en el medio! Vuelve a intentarlo!",
     'puntuacion_total': 'Puntuación total:',
     'finalizado_en': 'Partida finalizada en:',
     'volver_a_jugar': 'Volver a jugar',
@@ -70,20 +75,14 @@ class SrvTraducciones {
   };
 
   static final Map<String, String> catalan = {
-    'subtitulo_app':
-        'Endureix la teva ment d'
-        'una vegada per totes!',
+    'subtitulo_app': "Endureix la teva ment d'una vegada per totes!",
     'configuracion': 'Configuració...',
     'comenzar_juego': 'Juga!',
     'temas': 'Temes',
     'dificultad': 'Dificultat',
-    'texto_alias':
-        'Si us plau, introdueix l'
-        'àlies amb el qual vols aparèixer a la Competició Mundial Flippy...',
+    'texto_alias': "Si us plau, introdueix l'àlies amb el qual vols aparèixer a la CMF (Competició Mundial Flippy)...",
     'alias': 'Àlies',
-    'alias_hint':
-        'Introdueix un nom que t'
-        'agradi...',
+    'alias_hint': "Introdueix un nom que t'agradi...",
     'activar_sonidos': 'Activar o desactivar sons...',
     'activar_musica': 'Activar o desactivar música...',
     'grabar_datos': 'Desar dades',
@@ -94,8 +93,10 @@ class SrvTraducciones {
     'timer': 'Timer',
     'excelente': '🎉 Excel·lent!',
     'ops': '😅 Oooppss!',
+    'empate': '🎯 Just al mig!',
     'has_ganado': "Has guanyat ### punts en aquesta partida. Felicitats!",
     'has_perdido': "Has perdut ### punts en aquesta partida. Pots fer-ho millor...",
+    'has_empatado': "Ni punts guanyats ni perduts. Just al mig! Torna a jugar!",
     'puntuacion_total': 'Puntuació total:',
     'finalizado_en': 'Partida finalitzada en:',
     'volver_a_jugar': 'Torna a jugar',

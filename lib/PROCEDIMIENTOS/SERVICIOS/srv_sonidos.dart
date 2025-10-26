@@ -86,7 +86,7 @@ class SrvSonidos {
   // FUNCIONES DE REPRODUCCIÓN SFX
   // ============================================================================
 
-  // Reproduce el sonido de play
+  // Reproduce el sonido de click de un botón
 
   static Future<void> boton() => _reproducirSonido('boton.wav');
 
@@ -114,23 +114,13 @@ class SrvSonidos {
 
   static Future<void> error() => _reproducirSonido('error.wav');
 
+  // Reproduce el sonido de error:
+
+  static Future<void> draw() => _reproducirSonido('draw.wav');
+
   //----------------------------------------------------------------------------
   // Reproduce un archivo de sonido desde assets/sonidos/
   //----------------------------------------------------------------------------
-
-  // static Future<void> _reproducirSonido(String nombreArchivo) async {
-  //   if (SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {
-  //     final reproductor = _reproductorSFX[_indiceActual];
-  //     _indiceActual = (_indiceActual + 1) % _cantidadReproductores;
-  //     await reproductor.stop(); // Detener si aún está sonando
-
-  //     // ⚠️ IMPORTANTE: Configurar los SFX para que no interfieran con la música.
-  //     // Usamos ReleaseMode.release para que se libere al terminar el SFX.
-
-  //     await reproductor.setReleaseMode(ReleaseMode.release);
-  //     await reproductor.play(AssetSource('sonidos/$nombreArchivo'));
-  //   }
-  // }
 
   static Future<void> _reproducirSonido(String nombreArchivo) async {
     // Check the initial condition outside the try block if it's a simple synchronous check

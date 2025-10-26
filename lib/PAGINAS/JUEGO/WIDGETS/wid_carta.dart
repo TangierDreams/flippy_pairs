@@ -1,10 +1,11 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
 
 class WidCarta extends StatelessWidget {
   final bool pEstaBocaArriba;
-  final String pImagenCarta;
+  final File pImagenCarta;
   final bool pDestello;
   final VoidCallback pCallBackFunction;
 
@@ -68,7 +69,7 @@ class WidCarta extends StatelessWidget {
                           child: FittedBox(
                             fit: BoxFit.contain,
                             child: mostrarCarta
-                                ? Image.asset(pImagenCarta)
+                                ? Image.file(pImagenCarta)
                                 : Image.asset('assets/imagenes/general/interrogacion.png'),
                           ),
                         ),

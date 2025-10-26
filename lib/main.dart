@@ -29,6 +29,12 @@ Future<void> main() async {
   }
 
   try {
+    await SrvImagenes.inicializar();
+  } catch (e) {
+    SrvLogger.grabarLog('Main', 'main()', 'Error Imagenes: $e');
+  }
+
+  try {
     await SrvIdiomas.inicializar();
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Idioma: $e');

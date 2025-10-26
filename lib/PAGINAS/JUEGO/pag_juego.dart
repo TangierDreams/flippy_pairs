@@ -8,6 +8,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_contador.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_resumen.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
@@ -61,7 +62,12 @@ class _PagJuegoState extends State<PagJuego> {
       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
       body: Column(
         children: [
-          const SizedBox(height: 10),
+          const SizedBox(height: 5),
+
+          //Barra de resumen:
+          WidResumen(),
+
+          const SizedBox(height: 5),
 
           // Contadores
           Row(

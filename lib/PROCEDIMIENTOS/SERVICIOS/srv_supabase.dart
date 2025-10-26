@@ -4,6 +4,24 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final supabase = Supabase.instance.client;
 
 class SrvSupabase {
+  //----------------------------------------------------------------------------
+  // Obtener un valor de la tabla de parametros
+  //----------------------------------------------------------------------------
+
+  static Future<String> getParam(String pClave, {String pDefaultValue = ""}) async {
+    try {
+      final response = await supabase.from('params').select('value').eq('key', pClave).single();
+      return response['value'].toString();
+    } catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'getParam()', 'Error al buscar la clave $pClave: $e');
+      return pDefaultValue;
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  // Grabamos los datos de una partida.
+  //----------------------------------------------------------------------------
+
   static Future<void> grabarPartida({
     required String pId,
     required int pNivel,

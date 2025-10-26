@@ -16,15 +16,21 @@ Future<void> widJuegoAcabado(
   String pTiempoRecord, {
   VoidCallback? pFuncionDeCallback,
 }) async {
-  bool gana = pPuntosPartida > 0 ? true : false;
+  //bool gana = pPuntosPartida > 0 ? true : false;
   double tamanyoTexto = 16;
+  bool botonSalirActivado = true;
+  bool botonJugarActivado = true;
 
   // Reproducir sonido de victoria o derrota:
 
-  if (gana) {
+  if (pPuntosPartida > 0) {
     SrvSonidos.sucess();
   } else {
-    SrvSonidos.error();
+    if (pPuntosPartida < 0) {
+      SrvSonidos.error();
+    } else {
+      SrvSonidos.draw();
+    }
   }
 
   return showGeneralDialog<void>(
@@ -63,7 +69,11 @@ Future<void> widJuegoAcabado(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    gana ? SrvTraducciones.get('excelente') : SrvTraducciones.get('ops'),
+                    pPuntosPartida > 0
+                        ? SrvTraducciones.get('excelente')
+                        : pPuntosPartida < 0
+                        ? SrvTraducciones.get('ops')
+                        : SrvTraducciones.get('empate'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 36,
                       color: Colores.blanco,
@@ -84,9 +94,11 @@ Future<void> widJuegoAcabado(
 
                   const SizedBox(height: 2),
                   Text(
-                    gana
+                    pPuntosPartida > 0
                         ? SrvTraducciones.get('has_ganado', pArgumento: pPuntosPartida.toString())
-                        : SrvTraducciones.get('has_perdido', pArgumento: pPuntosPartida.abs().toString()),
+                        : pPuntosPartida < 0
+                        ? SrvTraducciones.get('has_perdido', pArgumento: pPuntosPartida.abs().toString())
+                        : SrvTraducciones.get('has_empatado'),
                     style: GoogleFonts.baloo2(fontSize: 20, color: Colores.blanco, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
@@ -233,9 +245,13 @@ Future<void> widJuegoAcabado(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                         ),
                         onPressed: () {
-                          Navigator.of(context).pop();
-                          if (pFuncionDeCallback != null) {
-                            pFuncionDeCallback();
+                          if (botonJugarActivado) {
+                            botonJugarActivado = false;
+                            SrvSonidos.boton();
+                            Navigator.of(context).pop();
+                            if (pFuncionDeCallback != null) {
+                              pFuncionDeCallback();
+                            }
                           }
                         },
                         child: Text(SrvTraducciones.get('volver_a_jugar'), style: GoogleFonts.baloo2(fontSize: 18)),
@@ -247,9 +263,12 @@ Future<void> widJuegoAcabado(
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                         ),
                         onPressed: () {
-                          SrvSonidos.goback();
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                          if (botonSalirActivado) {
+                            botonSalirActivado = false;
+                            SrvSonidos.boton();
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          }
                         },
                         child: Text(SrvTraducciones.get('salir'), style: GoogleFonts.baloo2(fontSize: 18)),
                       ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
@@ -16,13 +18,10 @@ class PagHome extends StatefulWidget {
 }
 
 class _PagHomeState extends State<PagHome> {
-  bool _isLoaded = false;
-
   @override
   void initState() {
     super.initState();
     SrvLogger.grabarLog('pag_home', 'initState()', 'Entramos en la pagina Home');
-    _iniciarPrecarga();
   }
 
   @override
@@ -31,43 +30,8 @@ class _PagHomeState extends State<PagHome> {
     super.dispose();
   }
 
-  // 💡 NUEVO MÉTODO: Llama a la precarga y actualiza el estado
-  void _iniciarPrecarga() async {
-    // 1. Ejecutamos la función de precarga. Ya tenemos el 'context' aquí.
-    try {
-      await SrvImagenes.precargarImagenes(context);
-    } catch (e) {
-      // 2. Manejo de error si la conexión falla (puedes mostrar un diálogo de error aquí)
-      SrvLogger.grabarLog('pag_home', '_iniciarPrecarga()', 'Error al precargar imágenes: $e');
-    }
-
-    // 3. Una vez terminado, actualizamos el estado para mostrar el contenido de la Home Page.
-    if (mounted) {
-      setState(() {
-        _isLoaded = true;
-        SrvLogger.grabarLog('pag_home', '_iniciarPrecarga()', 'Precarga de imágenes finalizada.');
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Si _isLoaded es false, mostramos el indicador de carga.
-    if (!_isLoaded) {
-      return const Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [CircularProgressIndicator(), SizedBox(height: 16), Text('Cargando imágenes de Supabase...')],
-          ),
-        ),
-      );
-    }
-
-    // ------------------------------------------------------------------
-    // Si _isLoaded es true, mostramos el contenido original de la Home Page.
-    // ------------------------------------------------------------------
-
     //Si cambia el SrvIdiomas.idiomaSeleccionado, se reconstruye la página:
     return ValueListenableBuilder<String>(
       valueListenable: SrvIdiomas.idiomaSeleccionado,
@@ -347,7 +311,7 @@ class BotonTema extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool estaSeleccionado = pNumBoton == InfoJuego.temaSeleccionado;
-    String rutaImagen = 'assets/imagenes/$pListaImagenes/01.png';
+    File primeraImagenTema = SrvImagenes.obtenerUnaImagen(pListaImagenes, "01.png");
 
     return ElevatedButton(
       onPressed: () {
@@ -359,7 +323,7 @@ class BotonTema extends StatelessWidget {
         foregroundColor: Colores.onPrimero,
         elevation: estaSeleccionado ? 15 : 10,
       ),
-      child: Image.asset(rutaImagen, width: 60, height: 60, fit: BoxFit.contain),
+      child: Image.file(primeraImagenTema, width: 60, height: 60, fit: BoxFit.contain),
     );
   }
 }

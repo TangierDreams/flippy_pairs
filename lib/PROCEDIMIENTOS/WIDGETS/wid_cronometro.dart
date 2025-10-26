@@ -3,17 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 
-// --------------------------------------------------------------------------
-// INSTANCE OF THE MANAGER
-// --------------------------------------------------------------------------
-// Create a static reference to the manager that can be used globally.
-//final CronometroManager cronometroManager = CronometroManager();
-
-// --------------------------------------------------------------------------
-// CLASE PRINCIPAL DEL WIDGET (Now a StatelessWidget, or kept as StatefulWidget
-// if you want to use the dispose logic, but StatelessWidget is cleaner here)
-// --------------------------------------------------------------------------
-
 class WidCronometro extends StatelessWidget {
   const WidCronometro({super.key});
 
@@ -26,7 +15,7 @@ class WidCronometro extends StatelessWidget {
         return Container(
           width: 70,
           alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
           decoration: BoxDecoration(
             color: Colores.quinto,
             borderRadius: BorderRadius.circular(12.0),
