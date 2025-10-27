@@ -9,19 +9,19 @@ class WidResumen extends StatefulWidget {
 
   const WidResumen({super.key});
 
-  // Static reference to the current state
-  static _WidResumenState? _currentState;
+  // // Static reference to the current state
+  // static _WidResumenState? _currentState;
 
-  // Static method to refresh
-  static Future<void> refrescarDatosStatic() async {
-    await _currentState?.refrescarDatos();
-  }
+  // // Static method to refresh
+  // static Future<void> refrescarDatosStatic() async {
+  //   await _currentState?.refrescarDatos();
+  // }
 
   @override
-  State<WidResumen> createState() => _WidResumenState();
+  State<WidResumen> createState() => WidResumenState();
 }
 
-class _WidResumenState extends State<WidResumen> {
+class WidResumenState extends State<WidResumen> {
   int partidas = 0;
   int puntos = 0;
   int posicion = 0;
@@ -33,7 +33,7 @@ class _WidResumenState extends State<WidResumen> {
   void initState() {
     super.initState();
     // Al iniciar el widget, cargamos los datos
-    //refrescarDatos();
+    refrescarDatos();
   }
 
   // Función pública para que la página pueda llamar y refrescar los datos al empezar un nuevo juego
@@ -62,50 +62,6 @@ class _WidResumenState extends State<WidResumen> {
       });
     }
   }
-
-  // void refrescarDatos() {
-  //   _cargarDatos();
-  // }
-
-  // Future<void> _cargarDatos() async {
-  //   setState(() {
-  //     datosListos = false;
-  //   });
-
-  //   try {
-  //     nivel = InfoJuego.nivelSeleccionado;
-  //     // Obtenemos todos los registros del dispositivo
-  //     final datosTodo = await SrvSupabase.obtenerRegFlippy(
-  //       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-  //     );
-
-  //     // Filtramos los datos para el nivel actual
-  //     final nivelActual = datosTodo.firstWhere((reg) => reg['nivel'] == nivel, orElse: () => <String, dynamic>{});
-
-  //     // Obtenemos la posición en el ranking
-  //     final pos = await SrvSupabase.obtenerRankingFlippy(
-  //       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-  //       pLevel: nivel,
-  //     );
-
-  //     if (!mounted) return;
-
-  //     setState(() {
-  //       partidas = nivelActual['partidas'] ?? 0;
-  //       puntos = nivelActual['puntos'] ?? 0;
-  //       posicion = pos;
-  //       datosListos = true;
-  //     });
-  //   } catch (e) {
-  //     // Manejo de errores
-  //     setState(() {
-  //       partidas = 0;
-  //       puntos = 0;
-  //       posicion = 0;
-  //       datosListos = true;
-  //     });
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {

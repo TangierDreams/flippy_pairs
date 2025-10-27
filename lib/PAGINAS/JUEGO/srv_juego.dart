@@ -49,6 +49,8 @@ class SrvJuego {
   static Map<String, dynamic> datosResumenNivel = {};
   static int posicionCMF = 0;
 
+  static final GlobalKey<WidResumenState> claveResumen = GlobalKey<WidResumenState>();
+
   //------------------------------------------------------------------------------
   // FUNCIONES DE INICIALIZACIÓN
   //------------------------------------------------------------------------------
@@ -79,19 +81,7 @@ class SrvJuego {
 
     // Obtenemos los datos del dispositivo para este nivel:
 
-    // datosResumenTodo = await SrvSupabase.obtenerRegFlippy(
-    //   pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-    // );
-    // datosResumenNivel = datosResumenTodo.firstWhere(
-    //   (reg) => reg['nivel'] == InfoJuego.nivelSeleccionado,
-    //   orElse: () => <String, dynamic>{},
-    // );
-    // posicionCMF = await SrvSupabase.obtenerRankingFlippy(
-    //   pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-    //   pLevel: InfoJuego.nivelSeleccionado,
-    // );
-
-    WidResumen.refrescarDatosStatic();
+    claveResumen.currentState?.refrescarDatos();
 
     // Empezamos la música:
 

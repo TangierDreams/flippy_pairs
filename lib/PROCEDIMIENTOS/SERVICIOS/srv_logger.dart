@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SrvLogger {
   static late File _logFile;
@@ -24,7 +25,6 @@ class SrvLogger {
       final String fecha = SrvFechas.hoyEnYYYYMMDD();
       final String hora = SrvFechas.ahoraEnHHMMSS();
       final String linea = '$fecha;$hora;$modulo;$funcion;$mensaje\n';
-      //await _logFile.writeAsString(linea, mode: FileMode.append);
       await _logFile.writeAsString(linea, mode: FileMode.append, flush: true);
     } catch (e) {
       // No lanzamos excepción para no romper la app
@@ -55,21 +55,20 @@ class SrvLogger {
   static Future<void> _inicializar({String nombreArchivo = 'FlippyPairs.csv'}) async {
     if (_inicializado) return;
 
-    final Directory dir = Directory('/storage/emulated/0/Download/FlippyLogs');
-    if (!await dir.exists()) {
-      await dir.create(recursive: true);
+    final Directory baseDir = await getApplicationDocumentsDirectory();
+    final Directory logDir = Directory('${baseDir.path}/FlippyLogs');
+    if (!await logDir.exists()) {
+      await logDir.create(recursive: true);
     }
 
-    final String logPath = '${dir.path}/$nombreArchivo';
-    final String oldLogPath = '${dir.path}/${nombreArchivo.split('.').first}_old.${nombreArchivo.split('.').last}';
-
+    final String logPath = '${logDir.path}/$nombreArchivo';
+    final String oldLogPath = '${logDir.path}/${nombreArchivo.split('.').first}_old.${nombreArchivo.split('.').last}';
     _logFile = File(logPath);
     _oldLogFile = File(oldLogPath);
 
     if (!(await _logFile.exists())) {
       await _logFile.create(recursive: true);
     }
-
     _inicializado = true;
   }
 }
