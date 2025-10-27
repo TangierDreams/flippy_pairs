@@ -175,7 +175,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
 
                   //-----------------------------------------
                   // Aquí llamamos al widget de pedir idioma:
@@ -188,7 +188,16 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     pColorLetra: Colores.negro,
                   ),
 
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
+
+                  WidBotonStandard(
+                    pTexto: 'Ver registro de logs',
+                    pColorDeFondo: Colores.primero,
+                    pColorLetra: Colores.onPrimero,
+                    pEmitirSonido: true,
+                    pEsquinasRedondeadas: true,
+                    pNavegarA: '/logs',
+                  ),
                 ],
               ),
             ),

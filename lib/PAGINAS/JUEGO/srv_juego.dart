@@ -49,6 +49,7 @@ class SrvJuego {
   static Map<String, dynamic> datosResumenNivel = {};
   static int posicionCMF = 0;
 
+  //Con esta clave puedo acceder a los métodos del widget "WidResumen":
   static final GlobalKey<WidResumenState> claveResumen = GlobalKey<WidResumenState>();
 
   //------------------------------------------------------------------------------
@@ -81,7 +82,11 @@ class SrvJuego {
 
     // Obtenemos los datos del dispositivo para este nivel:
 
-    claveResumen.currentState?.refrescarDatos();
+    //claveResumen.currentState?.refrescarDatos();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      claveResumen.currentState?.refrescarDatos();
+    });
 
     // Empezamos la música:
 

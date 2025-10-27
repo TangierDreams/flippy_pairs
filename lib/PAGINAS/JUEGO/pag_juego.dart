@@ -65,7 +65,7 @@ class _PagJuegoState extends State<PagJuego> {
           const SizedBox(height: 5),
 
           //Barra de resumen:
-          WidResumen(),
+          WidResumen(key: SrvJuego.claveResumen),
 
           const SizedBox(height: 5),
 

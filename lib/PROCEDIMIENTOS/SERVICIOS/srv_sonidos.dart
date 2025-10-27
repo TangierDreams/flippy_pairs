@@ -61,12 +61,9 @@ class SrvSonidos {
 
   static Future<void> iniciarMusicaFondo() async {
     try {
-      if (SrvDiskette.leerValor(DisketteKey.musicaActivada)) {
-        // Configura para que se repita en bucle y ajusta el volumen.
-        await _musicaFondoPlayer.setReleaseMode(ReleaseMode.loop);
+      if (SrvDiskette.leerValor(DisketteKey.musicaActivada, defaultValue: true)) {
+        await _musicaFondoPlayer.setReleaseMode(ReleaseMode.loop); // cuando se acaba, se repite.
         await _musicaFondoPlayer.setVolume(0.2); // Volumen bajo
-
-        // Ruta de la música. Asumo que se llama 'musica_fondo.mp3'
         await _musicaFondoPlayer.play(AssetSource('sonidos/music.mp3'));
       }
     } catch (e) {
@@ -123,8 +120,7 @@ class SrvSonidos {
   //----------------------------------------------------------------------------
 
   static Future<void> _reproducirSonido(String nombreArchivo) async {
-    // Check the initial condition outside the try block if it's a simple synchronous check
-    if (!SrvDiskette.leerValor(DisketteKey.sonidoActivado)) {
+    if (!SrvDiskette.leerValor(DisketteKey.sonidoActivado, defaultValue: true)) {
       return; // Exit if sound is not active
     }
 

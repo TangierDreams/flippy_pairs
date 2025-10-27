@@ -9,14 +9,6 @@ class WidResumen extends StatefulWidget {
 
   const WidResumen({super.key});
 
-  // // Static reference to the current state
-  // static _WidResumenState? _currentState;
-
-  // // Static method to refresh
-  // static Future<void> refrescarDatosStatic() async {
-  //   await _currentState?.refrescarDatos();
-  // }
-
   @override
   State<WidResumen> createState() => WidResumenState();
 }
@@ -33,7 +25,7 @@ class WidResumenState extends State<WidResumen> {
   void initState() {
     super.initState();
     // Al iniciar el widget, cargamos los datos
-    refrescarDatos();
+    //refrescarDatos();
   }
 
   // Función pública para que la página pueda llamar y refrescar los datos al empezar un nuevo juego
