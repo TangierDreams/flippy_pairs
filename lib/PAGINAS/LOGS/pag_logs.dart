@@ -6,6 +6,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+// El modelo de datos LogEntry se mantiene intacto.
 class LogEntry {
   final String date;
   final String time;
@@ -20,7 +21,7 @@ class LogEntry {
     required this.module,
     required this.function,
     required this.message,
-  }) : fullTimestamp = DateTime.parse('${date.replaceAll('-', '')}T$time'); // Combine for sorting
+  }) : fullTimestamp = DateTime.parse('${date.replaceAll('-', '')}T$time');
 }
 
 class PagLogs extends StatefulWidget {
@@ -46,76 +47,113 @@ class _PagLogsState extends State<PagLogs> {
     super.dispose();
   }
 
-  Future<String> _getLogFilePath() async {
+  // ===========================================================================
+  // Obtiene las rutas de AMBOS archivos de log.
+  // ===========================================================================
+  Future<Map<String, String>> _getLogFilePaths() async {
     final Directory baseDir = await getApplicationDocumentsDirectory();
     final Directory logDir = Directory('${baseDir.path}/FlippyLogs');
-    return '${logDir.path}/FlippyPairs.csv';
+
+    // Rutas específicas del archivo principal y el archivo antiguo
+    return {'current': '${logDir.path}/FlippyPairs.csv', 'old': '${logDir.path}/FlippyPairs_old.csv'};
   }
 
-  Future<List<LogEntry>> _loadAndParseLogs() async {
-    try {
-      final filePath = await _getLogFilePath();
-      final file = File(filePath);
+  // ===========================================================================
+  // Carga y parsea el contenido de un único archivo.
+  // Esto aísla la lógica de parseo, haciéndola reutilizable.
+  // ===========================================================================
+  List<LogEntry> _parseLogContents(String contents) {
+    final List<LogEntry> logs = [];
+    final lines = contents.split('\n');
 
-      if (!await file.exists()) {
-        return [
-          LogEntry(
-            date: 'N/A',
-            time: 'N/A',
-            module: 'ERROR',
-            function: 'FileCheck',
-            message: 'Log file not found at: $filePath',
-          ),
-        ];
-      }
+    for (var line in lines) {
+      if (line.trim().isEmpty) continue;
 
-      final contents = await file.readAsString();
-      final lines = contents.split('\n');
+      final parts = line.split(';');
 
-      final List<LogEntry> logs = [];
-      for (var line in lines) {
-        if (line.trim().isEmpty) continue;
-
-        // Split by the semicolon delimiter (;)
-        final parts = line.split(';');
-
-        // Expected 5 parts: Date;Time;Module;Function;Message
-        if (parts.length >= 5) {
+      // Solo procesamos líneas que tienen al menos 5 partes.
+      if (parts.length >= 5) {
+        try {
           logs.add(
             LogEntry(
               date: parts[0],
               time: parts[1],
               module: parts[2],
               function: parts[3],
-              // Join the remaining parts back together in case the message contained semicolons
+              // Une las partes restantes, por si el mensaje contenía ';'.
               message: parts.sublist(4).join(';'),
             ),
           );
+        } catch (e) {
+          // Manejo silencioso de errores de parseo (ej. si la fecha/hora es inválida)
+          // Se puede registrar un error aquí si es necesario.
+          debugPrint('Error al parsear línea de log: $line. Error: $e');
         }
+      } else {
+        logs.add(LogEntry(date: '1991-01-01', time: '00:00:00', module: '---', function: '---', message: line));
+      }
+    }
+    return logs;
+  }
+
+  // ===========================================================================
+  // Carga y parsea AMBOS archivos de log.
+  // ===========================================================================
+  Future<List<LogEntry>> _loadAndParseLogs() async {
+    try {
+      final filePaths = await _getLogFilePaths();
+      final currentFile = File(filePaths['current']!);
+      final oldFile = File(filePaths['old']!);
+
+      final List<LogEntry> allLogs = [];
+
+      // 1. Leer el archivo de LOG ACTUAL (FlippyPairs.csv)
+      if (await currentFile.exists()) {
+        final currentContents = await currentFile.readAsString();
+        allLogs.addAll(_parseLogContents(currentContents));
+      } else {
+        // Si no existe el archivo principal, es un error o es la primera ejecución
+        SrvLogger.grabarLog('pag_logs', '_loadAndParseLogs()', 'Archivo de log principal no encontrado.');
       }
 
-      // Sort the logs from NEWEST to OLDEST (most useful for debugging)
-      logs.sort((a, b) => b.fullTimestamp.compareTo(a.fullTimestamp));
+      // 2. Leer el archivo de LOG ANTIGUO (FlippyPairs_old.csv)
+      if (await oldFile.exists()) {
+        final oldContents = await oldFile.readAsString();
+        allLogs.addAll(_parseLogContents(oldContents));
+      }
 
-      return logs;
+      // Si no se encuentra ningún log, reportamos un mensaje claro.
+      if (allLogs.isEmpty) {
+        return [
+          LogEntry(
+            date: 'N/A',
+            time: 'N/A',
+            module: 'INFO',
+            function: 'Carga',
+            message: 'No se encontraron registros de logs en ${filePaths['current']} ni en ${filePaths['old']}',
+          ),
+        ];
+      }
+
+      // 3. Ordenar todos los logs combinados de MÁS RECIENTE a MÁS ANTIGUO
+      // Esto unifica los registros de ambos archivos correctamente.
+      allLogs.sort((a, b) => b.fullTimestamp.compareTo(a.fullTimestamp));
+
+      return allLogs;
     } catch (e) {
+      // Manejo de error para problemas de I/O o path
+      SrvLogger.grabarLog('pag_logs', '_loadAndParseLogs()', 'FALLO FATAL al cargar o parsear logs: $e');
       return [
         LogEntry(
           date: 'N/A',
           time: 'N/A',
           module: 'FATAL',
           function: 'Parser',
-          message: 'Failed to read/parse log file: $e',
+          message: 'Fallo al leer/parsear archivos de log. Revise permisos: $e',
         ),
       ];
     }
   }
-
-  // void _refreshLogs() {
-  //   setState(() {
-  //     _logFuture = _loadAndParseLogs();
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -203,3 +241,209 @@ class _PagLogsState extends State<PagLogs> {
     );
   }
 }
+
+// import 'dart:io';
+
+// import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
+// import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
+// import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
+// import 'package:flutter/material.dart';
+// import 'package:path_provider/path_provider.dart';
+
+// class LogEntry {
+//   final String date;
+//   final String time;
+//   final String module;
+//   final String function;
+//   final String message;
+//   final DateTime fullTimestamp;
+
+//   LogEntry({
+//     required this.date,
+//     required this.time,
+//     required this.module,
+//     required this.function,
+//     required this.message,
+//   }) : fullTimestamp = DateTime.parse('${date.replaceAll('-', '')}T$time'); // Combine for sorting
+// }
+
+// class PagLogs extends StatefulWidget {
+//   const PagLogs({super.key});
+
+//   @override
+//   State<PagLogs> createState() => _PagLogsState();
+// }
+
+// class _PagLogsState extends State<PagLogs> {
+//   late Future<List<LogEntry>> _logFuture;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     SrvLogger.grabarLog('pag_logs', 'initState()', 'Entramos en la pagina de mostrar los logs');
+//     _logFuture = _loadAndParseLogs();
+//   }
+
+//   @override
+//   void dispose() {
+//     SrvLogger.grabarLog('pag_logs', 'dispose()', 'Salimos de la pagina de mostrar los logs');
+//     super.dispose();
+//   }
+
+//   Future<String> _getLogFilePath() async {
+//     final Directory baseDir = await getApplicationDocumentsDirectory();
+//     final Directory logDir = Directory('${baseDir.path}/FlippyLogs');
+//     return '${logDir.path}/FlippyPairs.csv';
+//   }
+
+//   Future<List<LogEntry>> _loadAndParseLogs() async {
+//     try {
+//       final filePath = await _getLogFilePath();
+//       final file = File(filePath);
+
+//       if (!await file.exists()) {
+//         return [
+//           LogEntry(
+//             date: 'N/A',
+//             time: 'N/A',
+//             module: 'ERROR',
+//             function: 'FileCheck',
+//             message: 'Log file not found at: $filePath',
+//           ),
+//         ];
+//       }
+
+//       final contents = await file.readAsString();
+//       final lines = contents.split('\n');
+
+//       final List<LogEntry> logs = [];
+//       for (var line in lines) {
+//         if (line.trim().isEmpty) continue;
+
+//         // Split by the semicolon delimiter (;)
+//         final parts = line.split(';');
+
+//         // Expected 5 parts: Date;Time;Module;Function;Message
+//         if (parts.length >= 5) {
+//           logs.add(
+//             LogEntry(
+//               date: parts[0],
+//               time: parts[1],
+//               module: parts[2],
+//               function: parts[3],
+//               // Join the remaining parts back together in case the message contained semicolons
+//               message: parts.sublist(4).join(';'),
+//             ),
+//           );
+//         }
+//       }
+
+//       // Sort the logs from NEWEST to OLDEST (most useful for debugging)
+//       logs.sort((a, b) => b.fullTimestamp.compareTo(a.fullTimestamp));
+
+//       return logs;
+//     } catch (e) {
+//       return [
+//         LogEntry(
+//           date: 'N/A',
+//           time: 'N/A',
+//           module: 'FATAL',
+//           function: 'Parser',
+//           message: 'Failed to read/parse log file: $e',
+//         ),
+//       ];
+//     }
+//   }
+
+//   // void _refreshLogs() {
+//   //   setState(() {
+//   //     _logFuture = _loadAndParseLogs();
+//   //   });
+//   // }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       //Toolbar:
+//       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
+
+//       body: FutureBuilder<List<LogEntry>>(
+//         future: _logFuture,
+//         builder: (context, snapshot) {
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+
+//           if (snapshot.hasError || !snapshot.hasData) {
+//             return Center(
+//               child: Text('ERROR: ${snapshot.error}', style: const TextStyle(color: Colors.red)),
+//             );
+//           }
+
+//           final logs = snapshot.data!;
+
+//           if (logs.isEmpty) {
+//             return const Center(
+//               child: Text('No hay registros de logs.', style: TextStyle(color: Colors.white70)),
+//             );
+//           }
+
+//           return Container(
+//             color: Colors.black, // Dark background for easy reading
+//             child: ListView.separated(
+//               itemCount: logs.length,
+//               separatorBuilder: (context, index) => const Divider(color: Colors.grey, height: 1, thickness: 0.5),
+//               itemBuilder: (context, index) {
+//                 final entry = logs[index];
+
+//                 // Highlight errors for quick identification
+//                 Color messageColor = Colors.white;
+//                 if (entry.message.toLowerCase().contains('error') || entry.message.toLowerCase().contains('fallo')) {
+//                   messageColor = Colors.redAccent;
+//                 }
+
+//                 return Padding(
+//                   padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       // Timestamp and Location (Top Row)
+//                       Row(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           // Time & Date
+//                           Text('${entry.date} ${entry.time}', style: const TextStyle(color: Colors.grey, fontSize: 11)),
+//                           const SizedBox(width: 10),
+//                           // Module and Function
+//                           Expanded(
+//                             child: Text(
+//                               '${entry.module}.${entry.function}',
+//                               style: const TextStyle(
+//                                 color: Colors.cyanAccent,
+//                                 fontSize: 12,
+//                                 fontWeight: FontWeight.bold,
+//                               ),
+//                               overflow: TextOverflow.ellipsis,
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                       // Message (Bottom Row)
+//                       Padding(
+//                         padding: const EdgeInsets.only(left: 4.0, top: 2.0),
+//                         child: Text(
+//                           entry.message,
+//                           style: TextStyle(color: messageColor, fontSize: 13, fontFamily: 'monospace'),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 );
+//               },
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
