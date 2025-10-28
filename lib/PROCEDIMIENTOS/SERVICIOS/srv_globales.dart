@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DatosGenerales {
-  static const bool logsActivados = true;
   static const String nombreApp = 'Flippy Pairs';
+  static const bool logsActivados = true;
+  static const String nombreArchivoLogs = "flippypairs.csv";
+  static String rutaArchivoLogs = '';
+  static String rutaArchivoLogsOld = '';
   static const String logoApp = 'assets/imagenes/general/app_logo.png';
   static const String supabaseUrl = 'https://nygzlnrhbrdvjjhrbsdz.supabase.co';
   static const String supabaseKey =

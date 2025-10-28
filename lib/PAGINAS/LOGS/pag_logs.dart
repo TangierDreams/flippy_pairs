@@ -1,10 +1,10 @@
 import 'dart:io';
 
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 // El modelo de datos LogEntry se mantiene intacto.
 class LogEntry {
@@ -50,13 +50,13 @@ class _PagLogsState extends State<PagLogs> {
   // ===========================================================================
   // Obtiene las rutas de AMBOS archivos de log.
   // ===========================================================================
-  Future<Map<String, String>> _getLogFilePaths() async {
-    final Directory baseDir = await getApplicationDocumentsDirectory();
-    final Directory logDir = Directory('${baseDir.path}/FlippyLogs');
+  // Future<Map<String, String>> _getLogFilePaths() async {
+  //   final Directory baseDir = await getApplicationDocumentsDirectory();
+  //   final Directory logDir = Directory('${baseDir.path}/FlippyLogs');
 
-    // Rutas específicas del archivo principal y el archivo antiguo
-    return {'current': '${logDir.path}/FlippyPairs.csv', 'old': '${logDir.path}/FlippyPairs_old.csv'};
-  }
+  //   // Rutas específicas del archivo principal y el archivo antiguo
+  //   return {'current': '${logDir.path}/FlippyPairs.csv', 'old': '${logDir.path}/FlippyPairs_old.csv'};
+  // }
 
   // ===========================================================================
   // Carga y parsea el contenido de un único archivo.
@@ -101,9 +101,9 @@ class _PagLogsState extends State<PagLogs> {
   // ===========================================================================
   Future<List<LogEntry>> _loadAndParseLogs() async {
     try {
-      final filePaths = await _getLogFilePaths();
-      final currentFile = File(filePaths['current']!);
-      final oldFile = File(filePaths['old']!);
+      //final filePaths = await _getLogFilePaths();
+      final currentFile = File(DatosGenerales.rutaArchivoLogs);
+      final oldFile = File(DatosGenerales.rutaArchivoLogsOld);
 
       final List<LogEntry> allLogs = [];
 
@@ -126,11 +126,12 @@ class _PagLogsState extends State<PagLogs> {
       if (allLogs.isEmpty) {
         return [
           LogEntry(
-            date: 'N/A',
-            time: 'N/A',
+            date: '1990-01-01',
+            time: '00:00:00',
             module: 'INFO',
             function: 'Carga',
-            message: 'No se encontraron registros de logs en ${filePaths['current']} ni en ${filePaths['old']}',
+            message:
+                'No se encontraron registros de logs en ${DatosGenerales.rutaArchivoLogs} ni en ${DatosGenerales.rutaArchivoLogsOld}',
           ),
         ];
       }
@@ -145,8 +146,8 @@ class _PagLogsState extends State<PagLogs> {
       SrvLogger.grabarLog('pag_logs', '_loadAndParseLogs()', 'FALLO FATAL al cargar o parsear logs: $e');
       return [
         LogEntry(
-          date: 'N/A',
-          time: 'N/A',
+          date: '1990-01-01',
+          time: '00:00:00',
           module: 'FATAL',
           function: 'Parser',
           message: 'Fallo al leer/parsear archivos de log. Revise permisos: $e',

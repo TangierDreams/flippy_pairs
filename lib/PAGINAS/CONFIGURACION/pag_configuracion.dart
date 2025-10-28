@@ -109,8 +109,6 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   ),
                   const SizedBox(height: 20),
 
-                  WidBotonStandard(pTexto: 'Cambiar Id', pFuncionCallBack: () => {SrvDispositivo.obtenerId2()}),
-
                   //------------------------------------------------------------------
                   // Activar o desactivar sonidos
                   //------------------------------------------------------------------
@@ -190,14 +188,30 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
 
                   const SizedBox(height: 10),
 
-                  WidBotonStandard(
-                    pTexto: 'Ver registro de logs',
-                    pColorDeFondo: Colores.primero,
-                    pColorLetra: Colores.onPrimero,
-                    pEmitirSonido: true,
-                    pEsquinasRedondeadas: true,
-                    pNavegarA: '/logs',
-                  ),
+                  //---------------------------------------
+                  // Botón para mostrar el archivo de logs:
+                  //---------------------------------------
+                  if (DatosGenerales.logsActivados)
+                    WidBotonStandard(
+                      pTexto: 'Ver registro de logs',
+                      pColorDeFondo: Colores.primero,
+                      pColorLetra: Colores.onPrimero,
+                      pEmitirSonido: true,
+                      pEsquinasRedondeadas: true,
+                      pNavegarA: '/logs',
+                    ),
+
+                  const SizedBox(height: 10),
+
+                  //-------------------------------------------------
+                  // Botón para generar una nueva id del dispositivo:
+                  //-------------------------------------------------
+                  if (DatosGenerales.logsActivados)
+                    WidBotonStandard(
+                      pTexto: 'Cambiar Id',
+                      pEsquinasRedondeadas: true,
+                      pFuncionCallBack: () => {SrvDispositivo.obtenerId2()},
+                    ),
                 ],
               ),
             ),
