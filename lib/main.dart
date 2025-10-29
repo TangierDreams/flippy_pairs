@@ -1,7 +1,7 @@
 import 'package:flippy_pairs/PAGINAS/CONFIGURACION/pag_configuracion.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/pag_juego.dart';
-import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PAGINAS/LOGS/pag_logs.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
@@ -95,16 +95,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         if (InfoJuego.musicaActiva) {
           SrvSonidos.iniciarMusicaFondo();
         }
-        SrvJuego.reanudarCronometro();
+        //SrvJuego.reanudarCronometro();
+        SrvCronometro.start();
         break;
       case AppLifecycleState.inactive:
         SrvSonidos.detenerMusicaFondo();
-        SrvJuego.pausarCronometro();
+        //SrvJuego.pausarCronometro();
+        SrvCronometro.stop();
         SrvLogger.grabarLog('Main', '_MyAppState', 'App pasa a inactiva');
         break;
       case AppLifecycleState.paused:
         SrvSonidos.detenerMusicaFondo();
-        SrvJuego.pausarCronometro();
+        //SrvJuego.pausarCronometro();
+        SrvCronometro.stop();
         SrvLogger.grabarLog('Main', '_MyAppState', 'La app pasa a segundo plano');
         break;
       case AppLifecycleState.detached:
