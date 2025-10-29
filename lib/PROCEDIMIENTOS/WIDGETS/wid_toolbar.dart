@@ -10,6 +10,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   final Function()? onMenuPressed;
   final Function()? onBackButtonPressed;
   final String? subtitle;
+  final VoidCallback? pFuncionCallBack;
 
   const WidToolbar({
     super.key,
@@ -18,6 +19,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
     this.onMenuPressed,
     this.onBackButtonPressed,
     this.subtitle,
+    this.pFuncionCallBack,
   });
 
   @override
@@ -61,8 +63,10 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
               onTap: () async {
                 SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'Volvemos atras desde la toolbar');
                 await SrvSonidos.boton();
-                //await Future.delayed(const Duration(milliseconds: 250));
                 if (context.mounted) {
+                  if (pFuncionCallBack != null) {
+                    pFuncionCallBack!();
+                  }
                   Navigator.pop(context);
                 } else {
                   SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'No hemos encontrado el contexto');

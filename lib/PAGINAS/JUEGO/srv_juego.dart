@@ -1,344 +1,169 @@
 //==============================================================================
-// MÓDULO DE LÓGICA DEL JUEGO.
+// SERVICIO DE LÓGICA DEL JUEGO
+// Solo contiene lógica pura, sin efectos secundarios (UI, sonidos, BD)
 //==============================================================================
 
-import 'dart:io';
-
-import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_resumen.dart';
-import 'package:flutter/material.dart';
 
 class SrvJuego {
   //----------------------------------------------------------------------------
-  // VARIABLES GLOBALES DEL JUEGO
+  // FUNCIÓN: Crear un nuevo juego desde cero
   //----------------------------------------------------------------------------
+  static EstadoJuego crearNuevoJuego(int pFilas, int pColumnas) {
+    SrvLogger.grabarLog("srv_juego", "crearNuevoJuego()", "Creando nuevo juego");
 
-  // Configuración del tablero
-  static late int filas;
-  static late int columnas;
-  static late int cartasTotales;
-  static late int parejasTotales;
+    final cartasTotales = pFilas * pColumnas;
+    final parejasTotales = cartasTotales ~/ 2;
 
-  // Las cartas y su estado
-  static late List<File> listaDeImagenes; // Las imagenes de cada carta
-  static late List<bool> listaDeCartasGiradas; // true = carta boca arriba
-  static late List<bool> listaDeCartasEmparejadas; // true = ya hizo match
-
-  // Control del turno actual
-  static int? _primeraCarta; // índice de la primera carta volteada
-  static bool _puedoGirarLaCarta = true; // false = esperando a que se oculten las cartas
-
-  // Puntuaciones
-  static int puntosPartida = 0; // Puntos solo de esta partida
-  static int parejasAcertadas = 0;
-  static int parejasFalladas = 0;
-
-  // Para el efecto visual de flash
-  static Set<int> cartasDestello = {};
-
-  static bool initCronometro = true;
-  static List<Map<String, dynamic>> datosResumenTodo = [];
-  static Map<String, dynamic> datosResumenNivel = {};
-  static int posicionCMF = 0;
-
-  //Con esta clave puedo acceder a los métodos del widget "WidResumen":
-  static final GlobalKey<WidResumenState> claveResumen = GlobalKey<WidResumenState>();
-
-  //------------------------------------------------------------------------------
-  // FUNCIONES DE INICIALIZACIÓN
-  //------------------------------------------------------------------------------
-
-  static void inicializarJuego(int pFilas, int pColumnas) async {
-    SrvLogger.grabarLog("srv_juego", "inicializarJuego()", "Inicializamos el juego");
-    filas = pFilas;
-    columnas = pColumnas;
-    cartasTotales = filas * columnas;
-    parejasTotales = cartasTotales ~/ 2;
-
-    // Conseguir los iconos aleatorios
-    listaDeImagenes = SrvImagenes.obtenerImagenesParaJugar(parejasTotales);
-
-    // Resetear todos los estados
-    listaDeCartasGiradas = List.filled(cartasTotales, false);
-    listaDeCartasEmparejadas = List.filled(cartasTotales, false);
-
-    _primeraCarta = null;
-    _puedoGirarLaCarta = true;
-
-    parejasAcertadas = 0;
-    parejasFalladas = 0;
-    puntosPartida = 0;
-    SrvCronometro.reset();
-    initCronometro = true;
-    cartasDestello = {};
-
-    // Obtenemos los datos del dispositivo para este nivel:
-
-    //claveResumen.currentState?.refrescarDatos();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      claveResumen.currentState?.refrescarDatos();
-    });
-
-    // Empezamos la música:
-
-    SrvSonidos.iniciarMusicaFondo();
-    InfoJuego.musicaActiva = true;
+    return EstadoJuego(
+      filas: pFilas,
+      columnas: pColumnas,
+      cartasTotales: cartasTotales,
+      parejasTotales: parejasTotales,
+      listaDeImagenes: SrvImagenes.obtenerImagenesParaJugar(parejasTotales),
+      listaDeCartasGiradas: List.filled(cartasTotales, false),
+      listaDeCartasEmparejadas: List.filled(cartasTotales, false),
+      primeraCarta: null,
+      puedoGirarCarta: true,
+      puntosPartida: 0,
+      parejasAcertadas: 0,
+      parejasFalladas: 0,
+      cartasDestello: {},
+    );
   }
 
-  static void resetearJuego() {
-    SrvLogger.grabarLog("srv_juego", "resetearJuego()", "Reseteamos el juego");
-    inicializarJuego(filas, columnas);
+  //----------------------------------------------------------------------------
+  // FUNCIÓN: Verificar si dos cartas son iguales
+  //----------------------------------------------------------------------------
+  static bool sonCartasIguales(EstadoJuego estado, int carta1, int carta2) {
+    return estado.listaDeImagenes[carta1] == estado.listaDeImagenes[carta2];
   }
 
-  static void pausarCronometro() {
-    if (InfoJuego.juegoEnCurso && !InfoJuego.juegoPausado) {
-      SrvCronometro.stop();
-      InfoJuego.juegoPausado = true;
-      SrvLogger.grabarLog("srv_juego", "pausarCronometro()", "Cronometro pausado");
+  //----------------------------------------------------------------------------
+  // FUNCIÓN: Verificar si el juego ha terminado
+  //----------------------------------------------------------------------------
+  static bool estaJuegoTerminado(EstadoJuego estado) {
+    return estado.listaDeCartasEmparejadas.every((emparejada) => emparejada);
+  }
+
+  //----------------------------------------------------------------------------
+  // FUNCIÓN: Calcular puntos según acierto o fallo
+  //----------------------------------------------------------------------------
+  static int calcularPuntos(int puntosActuales, bool esAcierto) {
+    final nivel = InfoJuego.niveles[InfoJuego.nivelSeleccionado];
+
+    if (esAcierto) {
+      return puntosActuales + (nivel['puntosMas'] as int);
+    } else {
+      return puntosActuales - (nivel['puntosMenos'] as int);
     }
   }
 
-  static void reanudarCronometro() {
-    if (InfoJuego.juegoEnCurso && InfoJuego.juegoPausado) {
-      SrvCronometro.start();
-      InfoJuego.juegoPausado = false;
-      SrvLogger.grabarLog("srv_juego", "reanudarCronometro()", "Cronometro reanudado");
-    }
-  }
-
-  //------------------------------------------------------------------------------
-  // FUNCIONES DE LÓGICA PURA
-  //------------------------------------------------------------------------------
-
-  // Comprobamos si 2 cartas son iguales:
-
-  static bool esPareja(int carta1, int carta2) {
-    return listaDeImagenes[carta1] == listaDeImagenes[carta2];
-  }
-
-  // Si todas las cartas están emparejadas, se acabó el juego:
-
-  static bool juegoTerminado() {
-    for (bool emparejada in listaDeCartasEmparejadas) {
-      if (!emparejada) return false;
-    }
-    return true;
-  }
-
-  // Sumamos puntos:
-
-  static void _sumarPuntos() {
-    puntosPartida += InfoJuego.niveles[InfoJuego.nivelSeleccionado]['puntosMas'] as int;
-  }
-
-  // Restamos puntos:
-
-  static void _restarPuntos() {
-    puntosPartida -= InfoJuego.niveles[InfoJuego.nivelSeleccionado]['puntosMenos'] as int;
-  }
-
-  //------------------------------------------------------------------------------
-  // FUNCIÓN PRINCIPAL: MANEJAR EL TOQUE EN UNA CARTA
-  //------------------------------------------------------------------------------
-
-  static Future<void> cartaPulsada(int index, Function pSetState) async {
-    if (initCronometro) {
-      initCronometro = false;
-      SrvCronometro.reset();
-      SrvCronometro.start();
-      SrvLogger.grabarLog('srv_juego', 'cartaPulsada()', 'Cronometro reseteado e iniciado');
-      InfoJuego.juegoEnCurso = true;
-      InfoJuego.juegoPausado = false;
-    }
-
+  //----------------------------------------------------------------------------
+  // FUNCIÓN PRINCIPAL: Procesar cuando el usuario pulsa una carta
+  // Retorna el nuevo estado y la acción que ocurrió (para que la UI reaccione)
+  //----------------------------------------------------------------------------
+  static ResultadoCartaPulsada procesarCartaPulsada(EstadoJuego estado, int index) {
     // 1. VERIFICACIONES BÁSICAS
 
-    // Si no puedo girar, ignoro el toque
-    if (!_puedoGirarLaCarta) return;
+    // Si no puedo girar, ignoro
+    if (!estado.puedoGirarCarta) {
+      return ResultadoCartaPulsada(nuevoEstado: estado, accion: TipoAccion.ignorar);
+    }
 
     // Si la carta ya está girada o emparejada, ignoro
-    if (listaDeCartasGiradas[index] || listaDeCartasEmparejadas[index]) return;
+    if (estado.listaDeCartasGiradas[index] || estado.listaDeCartasEmparejadas[index]) {
+      return ResultadoCartaPulsada(nuevoEstado: estado, accion: TipoAccion.ignorar);
+    }
 
     // 2. VOLTEAR LA CARTA
-    pSetState(() {
-      listaDeCartasGiradas[index] = true;
-    });
 
-    // SONIDO DE GIRAR LA CARTA
-
-    SrvSonidos.flip();
-    //await Future.delayed(const Duration(milliseconds: 900));
+    List<bool> nuevasCartasGiradas = List.from(estado.listaDeCartasGiradas);
+    nuevasCartasGiradas[index] = true;
 
     // 3. ¿ES LA PRIMERA O LA SEGUNDA CARTA?
 
-    // Si es la primera carta del turno
-    if (_primeraCarta == null) {
-      _primeraCarta = index;
-      return; // Esperamos a que volteen la segunda
+    if (estado.primeraCarta == null) {
+      // Es la primera carta del turno
+      return ResultadoCartaPulsada(
+        nuevoEstado: estado.copiarCon(listaDeCartasGiradas: nuevasCartasGiradas, primeraCarta: index),
+        accion: TipoAccion.primeraCartaGirada,
+      );
     }
 
-    // Si llegamos aquí, es la segunda carta
-    int indicePrimera = _primeraCarta!;
-    int indiceSegunda = index;
+    // Es la segunda carta - vamos a compararlas
+    final indicePrimera = estado.primeraCarta!;
+    final indiceSegunda = index;
 
     // 4. COMPROBAR SI HACEN PAREJA
 
-    if (esPareja(indicePrimera, indiceSegunda)) {
-      //-------------------------
-      // LAS 2 CARTAS SON IGUALES
-      //-------------------------
+    if (sonCartasIguales(estado, indicePrimera, indiceSegunda)) {
+      //--------------------------------------------------------------------
+      // ACIERTO: Las cartas son iguales
+      //--------------------------------------------------------------------
 
-      pSetState(() {
-        listaDeCartasEmparejadas[indicePrimera] = true;
-        listaDeCartasEmparejadas[indiceSegunda] = true;
-        _primeraCarta = null;
-      });
+      List<bool> nuevasEmparejadas = List.from(estado.listaDeCartasEmparejadas);
+      nuevasEmparejadas[indicePrimera] = true;
+      nuevasEmparejadas[indiceSegunda] = true;
 
-      parejasAcertadas++;
-      _sumarPuntos();
+      Set<int> nuevoDestello = {indicePrimera, indiceSegunda};
 
-      // Efecto visual de parpadeo
-      pSetState(() {
-        cartasDestello.add(indicePrimera);
-        cartasDestello.add(indiceSegunda);
-      });
-
-      // Emitimos sonido de acierto y 'destello':
-      SrvSonidos.level();
-      await Future.delayed(const Duration(milliseconds: 900));
-
-      pSetState(() {
-        cartasDestello.clear();
-      });
-
-      // Verificar si hemos terminado el juego
-      if (juegoTerminado()) {
-        SrvSonidos.detenerMusicaFondo();
-        InfoJuego.musicaActiva = false;
-      }
+      return ResultadoCartaPulsada(
+        nuevoEstado: estado.copiarCon(
+          listaDeCartasGiradas: nuevasCartasGiradas,
+          listaDeCartasEmparejadas: nuevasEmparejadas,
+          primerCartaNula: true,
+          parejasAcertadas: estado.parejasAcertadas + 1,
+          puntosPartida: calcularPuntos(estado.puntosPartida, true),
+          cartasDestello: nuevoDestello,
+        ),
+        accion: TipoAccion.parejasIguales,
+        indicePrimera: indicePrimera,
+        indiceSegunda: indiceSegunda,
+      );
     } else {
-      //----------------------------
-      // LAS 2 CARTAS SON DIFERENTES
-      //----------------------------
+      //--------------------------------------------------------------------
+      // FALLO: Las cartas son diferentes
+      //--------------------------------------------------------------------
 
-      //_puedoGirarLaCarta = false; // Bloqueamos más toques
-      parejasFalladas++;
-      _restarPuntos();
-
-      // Guardamos los índices en variables locales
-      final i1 = indicePrimera;
-      final i2 = indiceSegunda;
-      _primeraCarta = null;
-
-      // Temporarily disable only the two cards just flipped
-      listaDeCartasEmparejadas[i1] = false;
-      listaDeCartasEmparejadas[i2] = false;
-
-      // Esperamos para que el jugador las vea las cartas desparejadas:
-
-      //await Future.delayed(const Duration(milliseconds: 900));
-
-      Future.delayed(const Duration(milliseconds: 900), () {
-        // Si ya están emparejadas (puede pasar si el usuario las vuelve a girar y acierta)
-        if (listaDeCartasEmparejadas[i1] || listaDeCartasEmparejadas[i2]) return;
-
-        SrvSonidos.goback();
-
-        // Las volvemos a ocultar
-        pSetState(() {
-          listaDeCartasGiradas[i1] = false;
-          listaDeCartasGiradas[i2] = false;
-
-          // listaDeCartasGiradas[indicePrimera] = false;
-          // listaDeCartasGiradas[indiceSegunda] = false;
-          // _primeraCarta = null;
-          // _puedoGirarLaCarta = true;
-        });
-      });
+      return ResultadoCartaPulsada(
+        nuevoEstado: estado.copiarCon(
+          listaDeCartasGiradas: nuevasCartasGiradas,
+          primerCartaNula: true,
+          parejasFalladas: estado.parejasFalladas + 1,
+          puntosPartida: calcularPuntos(estado.puntosPartida, false),
+        ),
+        accion: TipoAccion.parejasDiferentes,
+        indicePrimera: indicePrimera,
+        indiceSegunda: indiceSegunda,
+      );
     }
   }
 
   //----------------------------------------------------------------------------
-  // Función para controlar si el juego ha acabado o no.
+  // FUNCIÓN: Ocultar cartas después de un fallo
+  // Se llama después de un delay para que el usuario vea las cartas
   //----------------------------------------------------------------------------
-
-  static Future<void> controlJuegoAcabado(BuildContext pContexto, Function pSetState) async {
-    if (juegoTerminado()) {
-      SrvLogger.grabarLog("srv_juego", "controlJuegoAcabado()", "Juego acabado. Stop cronometro");
-      SrvCronometro.stop();
-      initCronometro = true;
-      InfoJuego.juegoEnCurso = false;
-      InfoJuego.juegoPausado = false;
-
-      // Anotamos el resultado en Supabase:
-
-      await SrvSupabase.grabarPartida(
-        pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '?'),
-        pNivel: InfoJuego.nivelSeleccionado,
-        pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '?'),
-        pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '?'),
-        pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '?'),
-        pPuntos: puntosPartida,
-        pTiempo: SrvCronometro.obtenerSegundos(),
-        pGanada: puntosPartida > 0 ? true : false,
-      );
-
-      //await Future.delayed(const Duration(milliseconds: 100));
-
-      // Recogemos los resultados del usuario:
-
-      final datosDispositivo = await SrvSupabase.obtenerRegFlippy(
-        pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-      );
-
-      // Obtenemos la posición del usuario en el ranking Flippy:
-
-      final posicionFlippy = await SrvSupabase.obtenerRankingFlippy(
-        pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-        pLevel: InfoJuego.nivelSeleccionado,
-      );
-
-      final nivelJugado = InfoJuego.niveles[InfoJuego.nivelSeleccionado]['titulo'] as String;
-
-      // Busca el registro del nivel que se ha jugado:
-
-      final registroNivel = datosDispositivo.firstWhere(
-        (reg) => reg['nivel'] == InfoJuego.nivelSeleccionado,
-        orElse: () => <String, dynamic>{},
-      );
-
-      if (pContexto.mounted) {
-        SrvLogger.grabarLog("srv_juego", "controlJuegoAcabado()", "Mostramos el popup de final de partida");
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          widJuegoAcabado(
-            pContexto,
-            nivelJugado,
-            puntosPartida,
-            posicionFlippy,
-            registroNivel['puntos'],
-            registroNivel['partidas'],
-            SrvCronometro.obtenerTiempo(),
-            SrvFechas.segundosAMinutosYSegundos(InfoJuego.niveles[InfoJuego.nivelSeleccionado]['tiempo'] as int),
-            SrvFechas.segundosAMinutosYSegundos(registroNivel['tiempo_record']),
-            pFuncionDeCallback: () {
-              pSetState(() {
-                resetearJuego();
-              });
-            },
-          );
-        });
-      } else {
-        SrvLogger.grabarLog("srv_juego", "controlJuegoAcabado()", "No se encuentra el contexto");
-      }
+  static EstadoJuego ocultarCartasFalladas(EstadoJuego estado, int index1, int index2) {
+    // Solo ocultamos si no han sido emparejadas mientras tanto
+    if (estado.listaDeCartasEmparejadas[index1] || estado.listaDeCartasEmparejadas[index2]) {
+      return estado;
     }
+
+    List<bool> nuevasCartasGiradas = List.from(estado.listaDeCartasGiradas);
+    nuevasCartasGiradas[index1] = false;
+    nuevasCartasGiradas[index2] = false;
+
+    return estado.copiarCon(listaDeCartasGiradas: nuevasCartasGiradas);
+  }
+
+  //----------------------------------------------------------------------------
+  // FUNCIÓN: Limpiar el efecto de destello
+  //----------------------------------------------------------------------------
+  static EstadoJuego limpiarDestello(EstadoJuego estado) {
+    return estado.copiarCon(cartasDestello: {});
   }
 }

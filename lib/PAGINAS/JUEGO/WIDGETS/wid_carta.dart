@@ -1,3 +1,8 @@
+//==============================================================================
+// WIDGET DE CARTA
+// Widget "tonto" que solo muestra lo que le dicen. Sin lógica de negocio.
+//==============================================================================
+
 import 'dart:io';
 import 'dart:math';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
@@ -20,14 +25,11 @@ class WidCarta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        //SrvSonidos.flip();
-        pCallBackFunction();
-      },
+      onTap: pCallBackFunction,
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(
           begin: 0,
-          end: pEstaBocaArriba ? 1 : 0, // 0 = back, 1 = front
+          end: pEstaBocaArriba ? 1 : 0, // 0 = boca abajo, 1 = boca arriba
         ),
         duration: const Duration(milliseconds: 500),
         builder: (context, value, child) {
@@ -36,7 +38,6 @@ class WidCarta extends StatelessWidget {
 
           final Color colorBase = mostrarCarta ? Colores.onPrimero : Colores.primero;
 
-          // --- NUEVO BLOQUE: animación de brillo y escala pulsante ---
           return AnimatedScale(
             scale: pDestello ? 1.15 : 1.0,
             duration: const Duration(milliseconds: 400),
