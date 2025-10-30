@@ -54,16 +54,29 @@ class _PagJuegoState extends State<PagJuego> {
   // Inicializar el juego y preparar la pantalla
   //----------------------------------------------------------------------------
   void _inicializarPantalla() async {
+    //Forzamos una "microparada" de la ejecución para que el sistema tenga
+    //tiempo de procesar todas las tareas síncronas de la inicialización
+    //incluida la finalización de initState()
     await Future.microtask(() {});
+
+    //Si durante la microparada anterior un usuario Speedy Gonsales ha pulsado
+    //el botón de salir y ejecutado el dispose(), tenemos que irnos.
     if (!mounted) return;
 
+    //Inicializamos todas las variables del estado de una partida.
+    //Bajamos la lista de imagenes para la partida e inicializamos la lista de
+    //cartas giradas y cartas emparejadas.
     _estadoJuego = SrvJuego.crearNuevoJuego(InfoJuego.filasSeleccionadas, InfoJuego.columnasSeleccionadas);
 
+    //Marcamos el juego como inicializado. Colocamos la variable dentro de un
+    //"setState" porque es un valor que utiliza la UI para actualizar elementos.
     setState(() {
       _juegoInicializado = true;
     });
 
-    // Refrescar datos del resumen después de construir
+    //Con la instrucción anterior, la UI habrá tenido que reconstruir elementos.
+    //Con esta instrucción le decimos que llame a "refrescarDatos" cuando
+    //termine de reconstruirse.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _claveResumen.currentState?.refrescarDatos();
     });
@@ -285,6 +298,9 @@ class _PagJuegoState extends State<PagJuego> {
                         _estadoJuego.listaDeCartasGiradas[index] || _estadoJuego.listaDeCartasEmparejadas[index],
                     pImagenCarta: _estadoJuego.listaDeImagenes[index],
                     pDestello: _estadoJuego.cartasDestello.contains(index),
+
+                    //Cuando el usuario hace click en una carta, ejecutamos la
+                    //funcion "_manejarCartaPulsada"
                     pCallBackFunction: () => _manejarCartaPulsada(index),
                   );
                 },

@@ -24,7 +24,11 @@ class SrvJuego {
       cartasTotales: cartasTotales,
       parejasTotales: parejasTotales,
       listaDeImagenes: SrvImagenes.obtenerImagenesParaJugar(parejasTotales),
+      //Creamos una lista de tamaño fijo (cartasTotales) y colocamos todos sus
+      //valores a "false". Al inicio todas las cartas están boca abajo:
       listaDeCartasGiradas: List.filled(cartasTotales, false),
+      //Creamos otra lista de tamaño fijo y al inicio del juego no hay ninguna
+      //carta emparejada. Estan todas a false.
       listaDeCartasEmparejadas: List.filled(cartasTotales, false),
       primeraCarta: null,
       puedoGirarCarta: true,
@@ -66,58 +70,58 @@ class SrvJuego {
   // FUNCIÓN PRINCIPAL: Procesar cuando el usuario pulsa una carta
   // Retorna el nuevo estado y la acción que ocurrió (para que la UI reaccione)
   //----------------------------------------------------------------------------
-  static ResultadoCartaPulsada procesarCartaPulsada(EstadoJuego estado, int index) {
+  static ResultadoCartaPulsada procesarCartaPulsada(EstadoJuego pEstado, int pIndex) {
     // 1. VERIFICACIONES BÁSICAS
 
-    // Si no puedo girar, ignoro
-    if (!estado.puedoGirarCarta) {
-      return ResultadoCartaPulsada(nuevoEstado: estado, accion: TipoAccion.ignorar);
+    // Si no se puede girar la carta, se ignora:
+    if (!pEstado.puedoGirarCarta) {
+      return ResultadoCartaPulsada(nuevoEstado: pEstado, accion: TipoAccion.ignorar);
     }
 
-    // Si la carta ya está girada o emparejada, ignoro
-    if (estado.listaDeCartasGiradas[index] || estado.listaDeCartasEmparejadas[index]) {
-      return ResultadoCartaPulsada(nuevoEstado: estado, accion: TipoAccion.ignorar);
+    // Si la carta ya está girada o emparejada, se ignora
+    if (pEstado.listaDeCartasGiradas[pIndex] || pEstado.listaDeCartasEmparejadas[pIndex]) {
+      return ResultadoCartaPulsada(nuevoEstado: pEstado, accion: TipoAccion.ignorar);
     }
 
-    // 2. VOLTEAR LA CARTA
+    // 2. GIRAR LA CARTA
 
-    List<bool> nuevasCartasGiradas = List.from(estado.listaDeCartasGiradas);
-    nuevasCartasGiradas[index] = true;
+    List<bool> nuevasCartasGiradas = List.from(pEstado.listaDeCartasGiradas);
+    nuevasCartasGiradas[pIndex] = true;
 
     // 3. ¿ES LA PRIMERA O LA SEGUNDA CARTA?
 
-    if (estado.primeraCarta == null) {
+    if (pEstado.primeraCarta == null) {
       // Es la primera carta del turno
       return ResultadoCartaPulsada(
-        nuevoEstado: estado.copiarCon(listaDeCartasGiradas: nuevasCartasGiradas, primeraCarta: index),
+        nuevoEstado: pEstado.copiarCon(listaDeCartasGiradas: nuevasCartasGiradas, primeraCarta: pIndex),
         accion: TipoAccion.primeraCartaGirada,
       );
     }
 
     // Es la segunda carta - vamos a compararlas
-    final indicePrimera = estado.primeraCarta!;
-    final indiceSegunda = index;
+    final indicePrimera = pEstado.primeraCarta!;
+    final indiceSegunda = pIndex;
 
     // 4. COMPROBAR SI HACEN PAREJA
 
-    if (sonCartasIguales(estado, indicePrimera, indiceSegunda)) {
+    if (sonCartasIguales(pEstado, indicePrimera, indiceSegunda)) {
       //--------------------------------------------------------------------
       // ACIERTO: Las cartas son iguales
       //--------------------------------------------------------------------
 
-      List<bool> nuevasEmparejadas = List.from(estado.listaDeCartasEmparejadas);
+      List<bool> nuevasEmparejadas = List.from(pEstado.listaDeCartasEmparejadas);
       nuevasEmparejadas[indicePrimera] = true;
       nuevasEmparejadas[indiceSegunda] = true;
 
       Set<int> nuevoDestello = {indicePrimera, indiceSegunda};
 
       return ResultadoCartaPulsada(
-        nuevoEstado: estado.copiarCon(
+        nuevoEstado: pEstado.copiarCon(
           listaDeCartasGiradas: nuevasCartasGiradas,
           listaDeCartasEmparejadas: nuevasEmparejadas,
           primerCartaNula: true,
-          parejasAcertadas: estado.parejasAcertadas + 1,
-          puntosPartida: calcularPuntos(estado.puntosPartida, true),
+          parejasAcertadas: pEstado.parejasAcertadas + 1,
+          puntosPartida: calcularPuntos(pEstado.puntosPartida, true),
           cartasDestello: nuevoDestello,
         ),
         accion: TipoAccion.parejasIguales,
@@ -130,11 +134,11 @@ class SrvJuego {
       //--------------------------------------------------------------------
 
       return ResultadoCartaPulsada(
-        nuevoEstado: estado.copiarCon(
+        nuevoEstado: pEstado.copiarCon(
           listaDeCartasGiradas: nuevasCartasGiradas,
           primerCartaNula: true,
-          parejasFalladas: estado.parejasFalladas + 1,
-          puntosPartida: calcularPuntos(estado.puntosPartida, false),
+          parejasFalladas: pEstado.parejasFalladas + 1,
+          puntosPartida: calcularPuntos(pEstado.puntosPartida, false),
         ),
         accion: TipoAccion.parejasDiferentes,
         indicePrimera: indicePrimera,
