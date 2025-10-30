@@ -5,7 +5,9 @@
 
 import 'dart:io';
 
-/// Representa el estado completo del juego en un momento dado
+//------------------------------------------------------------------------------
+// Representa el estado completo del juego en un momento dado
+//------------------------------------------------------------------------------
 class EstadoJuego {
   // Configuración del tablero
   final int filas;
@@ -47,41 +49,44 @@ class EstadoJuego {
   });
 
   /// Crea una copia del estado con los cambios especificados
-  EstadoJuego copiarCon({
-    int? filas,
-    int? columnas,
-    int? cartasTotales,
-    int? parejasTotales,
-    List<File>? listaDeImagenes,
-    List<bool>? listaDeCartasGiradas,
-    List<bool>? listaDeCartasEmparejadas,
-    int? primeraCarta,
-    bool? primerCartaNula,
-    bool? puedoGirarCarta,
-    int? puntosPartida,
-    int? parejasAcertadas,
-    int? parejasFalladas,
-    Set<int>? cartasDestello,
-  }) {
-    return EstadoJuego(
-      filas: filas ?? this.filas,
-      columnas: columnas ?? this.columnas,
-      cartasTotales: cartasTotales ?? this.cartasTotales,
-      parejasTotales: parejasTotales ?? this.parejasTotales,
-      listaDeImagenes: listaDeImagenes ?? this.listaDeImagenes,
-      listaDeCartasGiradas: listaDeCartasGiradas ?? List.from(this.listaDeCartasGiradas),
-      listaDeCartasEmparejadas: listaDeCartasEmparejadas ?? List.from(this.listaDeCartasEmparejadas),
-      primeraCarta: primerCartaNula == true ? null : (primeraCarta ?? this.primeraCarta),
-      puedoGirarCarta: puedoGirarCarta ?? this.puedoGirarCarta,
-      puntosPartida: puntosPartida ?? this.puntosPartida,
-      parejasAcertadas: parejasAcertadas ?? this.parejasAcertadas,
-      parejasFalladas: parejasFalladas ?? this.parejasFalladas,
-      cartasDestello: cartasDestello ?? Set.from(this.cartasDestello),
-    );
-  }
+  // EstadoJuego copiarCon({
+  //   int? filas,
+  //   int? columnas,
+  //   int? cartasTotales,
+  //   int? parejasTotales,
+  //   List<File>? listaDeImagenes,
+  //   List<bool>? listaDeCartasGiradas,
+  //   List<bool>? listaDeCartasEmparejadas,
+  //   int? primeraCarta,
+  //   bool? primerCartaNula,
+  //   bool? puedoGirarCarta,
+  //   int? puntosPartida,
+  //   int? parejasAcertadas,
+  //   int? parejasFalladas,
+  //   Set<int>? cartasDestello,
+  // }) {
+  //   return EstadoJuego(
+  //     filas: filas ?? this.filas,
+  //     columnas: columnas ?? this.columnas,
+  //     cartasTotales: cartasTotales ?? this.cartasTotales,
+  //     parejasTotales: parejasTotales ?? this.parejasTotales,
+  //     listaDeImagenes: listaDeImagenes ?? this.listaDeImagenes,
+  //     listaDeCartasGiradas: listaDeCartasGiradas ?? List.from(this.listaDeCartasGiradas),
+  //     listaDeCartasEmparejadas: listaDeCartasEmparejadas ?? List.from(this.listaDeCartasEmparejadas),
+  //     primeraCarta: primerCartaNula == true ? null : (primeraCarta ?? this.primeraCarta),
+  //     puedoGirarCarta: puedoGirarCarta ?? this.puedoGirarCarta,
+  //     puntosPartida: puntosPartida ?? this.puntosPartida,
+  //     parejasAcertadas: parejasAcertadas ?? this.parejasAcertadas,
+  //     parejasFalladas: parejasFalladas ?? this.parejasFalladas,
+  //     cartasDestello: cartasDestello ?? Set.from(this.cartasDestello),
+  //   );
+  // }
 }
 
-/// Resultado de procesar una carta pulsada
+//------------------------------------------------------------------------------
+// Resultado de procesar una carta pulsada
+//------------------------------------------------------------------------------
+
 class ResultadoCartaPulsada {
   final EstadoJuego nuevoEstado;
   final TipoAccion accion;
@@ -91,7 +96,10 @@ class ResultadoCartaPulsada {
   ResultadoCartaPulsada({required this.nuevoEstado, required this.accion, this.indicePrimera, this.indiceSegunda});
 }
 
-/// Tipos de acciones que pueden ocurrir al pulsar una carta
+//------------------------------------------------------------------------------
+// Tipos de acciones que pueden ocurrir al pulsar una carta
+//------------------------------------------------------------------------------
+
 enum TipoAccion {
   ignorar, // La carta ya está girada o no se puede girar
   primeraCartaGirada, // Se giró la primera carta del turno

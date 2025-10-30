@@ -42,27 +42,27 @@ class SrvJuego {
   //----------------------------------------------------------------------------
   // FUNCIÓN: Verificar si dos cartas son iguales
   //----------------------------------------------------------------------------
-  static bool sonCartasIguales(EstadoJuego estado, int carta1, int carta2) {
-    return estado.listaDeImagenes[carta1] == estado.listaDeImagenes[carta2];
+  static bool sonCartasIguales(EstadoJuego pEstado, int pCarta1, int pCarta2) {
+    return pEstado.listaDeImagenes[pCarta1] == pEstado.listaDeImagenes[pCarta2];
   }
 
   //----------------------------------------------------------------------------
   // FUNCIÓN: Verificar si el juego ha terminado
   //----------------------------------------------------------------------------
-  static bool estaJuegoTerminado(EstadoJuego estado) {
-    return estado.listaDeCartasEmparejadas.every((emparejada) => emparejada);
+  static bool estaJuegoTerminado(EstadoJuego pEstado) {
+    return pEstado.listaDeCartasEmparejadas.every((emparejada) => emparejada);
   }
 
   //----------------------------------------------------------------------------
   // FUNCIÓN: Calcular puntos según acierto o fallo
   //----------------------------------------------------------------------------
-  static int calcularPuntos(int puntosActuales, bool esAcierto) {
+  static int calcularPuntos(int pPuntosActuales, bool pEsAcierto) {
     final nivel = InfoJuego.niveles[InfoJuego.nivelSeleccionado];
 
-    if (esAcierto) {
-      return puntosActuales + (nivel['puntosMas'] as int);
+    if (pEsAcierto) {
+      return pPuntosActuales + (nivel['puntosMas'] as int);
     } else {
-      return puntosActuales - (nivel['puntosMenos'] as int);
+      return pPuntosActuales - (nivel['puntosMenos'] as int);
     }
   }
 
@@ -93,7 +93,7 @@ class SrvJuego {
     if (pEstado.primeraCarta == null) {
       // Es la primera carta del turno
       return ResultadoCartaPulsada(
-        nuevoEstado: pEstado.copiarCon(listaDeCartasGiradas: nuevasCartasGiradas, primeraCarta: pIndex),
+        nuevoEstado: _copiarEstado(pEstado, pListaDeCartasGiradas: nuevasCartasGiradas, pPrimeraCarta: pIndex),
         accion: TipoAccion.primeraCartaGirada,
       );
     }
@@ -116,13 +116,14 @@ class SrvJuego {
       Set<int> nuevoDestello = {indicePrimera, indiceSegunda};
 
       return ResultadoCartaPulsada(
-        nuevoEstado: pEstado.copiarCon(
-          listaDeCartasGiradas: nuevasCartasGiradas,
-          listaDeCartasEmparejadas: nuevasEmparejadas,
-          primerCartaNula: true,
-          parejasAcertadas: pEstado.parejasAcertadas + 1,
-          puntosPartida: calcularPuntos(pEstado.puntosPartida, true),
-          cartasDestello: nuevoDestello,
+        nuevoEstado: _copiarEstado(
+          pEstado,
+          pListaDeCartasGiradas: nuevasCartasGiradas,
+          pListaDeCartasEmparejadas: nuevasEmparejadas,
+          pResetearPrimeraCarta: true,
+          pParejasAcertadas: pEstado.parejasAcertadas + 1,
+          pPuntosPartida: calcularPuntos(pEstado.puntosPartida, true),
+          pCartasDestello: nuevoDestello,
         ),
         accion: TipoAccion.parejasIguales,
         indicePrimera: indicePrimera,
@@ -134,11 +135,12 @@ class SrvJuego {
       //--------------------------------------------------------------------
 
       return ResultadoCartaPulsada(
-        nuevoEstado: pEstado.copiarCon(
-          listaDeCartasGiradas: nuevasCartasGiradas,
-          primerCartaNula: true,
-          parejasFalladas: pEstado.parejasFalladas + 1,
-          puntosPartida: calcularPuntos(pEstado.puntosPartida, false),
+        nuevoEstado: _copiarEstado(
+          pEstado,
+          pListaDeCartasGiradas: nuevasCartasGiradas,
+          pResetearPrimeraCarta: true,
+          pParejasFalladas: pEstado.parejasFalladas + 1,
+          pPuntosPartida: calcularPuntos(pEstado.puntosPartida, false),
         ),
         accion: TipoAccion.parejasDiferentes,
         indicePrimera: indicePrimera,
@@ -151,23 +153,54 @@ class SrvJuego {
   // FUNCIÓN: Ocultar cartas después de un fallo
   // Se llama después de un delay para que el usuario vea las cartas
   //----------------------------------------------------------------------------
-  static EstadoJuego ocultarCartasFalladas(EstadoJuego estado, int index1, int index2) {
+  static EstadoJuego ocultarCartasFalladas(EstadoJuego pEstado, int pIndex1, int pIndex2) {
     // Solo ocultamos si no han sido emparejadas mientras tanto
-    if (estado.listaDeCartasEmparejadas[index1] || estado.listaDeCartasEmparejadas[index2]) {
-      return estado;
+    if (pEstado.listaDeCartasEmparejadas[pIndex1] || pEstado.listaDeCartasEmparejadas[pIndex2]) {
+      return pEstado;
     }
 
-    List<bool> nuevasCartasGiradas = List.from(estado.listaDeCartasGiradas);
-    nuevasCartasGiradas[index1] = false;
-    nuevasCartasGiradas[index2] = false;
+    List<bool> nuevasCartasGiradas = List.from(pEstado.listaDeCartasGiradas);
+    nuevasCartasGiradas[pIndex1] = false;
+    nuevasCartasGiradas[pIndex2] = false;
 
-    return estado.copiarCon(listaDeCartasGiradas: nuevasCartasGiradas);
+    return _copiarEstado(pEstado, pListaDeCartasGiradas: nuevasCartasGiradas);
   }
 
   //----------------------------------------------------------------------------
   // FUNCIÓN: Limpiar el efecto de destello
   //----------------------------------------------------------------------------
-  static EstadoJuego limpiarDestello(EstadoJuego estado) {
-    return estado.copiarCon(cartasDestello: {});
+  static EstadoJuego limpiarDestello(EstadoJuego pEstado) {
+    return _copiarEstado(pEstado, pCartasDestello: {});
+  }
+
+  //----------------------------------------------------------------------------
+  // Helper para copiar estado con cambios
+  //----------------------------------------------------------------------------
+  static EstadoJuego _copiarEstado(
+    EstadoJuego pEstado, {
+    List<bool>? pListaDeCartasGiradas,
+    List<bool>? pListaDeCartasEmparejadas,
+    int? pPrimeraCarta,
+    bool pResetearPrimeraCarta = false,
+    int? pPuntosPartida,
+    int? pParejasAcertadas,
+    int? pParejasFalladas,
+    Set<int>? pCartasDestello,
+  }) {
+    return EstadoJuego(
+      filas: pEstado.filas,
+      columnas: pEstado.columnas,
+      cartasTotales: pEstado.cartasTotales,
+      parejasTotales: pEstado.parejasTotales,
+      listaDeImagenes: pEstado.listaDeImagenes,
+      listaDeCartasGiradas: pListaDeCartasGiradas ?? List.from(pEstado.listaDeCartasGiradas),
+      listaDeCartasEmparejadas: pListaDeCartasEmparejadas ?? List.from(pEstado.listaDeCartasEmparejadas),
+      primeraCarta: pResetearPrimeraCarta ? null : (pPrimeraCarta ?? pEstado.primeraCarta),
+      puedoGirarCarta: pEstado.puedoGirarCarta,
+      puntosPartida: pPuntosPartida ?? pEstado.puntosPartida,
+      parejasAcertadas: pParejasAcertadas ?? pEstado.parejasAcertadas,
+      parejasFalladas: pParejasFalladas ?? pEstado.parejasFalladas,
+      cartasDestello: pCartasDestello ?? Set.from(pEstado.cartasDestello),
+    );
   }
 }
