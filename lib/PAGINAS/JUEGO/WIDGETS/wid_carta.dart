@@ -1,6 +1,6 @@
 //==============================================================================
 // WIDGET DE CARTA
-// Widget "tonto" que solo muestra lo que le dicen. Sin lógica de negocio.
+// Solo muestra una carta. Nada de lógica.
 //==============================================================================
 
 import 'dart:io';
@@ -27,15 +27,11 @@ class WidCarta extends StatelessWidget {
     return GestureDetector(
       onTap: pCallBackFunction,
       child: TweenAnimationBuilder<double>(
-        tween: Tween<double>(
-          begin: 0,
-          end: pEstaBocaArriba ? 1 : 0, // 0 = boca abajo, 1 = boca arriba
-        ),
+        tween: Tween<double>(begin: 0, end: pEstaBocaArriba ? 1 : 0),
         duration: const Duration(milliseconds: 500),
         builder: (context, value, child) {
           double angle = value * pi;
           bool mostrarCarta = value > 0.5;
-
           final Color colorBase = mostrarCarta ? Colores.onPrimero : Colores.primero;
 
           return AnimatedScale(

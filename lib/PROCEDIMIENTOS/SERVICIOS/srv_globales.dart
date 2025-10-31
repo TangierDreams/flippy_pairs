@@ -13,25 +13,6 @@ class DatosGenerales {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55Z3psbnJoYnJkdmpqaHJic2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE3MDQ3MTMsImV4cCI6MjAxNzI4MDcxM30.0ioZe3S_uqanr_Ulm_yWVxYEOHi7pHCNHKyu9zsq8fE';
 }
 
-class InfoJuego {
-  static int filasSeleccionadas = 3;
-  static int columnasSeleccionadas = 2;
-  static int temaSeleccionado = 0;
-  static int nivelSeleccionado = 0;
-  static String listaSeleccionada = 'iconos';
-  static bool juegoEnCurso = false;
-  static bool juegoPausado = false;
-  static bool musicaActiva = false;
-  static const niveles = [
-    {'titulo': '3x2', 'filas': 3, 'columnas': 2, 'puntosMas': 10, 'puntosMenos': 10, 'tiempo': 20},
-    {'titulo': '4x3', 'filas': 4, 'columnas': 3, 'puntosMas': 10, 'puntosMenos': 9, 'tiempo': 45},
-    {'titulo': '5x4', 'filas': 5, 'columnas': 4, 'puntosMas': 10, 'puntosMenos': 7, 'tiempo': 80},
-    {'titulo': '6x5', 'filas': 6, 'columnas': 5, 'puntosMas': 10, 'puntosMenos': 6, 'tiempo': 260},
-    {'titulo': '8x7', 'filas': 8, 'columnas': 7, 'puntosMas': 10, 'puntosMenos': 4, 'tiempo': 360},
-    {'titulo': '9x8', 'filas': 9, 'columnas': 8, 'puntosMas': 10, 'puntosMenos': 3, 'tiempo': 460},
-  ];
-}
-
 class Colores {
   static const Color primero = Colors.indigo;
   static const Color segundo = Colors.orange;

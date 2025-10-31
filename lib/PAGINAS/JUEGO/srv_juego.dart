@@ -1,62 +1,74 @@
 //==============================================================================
 // SERVICIO DE LÓGICA DEL JUEGO
-// Solo contiene lógica pura, sin efectos secundarios (UI, sonidos, BD)
+// Lógica del juego + comunicación con base de datos
+// La UI solo habla con este servicio, nunca directamente con la BD
 //==============================================================================
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
 
 class SrvJuego {
   //----------------------------------------------------------------------------
-  // FUNCIÓN: Crear un nuevo juego desde cero
+  // Inicilizar correctamente todas las variables que controlan el estado del
+  // juego dependiendo del número de filas y columnas elegidas.
   //----------------------------------------------------------------------------
-  static EstadoJuego crearNuevoJuego(int pFilas, int pColumnas) {
+  static void crearNuevoJuego(int pFilas, int pColumnas) {
     SrvLogger.grabarLog("srv_juego", "crearNuevoJuego()", "Creando nuevo juego");
 
     final cartasTotales = pFilas * pColumnas;
     final parejasTotales = cartasTotales ~/ 2;
 
-    return EstadoJuego(
-      filas: pFilas,
-      columnas: pColumnas,
-      cartasTotales: cartasTotales,
-      parejasTotales: parejasTotales,
-      listaDeImagenes: SrvImagenes.obtenerImagenesParaJugar(parejasTotales),
-      //Creamos una lista de tamaño fijo (cartasTotales) y colocamos todos sus
-      //valores a "false". Al inicio todas las cartas están boca abajo:
-      listaDeCartasGiradas: List.filled(cartasTotales, false),
-      //Creamos otra lista de tamaño fijo y al inicio del juego no hay ninguna
-      //carta emparejada. Estan todas a false.
-      listaDeCartasEmparejadas: List.filled(cartasTotales, false),
-      primeraCarta: null,
-      puedoGirarCarta: true,
-      puntosPartida: 0,
-      parejasAcertadas: 0,
-      parejasFalladas: 0,
-      cartasDestello: {},
-    );
+    EstadoDelJuego.filas = pFilas;
+    EstadoDelJuego.columnas = pColumnas;
+    EstadoDelJuego.cartasTotales = cartasTotales;
+    EstadoDelJuego.parejasTotales = parejasTotales;
+
+    //Obtenemos un conjunto aleatorio de parejas de cartas para el juego:
+    EstadoDelJuego.listaDeImagenes = SrvImagenes.obtenerImagenesParaJugar(parejasTotales);
+
+    //Creamos una lista de tamaño fijo (cartasTotales) y colocamos todos sus
+    //valores a "false". Al inicio todas las cartas están boca abajo:
+    EstadoDelJuego.listaDeCartasGiradas = List.filled(cartasTotales, false);
+
+    //Creamos otra lista de tamaño fijo para las cartas emparejadas.  al
+    //inicio del juego no hay ninguna emparejada. Todas a "false".
+    EstadoDelJuego.listaDeCartasEmparejadas = List.filled(cartasTotales, false);
+
+    EstadoDelJuego.sePuedeGirarCarta = true;
+    EstadoDelJuego.primeraCarta = null;
+    EstadoDelJuego.puntosPartida = 0;
+    EstadoDelJuego.parejasAcertadas = 0;
+    EstadoDelJuego.parejasFalladas = 0;
+    EstadoDelJuego.cartasDestello = {};
   }
 
   //----------------------------------------------------------------------------
-  // FUNCIÓN: Verificar si dos cartas son iguales
+  // Comprobar si dos cartas son iguales
   //----------------------------------------------------------------------------
-  static bool sonCartasIguales(EstadoJuego pEstado, int pCarta1, int pCarta2) {
-    return pEstado.listaDeImagenes[pCarta1] == pEstado.listaDeImagenes[pCarta2];
+  static bool sonCartasIguales(int pCarta1, int pCarta2) {
+    return EstadoDelJuego.listaDeImagenes[pCarta1] == EstadoDelJuego.listaDeImagenes[pCarta2];
   }
 
   //----------------------------------------------------------------------------
-  // FUNCIÓN: Verificar si el juego ha terminado
+  // Comprobar si el juego ha terminado
   //----------------------------------------------------------------------------
-  static bool estaJuegoTerminado(EstadoJuego pEstado) {
-    return pEstado.listaDeCartasEmparejadas.every((emparejada) => emparejada);
+  static bool estaJuegoTerminado() {
+    for (bool emparejada in EstadoDelJuego.listaDeCartasEmparejadas) {
+      if (!emparejada) return false;
+    }
+    EstadoDelJuego.sePuedeGirarCarta = false;
+    return true;
   }
 
   //----------------------------------------------------------------------------
-  // FUNCIÓN: Calcular puntos según acierto o fallo
+  // Calcular puntos (sumar si acierto, restar si fallo)
   //----------------------------------------------------------------------------
-  static int calcularPuntos(int pPuntosActuales, bool pEsAcierto) {
+  static int _calcularPuntos(int pPuntosActuales, bool pEsAcierto) {
     final nivel = InfoJuego.niveles[InfoJuego.nivelSeleccionado];
 
     if (pEsAcierto) {
@@ -67,140 +79,144 @@ class SrvJuego {
   }
 
   //----------------------------------------------------------------------------
-  // FUNCIÓN PRINCIPAL: Procesar cuando el usuario pulsa una carta
-  // Retorna el nuevo estado y la acción que ocurrió (para que la UI reaccione)
+  // FUNCIÓN PRINCIPAL: Procesar cuando pulsan una carta
   //----------------------------------------------------------------------------
-  static ResultadoCartaPulsada procesarCartaPulsada(EstadoJuego pEstado, int pIndex) {
-    // 1. VERIFICACIONES BÁSICAS
-
-    // Si no se puede girar la carta, se ignora:
-    if (!pEstado.puedoGirarCarta) {
-      return ResultadoCartaPulsada(nuevoEstado: pEstado, accion: TipoAccion.ignorar);
+  static void procesarCartaPulsada(int pIndex) {
+    // 1. Verificar si podemos girar esta carta
+    if (!EstadoDelJuego.sePuedeGirarCarta ||
+        EstadoDelJuego.listaDeCartasGiradas[pIndex] ||
+        EstadoDelJuego.listaDeCartasEmparejadas[pIndex]) {
+      ResultadoClick.accion = TipoAccion.ignorar;
+      return;
     }
 
-    // Si la carta ya está girada o emparejada, se ignora
-    if (pEstado.listaDeCartasGiradas[pIndex] || pEstado.listaDeCartasEmparejadas[pIndex]) {
-      return ResultadoCartaPulsada(nuevoEstado: pEstado, accion: TipoAccion.ignorar);
+    // 2. Girar la carta
+    EstadoDelJuego.listaDeCartasGiradas[pIndex] = true;
+
+    // 3. ¿Es la primera o la segunda carta del turno?
+    if (EstadoDelJuego.primeraCarta == null) {
+      EstadoDelJuego.primeraCarta = pIndex;
+      ResultadoClick.accion = TipoAccion.primeraCartaGirada;
+      return;
     }
 
-    // 2. GIRAR LA CARTA
-
-    List<bool> nuevasCartasGiradas = List.from(pEstado.listaDeCartasGiradas);
-    nuevasCartasGiradas[pIndex] = true;
-
-    // 3. ¿ES LA PRIMERA O LA SEGUNDA CARTA?
-
-    if (pEstado.primeraCarta == null) {
-      // Es la primera carta del turno
-      return ResultadoCartaPulsada(
-        nuevoEstado: _copiarEstado(pEstado, pListaDeCartasGiradas: nuevasCartasGiradas, pPrimeraCarta: pIndex),
-        accion: TipoAccion.primeraCartaGirada,
-      );
-    }
-
-    // Es la segunda carta - vamos a compararlas
-    final indicePrimera = pEstado.primeraCarta!;
+    // Es la segunda carta, comparar
+    final indicePrimera = EstadoDelJuego.primeraCarta!;
     final indiceSegunda = pIndex;
 
-    // 4. COMPROBAR SI HACEN PAREJA
+    // 4. Comparar las dos cartas
+    if (sonCartasIguales(indicePrimera, indiceSegunda)) {
+      // ACIERTO
+      EstadoDelJuego.listaDeCartasEmparejadas[indicePrimera] = true;
+      EstadoDelJuego.listaDeCartasEmparejadas[indiceSegunda] = true;
+      EstadoDelJuego.primeraCarta = null;
+      EstadoDelJuego.parejasAcertadas++;
+      EstadoDelJuego.puntosPartida = _calcularPuntos(EstadoDelJuego.puntosPartida, true);
+      EstadoDelJuego.cartasDestello = {indicePrimera, indiceSegunda};
 
-    if (sonCartasIguales(pEstado, indicePrimera, indiceSegunda)) {
-      //--------------------------------------------------------------------
-      // ACIERTO: Las cartas son iguales
-      //--------------------------------------------------------------------
-
-      List<bool> nuevasEmparejadas = List.from(pEstado.listaDeCartasEmparejadas);
-      nuevasEmparejadas[indicePrimera] = true;
-      nuevasEmparejadas[indiceSegunda] = true;
-
-      Set<int> nuevoDestello = {indicePrimera, indiceSegunda};
-
-      return ResultadoCartaPulsada(
-        nuevoEstado: _copiarEstado(
-          pEstado,
-          pListaDeCartasGiradas: nuevasCartasGiradas,
-          pListaDeCartasEmparejadas: nuevasEmparejadas,
-          pResetearPrimeraCarta: true,
-          pParejasAcertadas: pEstado.parejasAcertadas + 1,
-          pPuntosPartida: calcularPuntos(pEstado.puntosPartida, true),
-          pCartasDestello: nuevoDestello,
-        ),
-        accion: TipoAccion.parejasIguales,
-        indicePrimera: indicePrimera,
-        indiceSegunda: indiceSegunda,
-      );
+      ResultadoClick.accion = TipoAccion.parejasIguales;
+      ResultadoClick.indicePrimera = indicePrimera;
+      ResultadoClick.indiceSegunda = indiceSegunda;
     } else {
-      //--------------------------------------------------------------------
-      // FALLO: Las cartas son diferentes
-      //--------------------------------------------------------------------
+      // FALLO
+      EstadoDelJuego.primeraCarta = null;
+      EstadoDelJuego.parejasFalladas++;
+      EstadoDelJuego.puntosPartida = _calcularPuntos(EstadoDelJuego.puntosPartida, false);
 
-      return ResultadoCartaPulsada(
-        nuevoEstado: _copiarEstado(
-          pEstado,
-          pListaDeCartasGiradas: nuevasCartasGiradas,
-          pResetearPrimeraCarta: true,
-          pParejasFalladas: pEstado.parejasFalladas + 1,
-          pPuntosPartida: calcularPuntos(pEstado.puntosPartida, false),
-        ),
-        accion: TipoAccion.parejasDiferentes,
-        indicePrimera: indicePrimera,
-        indiceSegunda: indiceSegunda,
-      );
+      ResultadoClick.accion = TipoAccion.parejasDiferentes;
+      ResultadoClick.indicePrimera = indicePrimera;
+      ResultadoClick.indiceSegunda = indiceSegunda;
+    }
+  }
+
+  static void ocultarCartasFalladas() {
+    for (int i = 0; i < EstadoDelJuego.listaDeCartasGiradas.length; i++) {
+      if (EstadoDelJuego.listaDeCartasGiradas[i] == true) {
+        if (EstadoDelJuego.listaDeCartasEmparejadas[i] == false) {
+          EstadoDelJuego.listaDeCartasGiradas[i] = false;
+        }
+      }
     }
   }
 
   //----------------------------------------------------------------------------
-  // FUNCIÓN: Ocultar cartas después de un fallo
-  // Se llama después de un delay para que el usuario vea las cartas
+  // Limpiar el efecto de destello
   //----------------------------------------------------------------------------
-  static EstadoJuego ocultarCartasFalladas(EstadoJuego pEstado, int pIndex1, int pIndex2) {
-    // Solo ocultamos si no han sido emparejadas mientras tanto
-    if (pEstado.listaDeCartasEmparejadas[pIndex1] || pEstado.listaDeCartasEmparejadas[pIndex2]) {
-      return pEstado;
-    }
-
-    List<bool> nuevasCartasGiradas = List.from(pEstado.listaDeCartasGiradas);
-    nuevasCartasGiradas[pIndex1] = false;
-    nuevasCartasGiradas[pIndex2] = false;
-
-    return _copiarEstado(pEstado, pListaDeCartasGiradas: nuevasCartasGiradas);
+  static void limpiarDestello() {
+    EstadoDelJuego.cartasDestello.clear();
   }
 
-  //----------------------------------------------------------------------------
-  // FUNCIÓN: Limpiar el efecto de destello
-  //----------------------------------------------------------------------------
-  static EstadoJuego limpiarDestello(EstadoJuego pEstado) {
-    return _copiarEstado(pEstado, pCartasDestello: {});
-  }
+  //============================================================================
+  // COMUNICACIÓN CON BASE DE DATOS
+  // La UI llama a estas funciones, que a su vez hablan con srv_supabase
+  //============================================================================
 
   //----------------------------------------------------------------------------
-  // Helper para copiar estado con cambios
+  // Guardar la partida en la base de datos
   //----------------------------------------------------------------------------
-  static EstadoJuego _copiarEstado(
-    EstadoJuego pEstado, {
-    List<bool>? pListaDeCartasGiradas,
-    List<bool>? pListaDeCartasEmparejadas,
-    int? pPrimeraCarta,
-    bool pResetearPrimeraCarta = false,
-    int? pPuntosPartida,
-    int? pParejasAcertadas,
-    int? pParejasFalladas,
-    Set<int>? pCartasDestello,
-  }) {
-    return EstadoJuego(
-      filas: pEstado.filas,
-      columnas: pEstado.columnas,
-      cartasTotales: pEstado.cartasTotales,
-      parejasTotales: pEstado.parejasTotales,
-      listaDeImagenes: pEstado.listaDeImagenes,
-      listaDeCartasGiradas: pListaDeCartasGiradas ?? List.from(pEstado.listaDeCartasGiradas),
-      listaDeCartasEmparejadas: pListaDeCartasEmparejadas ?? List.from(pEstado.listaDeCartasEmparejadas),
-      primeraCarta: pResetearPrimeraCarta ? null : (pPrimeraCarta ?? pEstado.primeraCarta),
-      puedoGirarCarta: pEstado.puedoGirarCarta,
-      puntosPartida: pPuntosPartida ?? pEstado.puntosPartida,
-      parejasAcertadas: pParejasAcertadas ?? pEstado.parejasAcertadas,
-      parejasFalladas: pParejasFalladas ?? pEstado.parejasFalladas,
-      cartasDestello: pCartasDestello ?? Set.from(pEstado.cartasDestello),
+  static Future<void> guardarPartida() async {
+    SrvLogger.grabarLog("srv_juego", "guardarPartida()", "Guardando partida");
+
+    await SrvSupabase.grabarPartida(
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '?'),
+      pNivel: InfoJuego.nivelSeleccionado,
+      pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '?'),
+      pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '?'),
+      pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '?'),
+      pPuntos: EstadoDelJuego.puntosPartida,
+      pTiempo: SrvCronometro.obtenerSegundos(),
+      pGanada: EstadoDelJuego.puntosPartida > 0,
     );
+  }
+
+  //----------------------------------------------------------------------------
+  // Obtener todos los datos necesarios para mostrar el popup de fin de juego
+  //----------------------------------------------------------------------------
+  static Future<void> obtenerDatosFinJuego() async {
+    SrvLogger.grabarLog("srv_juego", "obtenerDatosFinJuego()", "Obteniendo datos finales");
+
+    // Obtener datos del dispositivo
+    final datosDispositivo = await SrvSupabase.obtenerRegFlippy(
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
+    );
+
+    // Obtener posición en el ranking
+    final posicionRanking = await SrvSupabase.obtenerRankingFlippy(
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
+      pLevel: InfoJuego.nivelSeleccionado,
+    );
+
+    // Buscar el registro del nivel jugado
+    final registroNivel = datosDispositivo.firstWhere(
+      (reg) => reg['nivel'] == InfoJuego.nivelSeleccionado,
+      orElse: () => <String, dynamic>{},
+    );
+
+    DatosFinJuego.nombreNivel = InfoJuego.niveles[InfoJuego.nivelSeleccionado]['titulo'] as String;
+    DatosFinJuego.puntosPartida = EstadoDelJuego.puntosPartida;
+    DatosFinJuego.posicionRanking = posicionRanking;
+    DatosFinJuego.puntosRecord = registroNivel['puntos'] ?? 0;
+    DatosFinJuego.partidasTotales = registroNivel['partidas'] ?? 0;
+    DatosFinJuego.tiempoPartida = SrvCronometro.obtenerTiempo();
+    DatosFinJuego.tiempoNivel = SrvFechas.segundosAMinutosYSegundos(
+      InfoJuego.niveles[InfoJuego.nivelSeleccionado]['tiempo'] as int,
+    );
+    DatosFinJuego.tiempoRecord = SrvFechas.segundosAMinutosYSegundos(registroNivel['tiempo_record'] ?? 0);
+  }
+
+  //----------------------------------------------------------------------------
+  // Procesar las tareas que tenemos en la lista de tareas.
+  //----------------------------------------------------------------------------
+  void _procesarTareas() async {
+    if (EstadoDelJuego.procesandoTareas || EstadoDelJuego.listaDeTareas.isEmpty) {
+      return;
+    }
+    EstadoDelJuego.procesandoTareas = true;
+    final tarea = EstadoDelJuego.listaDeTareas.removeAt(0);
+    await tarea(); // Ejecuta la tarea, esperando su Future.delayed y el giro inverso
+    EstadoDelJuego.procesandoTareas = false;
+
+    // Llama a sí misma para procesar la siguiente tarea si la hay
+    _procesarTareas();
   }
 }

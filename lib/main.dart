@@ -1,4 +1,5 @@
 import 'package:flippy_pairs/PAGINAS/CONFIGURACION/pag_configuracion.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/pag_juego.dart';
 import 'package:flippy_pairs/PAGINAS/LOGS/pag_logs.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
