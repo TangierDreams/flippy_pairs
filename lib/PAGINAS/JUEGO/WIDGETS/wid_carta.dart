@@ -5,6 +5,8 @@
 
 import 'dart:io';
 import 'dart:math';
+import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +26,14 @@ class WidCarta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
     return GestureDetector(
       onTap: pCallBackFunction,
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(begin: 0, end: pEstaBocaArriba ? 1 : 0),
-        duration: const Duration(milliseconds: 500),
+        duration: Duration(
+          milliseconds: pEstaBocaArriba ? GameSpeed.giro[velocidadJuego] : GameSpeed.giro[velocidadJuego],
+        ),
         builder: (context, value, child) {
           double angle = value * pi;
           bool mostrarCarta = value > 0.5;
@@ -36,10 +41,10 @@ class WidCarta extends StatelessWidget {
 
           return AnimatedScale(
             scale: pDestello ? 1.15 : 1.0,
-            duration: const Duration(milliseconds: 400),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeOut,
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
+              duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
               decoration: BoxDecoration(
                 color: pDestello ? colorBase.withValues(alpha: 0.95) : colorBase,

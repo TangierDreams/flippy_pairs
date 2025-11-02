@@ -16,6 +16,7 @@ enum DisketteKey {
   nombrePais,
   puntuacion,
   sonidoActivado,
+  velocidadJuego,
   versionImagenes,
 }
 

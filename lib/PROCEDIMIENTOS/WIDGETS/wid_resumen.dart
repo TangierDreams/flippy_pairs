@@ -37,14 +37,11 @@ class WidResumenState extends State<WidResumen> {
       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
     );
 
-    final nivel = datos.firstWhere(
-      (reg) => reg['nivel'] == InfoJuego.nivelSeleccionado,
-      orElse: () => <String, dynamic>{},
-    );
+    final nivel = datos.firstWhere((reg) => reg['nivel'] == EstadoDelJuego.nivel, orElse: () => <String, dynamic>{});
 
     final pos = await SrvSupabase.obtenerRankingFlippy(
       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-      pLevel: InfoJuego.nivelSeleccionado,
+      pLevel: EstadoDelJuego.nivel,
     );
 
     if (mounted) {
@@ -58,7 +55,7 @@ class WidResumenState extends State<WidResumen> {
 
   @override
   Widget build(BuildContext context) {
-    final String descNivel = InfoJuego.niveles[InfoJuego.nivelSeleccionado]['titulo'] as String;
+    final String descNivel = InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo'] as String;
 
     return Container(
       width: double.infinity,

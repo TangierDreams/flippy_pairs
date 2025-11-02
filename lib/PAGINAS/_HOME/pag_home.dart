@@ -65,8 +65,8 @@ class _PagHomeState extends State<PagHome> {
                       pNumBoton: 0,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.listaSeleccionada = 'iconos';
-                          InfoJuego.temaSeleccionado = 0;
+                          EstadoDelJuego.nomTema = 'iconos';
+                          EstadoDelJuego.tema = 0;
                         });
                       },
                     ),
@@ -76,8 +76,8 @@ class _PagHomeState extends State<PagHome> {
                       pNumBoton: 1,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.listaSeleccionada = 'animales';
-                          InfoJuego.temaSeleccionado = 1;
+                          EstadoDelJuego.nomTema = 'animales';
+                          EstadoDelJuego.tema = 1;
                         });
                       },
                     ),
@@ -87,8 +87,8 @@ class _PagHomeState extends State<PagHome> {
                       pNumBoton: 2,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.listaSeleccionada = 'retratos';
-                          InfoJuego.temaSeleccionado = 2;
+                          EstadoDelJuego.nomTema = 'retratos';
+                          EstadoDelJuego.tema = 2;
                         });
                       },
                     ),
@@ -108,8 +108,8 @@ class _PagHomeState extends State<PagHome> {
                       pNumBoton: 3,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.listaSeleccionada = 'herramientas';
-                          InfoJuego.temaSeleccionado = 3;
+                          EstadoDelJuego.nomTema = 'herramientas';
+                          EstadoDelJuego.tema = 3;
                         });
                       },
                     ),
@@ -119,8 +119,8 @@ class _PagHomeState extends State<PagHome> {
                       pNumBoton: 4,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.listaSeleccionada = 'coches';
-                          InfoJuego.temaSeleccionado = 4;
+                          EstadoDelJuego.nomTema = 'coches';
+                          EstadoDelJuego.tema = 4;
                         });
                       },
                     ),
@@ -130,8 +130,8 @@ class _PagHomeState extends State<PagHome> {
                       pNumBoton: 5,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.listaSeleccionada = 'logos';
-                          InfoJuego.temaSeleccionado = 5;
+                          EstadoDelJuego.nomTema = 'logos';
+                          EstadoDelJuego.tema = 5;
                         });
                       },
                     ),
@@ -159,9 +159,9 @@ class _PagHomeState extends State<PagHome> {
                       pNivel: 0,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.nivelSeleccionado = 0;
-                          InfoJuego.filasSeleccionadas = 3;
-                          InfoJuego.columnasSeleccionadas = 2;
+                          EstadoDelJuego.nivel = 0;
+                          EstadoDelJuego.filas = 3;
+                          EstadoDelJuego.columnas = 2;
                         });
                       },
                     ),
@@ -175,9 +175,9 @@ class _PagHomeState extends State<PagHome> {
                       pNivel: 1,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.nivelSeleccionado = 1;
-                          InfoJuego.filasSeleccionadas = 4;
-                          InfoJuego.columnasSeleccionadas = 3;
+                          EstadoDelJuego.nivel = 1;
+                          EstadoDelJuego.filas = 4;
+                          EstadoDelJuego.columnas = 3;
                         });
                       },
                     ),
@@ -191,9 +191,9 @@ class _PagHomeState extends State<PagHome> {
                       pNivel: 2,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.nivelSeleccionado = 2;
-                          InfoJuego.filasSeleccionadas = 5;
-                          InfoJuego.columnasSeleccionadas = 4;
+                          EstadoDelJuego.nivel = 2;
+                          EstadoDelJuego.filas = 5;
+                          EstadoDelJuego.columnas = 4;
                         });
                       },
                     ),
@@ -217,9 +217,9 @@ class _PagHomeState extends State<PagHome> {
                       pNivel: 3,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.nivelSeleccionado = 3;
-                          InfoJuego.filasSeleccionadas = 6;
-                          InfoJuego.columnasSeleccionadas = 5;
+                          EstadoDelJuego.nivel = 3;
+                          EstadoDelJuego.filas = 6;
+                          EstadoDelJuego.columnas = 5;
                         });
                       },
                     ),
@@ -233,9 +233,9 @@ class _PagHomeState extends State<PagHome> {
                       pNivel: 4,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.nivelSeleccionado = 4;
-                          InfoJuego.filasSeleccionadas = 8;
-                          InfoJuego.columnasSeleccionadas = 7;
+                          EstadoDelJuego.nivel = 4;
+                          EstadoDelJuego.filas = 8;
+                          EstadoDelJuego.columnas = 7;
                         });
                       },
                     ),
@@ -249,9 +249,9 @@ class _PagHomeState extends State<PagHome> {
                       pNivel: 5,
                       pCallBackFunction: () {
                         setState(() {
-                          InfoJuego.nivelSeleccionado = 5;
-                          InfoJuego.filasSeleccionadas = 9;
-                          InfoJuego.columnasSeleccionadas = 8;
+                          EstadoDelJuego.nivel = 5;
+                          EstadoDelJuego.filas = 9;
+                          EstadoDelJuego.columnas = 8;
                         });
                       },
                     ),
@@ -311,7 +311,7 @@ class BotonTema extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool estaSeleccionado = pNumBoton == InfoJuego.temaSeleccionado;
+    bool estaSeleccionado = pNumBoton == EstadoDelJuego.tema;
     File primeraImagenTema = SrvImagenes.obtenerUnaImagen(pListaImagenes, "01.png");
 
     return ElevatedButton(
@@ -351,7 +351,7 @@ class BotonNivel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String titulo = '${pFilas}x$pColumnas';
-    bool estaSeleccionado = pNivel == InfoJuego.nivelSeleccionado;
+    bool estaSeleccionado = pNivel == EstadoDelJuego.nivel;
 
     return AnimatedScale(
       scale: estaSeleccionado ? 1.2 : 1.0,

@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 Future<void> widJuegoAcabado(
   BuildContext context,
+  int msgAleatorio,
   String pNivel,
   int pPuntosPartida,
   int pPosicionFlippy,
@@ -70,10 +71,10 @@ Future<void> widJuegoAcabado(
                 children: [
                   Text(
                     pPuntosPartida > 0
-                        ? SrvTraducciones.get('excelente')
+                        ? SrvTraducciones.get('ganada$msgAleatorio')
                         : pPuntosPartida < 0
-                        ? SrvTraducciones.get('ops')
-                        : SrvTraducciones.get('empate'),
+                        ? SrvTraducciones.get('perdida$msgAleatorio')
+                        : SrvTraducciones.get('empatada$msgAleatorio'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 36,
                       color: Colores.blanco,

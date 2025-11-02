@@ -19,6 +19,20 @@ class SrvFechas {
   }
 
   //----------------------------------------------------------------------------
+  // Devolvemos la hora actual en formato hh:mm:ss.cc:
+  //----------------------------------------------------------------------------
+  static String ahoraEnHHMMSSCC() {
+    final DateTime ahora = DateTime.now();
+    final int centesimas = (ahora.millisecond ~/ 10);
+
+    final String horaStr = ahora.hour.toString().padLeft(2, '0');
+    final String minutoStr = ahora.minute.toString().padLeft(2, '0');
+    final String segundoStr = ahora.second.toString().padLeft(2, '0');
+    final String centesimasStr = centesimas.toString().padLeft(2, '0');
+    return "$horaStr:$minutoStr:$segundoStr.$centesimasStr";
+  }
+
+  //----------------------------------------------------------------------------
   // Convertimos un valor en segundos a minutos:segundos.
   //----------------------------------------------------------------------------
   static String segundosAMinutosYSegundos(int pSegundos) {

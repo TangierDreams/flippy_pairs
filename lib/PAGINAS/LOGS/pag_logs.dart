@@ -79,7 +79,7 @@ class _PagLogsState extends State<PagLogs> {
           debugPrint('Error al parsear línea de log: $line. Error: $e');
         }
       } else {
-        logs.add(LogEntry(date: '1991-01-01', time: '00:00:00', module: '---', function: '---', message: line));
+        logs.add(LogEntry(date: '1991-01-01', time: '00:00:00:00', module: '---', function: '---', message: line));
       }
     }
     return logs;
@@ -116,7 +116,7 @@ class _PagLogsState extends State<PagLogs> {
         return [
           LogEntry(
             date: '1990-01-01',
-            time: '00:00:00',
+            time: '00:00:00:00',
             module: 'INFO',
             function: 'Carga',
             message:
@@ -136,7 +136,7 @@ class _PagLogsState extends State<PagLogs> {
       return [
         LogEntry(
           date: '1990-01-01',
-          time: '00:00:00',
+          time: '00:00:00:00',
           module: 'FATAL',
           function: 'Parser',
           message: 'Fallo al leer/parsear archivos de log. Revise permisos: $e',

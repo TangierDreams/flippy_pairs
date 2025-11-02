@@ -93,7 +93,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     switch (state) {
       case AppLifecycleState.resumed:
         SrvLogger.grabarLog('Main', '_MyAppState', 'App en primer plano');
-        if (InfoJuego.musicaActiva) {
+        if (EstadoDelJuego.musicaActiva) {
           SrvSonidos.iniciarMusicaFondo();
         }
         //SrvJuego.reanudarCronometro();

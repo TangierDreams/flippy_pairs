@@ -6,18 +6,10 @@
 import 'dart:io';
 
 //------------------------------------------------------------------------------
-// Almacenamos información general del juego.
+// Almacenamos información de los niveles de juego.
 //------------------------------------------------------------------------------
-class InfoJuego {
-  static int filasSeleccionadas = 3;
-  static int columnasSeleccionadas = 2;
-  static int temaSeleccionado = 0;
-  static int nivelSeleccionado = 0;
-  static String listaSeleccionada = 'iconos';
-  static bool juegoEnCurso = false;
-  static bool juegoPausado = false;
-  static bool musicaActiva = false;
-  static const niveles = [
+class InfoNiveles {
+  static const nivel = [
     {'titulo': '3x2', 'filas': 3, 'columnas': 2, 'puntosMas': 10, 'puntosMenos': 10, 'tiempo': 20},
     {'titulo': '4x3', 'filas': 4, 'columnas': 3, 'puntosMas': 10, 'puntosMenos': 9, 'tiempo': 45},
     {'titulo': '5x4', 'filas': 5, 'columnas': 4, 'puntosMas': 10, 'puntosMenos': 7, 'tiempo': 80},
@@ -38,23 +30,34 @@ enum TipoAccion {
   parejasDiferentes, // Las dos cartas son diferentes (fallo)
 }
 
+class GameSpeed {
+  static List<int> memo = [1600, 900, 500];
+  static List<int> destello = [1200, 800, 300];
+  static List<int> giro = [500, 400, 150];
+}
+
 //------------------------------------------------------------------------------
 // Almacena el estado de una partida desde el inicio hasta el final.
 //------------------------------------------------------------------------------
 class EstadoDelJuego {
   // Configuración del tablero (no cambian durante la partida)
-  static int filas = 0;
-  static int columnas = 0;
+  static int filas = 3;
+  static int columnas = 2;
+  static int nivel = 0;
+  static int tema = 0;
+  static String nomTema = 'iconos';
   static int cartasTotales = 0;
   static int parejasTotales = 0;
   static List<File> listaDeImagenes = [];
+  static bool juegoEnCurso = false;
+  static bool juegoPausado = false;
+  static bool musicaActiva = false;
 
   // Estado que SÍ cambia durante la partida
   static List<bool> listaDeCartasGiradas = [];
   static List<bool> listaDeCartasEmparejadas = [];
   static bool procesandoTareas = false;
   static List<Function> listaDeTareas = [];
-  static bool sePuedeGirarCarta = false;
   static int? primeraCarta;
   static int puntosPartida = 0;
   static int parejasAcertadas = 0;
@@ -68,8 +71,8 @@ class EstadoDelJuego {
 //------------------------------------------------------------------------------
 class ResultadoClick {
   static TipoAccion accion = TipoAccion.enEspera;
-  static int? indicePrimera;
-  static int? indiceSegunda;
+  static int? primeraCarta;
+  static int? segundaCarta;
 }
 
 //------------------------------------------------------------------------------

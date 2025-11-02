@@ -39,7 +39,7 @@ class SrvJuego {
     //inicio del juego no hay ninguna emparejada. Todas a "false".
     EstadoDelJuego.listaDeCartasEmparejadas = List.filled(cartasTotales, false);
 
-    EstadoDelJuego.sePuedeGirarCarta = true;
+    EstadoDelJuego.procesandoTareas = false;
     EstadoDelJuego.primeraCarta = null;
     EstadoDelJuego.puntosPartida = 0;
     EstadoDelJuego.parejasAcertadas = 0;
@@ -61,7 +61,6 @@ class SrvJuego {
     for (bool emparejada in EstadoDelJuego.listaDeCartasEmparejadas) {
       if (!emparejada) return false;
     }
-    EstadoDelJuego.sePuedeGirarCarta = false;
     return true;
   }
 
@@ -69,7 +68,7 @@ class SrvJuego {
   // Calcular puntos (sumar si acierto, restar si fallo)
   //----------------------------------------------------------------------------
   static int _calcularPuntos(int pPuntosActuales, bool pEsAcierto) {
-    final nivel = InfoJuego.niveles[InfoJuego.nivelSeleccionado];
+    final nivel = InfoNiveles.nivel[EstadoDelJuego.nivel];
 
     if (pEsAcierto) {
       return pPuntosActuales + (nivel['puntosMas'] as int);
@@ -83,7 +82,7 @@ class SrvJuego {
   //----------------------------------------------------------------------------
   static void procesarCartaPulsada(int pIndex) {
     // 1. Verificar si podemos girar esta carta
-    if (!EstadoDelJuego.sePuedeGirarCarta ||
+    if (EstadoDelJuego.procesandoTareas ||
         EstadoDelJuego.listaDeCartasGiradas[pIndex] ||
         EstadoDelJuego.listaDeCartasEmparejadas[pIndex]) {
       ResultadoClick.accion = TipoAccion.ignorar;
@@ -115,8 +114,8 @@ class SrvJuego {
       EstadoDelJuego.cartasDestello = {indicePrimera, indiceSegunda};
 
       ResultadoClick.accion = TipoAccion.parejasIguales;
-      ResultadoClick.indicePrimera = indicePrimera;
-      ResultadoClick.indiceSegunda = indiceSegunda;
+      ResultadoClick.primeraCarta = indicePrimera;
+      ResultadoClick.segundaCarta = indiceSegunda;
     } else {
       // FALLO
       EstadoDelJuego.primeraCarta = null;
@@ -124,19 +123,24 @@ class SrvJuego {
       EstadoDelJuego.puntosPartida = _calcularPuntos(EstadoDelJuego.puntosPartida, false);
 
       ResultadoClick.accion = TipoAccion.parejasDiferentes;
-      ResultadoClick.indicePrimera = indicePrimera;
-      ResultadoClick.indiceSegunda = indiceSegunda;
+      ResultadoClick.primeraCarta = indicePrimera;
+      ResultadoClick.segundaCarta = indiceSegunda;
     }
   }
 
-  static void ocultarCartasFalladas() {
-    for (int i = 0; i < EstadoDelJuego.listaDeCartasGiradas.length; i++) {
-      if (EstadoDelJuego.listaDeCartasGiradas[i] == true) {
-        if (EstadoDelJuego.listaDeCartasEmparejadas[i] == false) {
-          EstadoDelJuego.listaDeCartasGiradas[i] = false;
-        }
-      }
-    }
+  // static void ocultarCartasFalladas() {
+  //   for (int i = 0; i < EstadoDelJuego.listaDeCartasGiradas.length; i++) {
+  //     if (EstadoDelJuego.listaDeCartasGiradas[i] == true) {
+  //       if (EstadoDelJuego.listaDeCartasEmparejadas[i] == false) {
+  //         EstadoDelJuego.listaDeCartasGiradas[i] = false;
+  //       }
+  //     }
+  //   }
+  // }
+
+  static void ocultarCartasFalladas(int pCarta1, int pCarta2) {
+    EstadoDelJuego.listaDeCartasGiradas[pCarta1] = false;
+    EstadoDelJuego.listaDeCartasGiradas[pCarta2] = false;
   }
 
   //----------------------------------------------------------------------------
@@ -148,7 +152,6 @@ class SrvJuego {
 
   //============================================================================
   // COMUNICACIÓN CON BASE DE DATOS
-  // La UI llama a estas funciones, que a su vez hablan con srv_supabase
   //============================================================================
 
   //----------------------------------------------------------------------------
@@ -159,7 +162,7 @@ class SrvJuego {
 
     await SrvSupabase.grabarPartida(
       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '?'),
-      pNivel: InfoJuego.nivelSeleccionado,
+      pNivel: EstadoDelJuego.nivel,
       pNombre: SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '?'),
       pPais: SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '?'),
       pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '?'),
@@ -183,40 +186,24 @@ class SrvJuego {
     // Obtener posición en el ranking
     final posicionRanking = await SrvSupabase.obtenerRankingFlippy(
       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-      pLevel: InfoJuego.nivelSeleccionado,
+      pLevel: EstadoDelJuego.nivel,
     );
 
     // Buscar el registro del nivel jugado
     final registroNivel = datosDispositivo.firstWhere(
-      (reg) => reg['nivel'] == InfoJuego.nivelSeleccionado,
+      (reg) => reg['nivel'] == EstadoDelJuego.nivel,
       orElse: () => <String, dynamic>{},
     );
 
-    DatosFinJuego.nombreNivel = InfoJuego.niveles[InfoJuego.nivelSeleccionado]['titulo'] as String;
+    DatosFinJuego.nombreNivel = InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo'] as String;
     DatosFinJuego.puntosPartida = EstadoDelJuego.puntosPartida;
     DatosFinJuego.posicionRanking = posicionRanking;
     DatosFinJuego.puntosRecord = registroNivel['puntos'] ?? 0;
     DatosFinJuego.partidasTotales = registroNivel['partidas'] ?? 0;
     DatosFinJuego.tiempoPartida = SrvCronometro.obtenerTiempo();
     DatosFinJuego.tiempoNivel = SrvFechas.segundosAMinutosYSegundos(
-      InfoJuego.niveles[InfoJuego.nivelSeleccionado]['tiempo'] as int,
+      InfoNiveles.nivel[EstadoDelJuego.nivel]['tiempo'] as int,
     );
     DatosFinJuego.tiempoRecord = SrvFechas.segundosAMinutosYSegundos(registroNivel['tiempo_record'] ?? 0);
-  }
-
-  //----------------------------------------------------------------------------
-  // Procesar las tareas que tenemos en la lista de tareas.
-  //----------------------------------------------------------------------------
-  void _procesarTareas() async {
-    if (EstadoDelJuego.procesandoTareas || EstadoDelJuego.listaDeTareas.isEmpty) {
-      return;
-    }
-    EstadoDelJuego.procesandoTareas = true;
-    final tarea = EstadoDelJuego.listaDeTareas.removeAt(0);
-    await tarea(); // Ejecuta la tarea, esperando su Future.delayed y el giro inverso
-    EstadoDelJuego.procesandoTareas = false;
-
-    // Llama a sí misma para procesar la siguiente tarea si la hay
-    _procesarTareas();
   }
 }

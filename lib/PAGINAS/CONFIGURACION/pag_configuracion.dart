@@ -12,6 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// 1. Define the possible choices (e.g., as an enum or simple strings)
+//enum GameSpeed { slow, normal, fast }
+
 class PagConfiguracion extends StatefulWidget {
   const PagConfiguracion({super.key});
 
@@ -24,6 +27,18 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
   final TextEditingController _nombreUsuario = TextEditingController();
   bool _sonidoActivado = true;
   bool _musicaActivada = true;
+  int _velocidadJuego = 1;
+
+  // The current selected value, managed by the state
+  //GameSpeed _selectedSpeed = GameSpeed.normal;
+
+  // Helper list to track which button is selected (used by ToggleButtons)
+  final List<bool> _isSelected = [false, false, false];
+
+  // Function to convert GameSpeed enum to the index
+  // int _getSpeedIndex(GameSpeed speed) {
+  //   return GameSpeed.values.indexOf(speed);
+  // }
 
   @override
   void initState() {
@@ -188,6 +203,91 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
 
                   const SizedBox(height: 10),
 
+                  //------------------------------------------------------------
+                  // Aquí seleccionamos la velocidad del juego.
+                  //------------------------------------------------------------
+                  Text(
+                    SrvTraducciones.get('Game Speed'),
+                    style: GoogleFonts.luckiestGuy(
+                      fontSize: 16,
+                      color: Colores.primero,
+                      shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                    ),
+                  ),
+
+                  const SizedBox(height: 5),
+
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final double buttonWidth = (constraints.maxWidth - 8) / 3;
+                      return ToggleButtons(
+                        // 2. The Logic: Handle the selection change
+                        onPressed: (int index) {
+                          SrvSonidos.boton();
+                          setState(() {
+                            //Reset all to false, then set the tapped index to true
+                            for (int i = 0; i < _isSelected.length; i++) {
+                              _isSelected[i] = (i == index);
+                            }
+                            // Update your GameSpeed variable and save to SrvDiskette
+                            //_selectedSpeed = _velocidadJuego;
+                            SrvDiskette.guardarValor(DisketteKey.velocidadJuego, index);
+                          });
+                        },
+
+                        // 3. The State: Which button is currently selected
+                        isSelected: _isSelected,
+
+                        // 4. Custom Styling (Matching your previous colors):
+                        borderColor: Colores.primero,
+                        selectedBorderColor: Colores.primero,
+                        fillColor: Colores.segundo,
+                        color: Colores.primero,
+                        selectedColor: Colores.negro,
+                        borderRadius: BorderRadius.circular(10.0),
+
+                        // 1. The Children: Your three styled Text widgets
+                        children: <Widget>[
+                          SizedBox(
+                            width: buttonWidth,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                              child: Text(
+                                SrvTraducciones.get('lento'),
+                                style: GoogleFonts.luckiestGuy(fontSize: 14),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: buttonWidth,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                              child: Text(
+                                SrvTraducciones.get('normal'),
+                                style: GoogleFonts.luckiestGuy(fontSize: 14),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: buttonWidth,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                              child: Text(
+                                SrvTraducciones.get('rapido'),
+                                style: GoogleFonts.luckiestGuy(fontSize: 14),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 10),
+
                   //---------------------------------------
                   // Botón para mostrar el archivo de logs:
                   //---------------------------------------
@@ -225,5 +325,8 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
     _nombreUsuario.text = SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '');
     _sonidoActivado = SrvDiskette.leerValor(DisketteKey.sonidoActivado, defaultValue: true);
     _musicaActivada = SrvDiskette.leerValor(DisketteKey.musicaActivada, defaultValue: true);
+    _velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
+    _isSelected.fillRange(0, 3, false);
+    _isSelected[_velocidadJuego] = true;
   }
 }

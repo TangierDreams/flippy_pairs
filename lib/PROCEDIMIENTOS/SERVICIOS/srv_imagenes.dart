@@ -235,7 +235,7 @@ class SrvImagenes {
 
     List<File> listaBase;
     try {
-      listaBase = _imagenesDeUnaCarpeta(InfoJuego.listaSeleccionada);
+      listaBase = _imagenesDeUnaCarpeta(EstadoDelJuego.nomTema);
     } catch (e) {
       return [];
     }

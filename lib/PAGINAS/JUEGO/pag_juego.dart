@@ -4,10 +4,13 @@
 // NO habla con la base de datos (eso lo hace srv_juego)
 //==============================================================================
 
+import 'dart:math';
+
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
@@ -47,7 +50,7 @@ class _PagJuegoState extends State<PagJuego> {
   @override
   void dispose() async {
     await SrvSonidos.detenerMusicaFondo();
-    InfoJuego.musicaActiva = false;
+    EstadoDelJuego.musicaActiva = false;
     SrvLogger.grabarLog('pag_juego', 'dispose()', 'Salimos de la página');
     super.dispose();
   }
@@ -68,7 +71,7 @@ class _PagJuegoState extends State<PagJuego> {
     //Inicializamos todas las variables del estado de una partida.
     //Bajamos la lista de imagenes para la partida e inicializamos la lista de
     //cartas giradas y cartas emparejadas.
-    SrvJuego.crearNuevoJuego(InfoJuego.filasSeleccionadas, InfoJuego.columnasSeleccionadas);
+    SrvJuego.crearNuevoJuego(EstadoDelJuego.filas, EstadoDelJuego.columnas);
 
     //Marcamos el juego como inicializado. Colocamos la variable dentro de un
     //"setState" porque es un valor que utiliza la UI para actualizar elementos.
@@ -84,7 +87,7 @@ class _PagJuegoState extends State<PagJuego> {
     });
 
     SrvSonidos.iniciarMusicaFondo();
-    InfoJuego.musicaActiva = true;
+    EstadoDelJuego.musicaActiva = true;
   }
 
   //----------------------------------------------------------------------------
@@ -109,17 +112,25 @@ class _PagJuegoState extends State<PagJuego> {
   // FUNCIÓN PRINCIPAL: Cuando el usuario pulsa una carta
   //----------------------------------------------------------------------------
   Future<void> _cuandoPulsanUnaCarta(int pIndex) async {
+    SrvLogger.grabarLog("pag_juego", "_cuandoPulsanUnaCarta()", "Carta pulsada: $pIndex");
     // Arrancar cronómetro en la primera carta
     if (!_cronometroIniciado) {
       _cronometroIniciado = true;
       SrvCronometro.reset();
       SrvCronometro.start();
-      InfoJuego.juegoEnCurso = true;
-      InfoJuego.juegoPausado = false;
+      EstadoDelJuego.juegoEnCurso = true;
+      EstadoDelJuego.juegoPausado = false;
     }
 
     // Procesar la carta (la lógica está en srv_juego)
     SrvJuego.procesarCartaPulsada(pIndex);
+
+    // CRÍTICO: CAPTURAR EL ESTADO GLOBAL EN VARIABLES LOCALES
+    //final TipoAccion accion = ResultadoClick.accion;
+    //final int? carta1 = ResultadoClick.primeraCarta;
+    //final int? carta2 = ResultadoClick.segundaCarta;
+
+    int velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
 
     // Refrescar pantalla
     setState(() {});
@@ -127,38 +138,63 @@ class _PagJuegoState extends State<PagJuego> {
     // Reaccionar según lo que pasó
     switch (ResultadoClick.accion) {
       case TipoAccion.ignorar:
+        SrvLogger.grabarLog("pag_juego", "_cuandoPulsanUnaCarta()", "Carta ignorada: $pIndex");
         break;
 
       case TipoAccion.primeraCartaGirada:
+        SrvLogger.grabarLog("pag_juego", "_cuandoPulsanUnaCarta()", "Primera carta: $pIndex");
         SrvSonidos.flip();
         break;
 
       case TipoAccion.parejasIguales:
+        SrvLogger.grabarLog("pag_juego", "_cuandoPulsanUnaCarta()", "Cartas iguales: $pIndex");
         SrvSonidos.flip();
-        Future.delayed(const Duration(milliseconds: 300), () {
-          SrvSonidos.level();
-          Future.delayed(const Duration(milliseconds: 900), () {
-            SrvJuego.ocultarCartasFalladas();
-            SrvJuego.limpiarDestello();
-            setState(() {});
-            if (SrvJuego.estaJuegoTerminado()) {
-              _finalizarJuego();
-            }
-          });
-        });
+
+        // 🛑 1. ACTIVAR BLOQUEO
+        EstadoDelJuego.procesandoTareas = true;
+        SrvSonidos.level();
+
+        // 3. Esperar un tiempo para mostrar el efecto lupa:
+        await Future.delayed(Duration(milliseconds: GameSpeed.destello[velocidadJuego]));
+
+        // 4. Limpiar destello y actualizar UI
+        SrvJuego.limpiarDestello();
+        setState(() {});
+
+        // 5. Verificar fin de juego
+        if (SrvJuego.estaJuegoTerminado()) {
+          await _finalizarJuego();
+        }
+
+        // 🛑 6. DESBLOQUEAR
+        EstadoDelJuego.procesandoTareas = false;
         break;
 
       case TipoAccion.parejasDiferentes:
+        SrvLogger.grabarLog("pag_juego", "_cuandoPulsanUnaCarta()", "Cartas diferentes: $pIndex");
         SrvSonidos.flip();
-        Future.delayed(const Duration(milliseconds: 900), () {
-          SrvSonidos.goback();
-          //SrvJuego.ocultarCartasFalladas(ResultadoClick.indicePrimera!, ResultadoClick.indiceSegunda!);
-          SrvJuego.ocultarCartasFalladas();
-          setState(() {});
-        });
+
+        // 🛑 1. ACTIVAR BLOQUEO
+        EstadoDelJuego.procesandoTareas = true;
+
+        // 2. Esperar el tiempo de memorización
+        await Future.delayed(Duration(milliseconds: GameSpeed.memo[velocidadJuego]));
+
+        // 3. Revertir y actualizar UI (Inicia el giro inverso)
+        SrvSonidos.goback();
+        SrvJuego.ocultarCartasFalladas(ResultadoClick.primeraCarta!, ResultadoClick.segundaCarta!);
+        setState(() {});
+
+        // 4. Esperar a que el giro inverso termine (más rápido: 300ms)
+        // Nota: Sugieres hacerlo más rápido. Usaremos 300ms en lugar de 550ms.
+        //await Future.delayed(const Duration(milliseconds: 300));
+
+        // 🛑 5. DESBLOQUEAR
+        EstadoDelJuego.procesandoTareas = false;
         break;
 
       default:
+        SrvLogger.grabarLog("pag_juego", "_cuandoPulsanUnaCarta()", "default?: $pIndex");
         break;
     }
   }
@@ -172,20 +208,25 @@ class _PagJuegoState extends State<PagJuego> {
     // Parar cronómetro y música
     SrvCronometro.stop();
     _cronometroIniciado = false;
-    InfoJuego.juegoEnCurso = false;
-    InfoJuego.juegoPausado = false;
+    EstadoDelJuego.juegoEnCurso = false;
+    EstadoDelJuego.juegoPausado = false;
     await SrvSonidos.detenerMusicaFondo();
-    InfoJuego.musicaActiva = false;
+    EstadoDelJuego.musicaActiva = false;
 
     // Guardar y obtener datos (el servicio habla con la BD, no nosotros)
     await SrvJuego.guardarPartida();
     await SrvJuego.obtenerDatosFinJuego();
+
+    // Para obtener una palabra aleatoria cuando mostramos el mensaje:
+    Random random = Random();
+    int msgAleatorio = random.nextInt(5) + 1;
 
     // Mostrar popup
     if (mounted) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widJuegoAcabado(
           context,
+          msgAleatorio,
           DatosFinJuego.nombreNivel,
           DatosFinJuego.puntosPartida,
           DatosFinJuego.posicionRanking,
