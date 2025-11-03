@@ -50,6 +50,7 @@ class SrvTraducciones {
     'lento': '🐌 Slow',
     'normal': '🏃 Normal',
     'rapido': '🚀 Fast',
+    'velocidad_juego': 'Game Speed',
   };
 
   static final Map<String, String> spanish = {
@@ -102,6 +103,7 @@ class SrvTraducciones {
     'lento': '🐌 Lento',
     'normal': '🏃 Normal',
     'rapido': '🚀 Rápido',
+    'velocidad_juego': 'Velocidad',
   };
 
   static final Map<String, String> catalan = {
@@ -153,6 +155,7 @@ class SrvTraducciones {
     'lento': '🐌 Lent',
     'normal': '🏃 Normal',
     'rapido': '🚀 Ràpid',
+    'velocidad_juego': 'Velocitat',
   };
 
   //----------------------------------------------------------------------------

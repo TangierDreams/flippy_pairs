@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
@@ -10,6 +11,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PagHome extends StatefulWidget {
   const PagHome({super.key});
@@ -19,10 +21,14 @@ class PagHome extends StatefulWidget {
 }
 
 class _PagHomeState extends State<PagHome> {
+  final List<bool> _isSelected = [false, false, false];
+
   @override
   void initState() {
     super.initState();
     SrvLogger.grabarLog('pag_home', 'initState()', 'Entramos en la pagina Home');
+    int velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
+    _isSelected[velocidadJuego] = true;
   }
 
   @override
@@ -52,7 +58,7 @@ class _PagHomeState extends State<PagHome> {
               children: [
                 Text(SrvTraducciones.get('temas'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
                 //------------------------------------------------------------------
                 // Primera línea de imagenes
@@ -95,7 +101,7 @@ class _PagHomeState extends State<PagHome> {
                   ],
                 ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
                 //------------------------------------------------------------------
                 // Segunda línea de imagenes
@@ -138,11 +144,11 @@ class _PagHomeState extends State<PagHome> {
                   ],
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
 
                 Text(SrvTraducciones.get('dificultad'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
                 //------------------------------------------------------------------
                 // Primera fila de niveles de juego:
@@ -200,7 +206,7 @@ class _PagHomeState extends State<PagHome> {
                   ],
                 ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
                 //------------------------------------------------------------------
                 // Segunda fila de niveles de juego:
@@ -258,7 +264,89 @@ class _PagHomeState extends State<PagHome> {
                   ],
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
+
+                //--------------------------------------------------------------
+                // Aquí seleccionamos la velocidad del juego.
+                //--------------------------------------------------------------
+                Text(
+                  SrvTraducciones.get('velocidad_juego'),
+                  textAlign: TextAlign.center,
+                  style: Textos.textStyleOrange30,
+                ),
+
+                const SizedBox(height: 10),
+
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double buttonWidth = (constraints.maxWidth - 8) / 3;
+                    return ToggleButtons(
+                      // 2. The Logic: Handle the selection change
+                      onPressed: (int index) {
+                        SrvSonidos.boton();
+                        setState(() {
+                          //Reset all to false, then set the tapped index to true
+                          for (int i = 0; i < _isSelected.length; i++) {
+                            _isSelected[i] = (i == index);
+                          }
+                          // Update your GameSpeed variable and save to SrvDiskette
+                          //_selectedSpeed = _velocidadJuego;
+                          SrvDiskette.guardarValor(DisketteKey.velocidadJuego, index);
+                        });
+                      },
+
+                      // 3. The State: Which button is currently selected
+                      isSelected: _isSelected,
+
+                      // 4. Custom Styling (Matching your previous colors):
+                      borderColor: Colores.primero,
+                      selectedBorderColor: Colores.primero,
+                      fillColor: Colores.segundo,
+                      color: Colores.primero,
+                      selectedColor: Colores.negro,
+                      borderRadius: BorderRadius.circular(10.0),
+
+                      // 1. The Children: Your three styled Text widgets
+                      children: <Widget>[
+                        SizedBox(
+                          width: buttonWidth,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                            child: Text(
+                              SrvTraducciones.get('lento'),
+                              style: GoogleFonts.luckiestGuy(fontSize: 14),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: buttonWidth,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                            child: Text(
+                              SrvTraducciones.get('normal'),
+                              style: GoogleFonts.luckiestGuy(fontSize: 14),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: buttonWidth,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                            child: Text(
+                              SrvTraducciones.get('rapido'),
+                              style: GoogleFonts.luckiestGuy(fontSize: 14),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 15),
 
                 //------------------------------------------------------------------
                 // Botón para comenzar a jugar
@@ -274,7 +362,7 @@ class _PagHomeState extends State<PagHome> {
                   pNavegarA: '/game',
                 ),
 
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
 
                 //------------------------------------------------------------------
                 // Botón para ir a la configuración
