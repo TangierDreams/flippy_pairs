@@ -7,6 +7,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   final bool showMenuButton;
   final bool showBackButton;
+  final bool showConfigButton;
   final Function()? onMenuPressed;
   final Function()? onBackButtonPressed;
   final String? subtitle;
@@ -16,6 +17,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     this.showMenuButton = true,
     this.showBackButton = false,
+    this.showConfigButton = false,
     this.onMenuPressed,
     this.onBackButtonPressed,
     this.subtitle,
@@ -56,6 +58,23 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: <Widget>[
+        // 👇 Botón de configuración
+        if (showConfigButton)
+          IconButton(
+            icon: const Icon(Icons.settings),
+            iconSize: 38, // 👈 Tamaño del icono
+            color: Colores.tercero, // 👈 Color del icono
+            tooltip: 'Configuración',
+            onPressed: () async {
+              SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'Botón de configuración pulsado');
+              await SrvSonidos.boton();
+              if (context.mounted) {
+                Navigator.pushNamed(context, '/config');
+              }
+            },
+          ),
+
+        // 👇 Botón de volver atrás
         if (showBackButton)
           Padding(
             padding: const EdgeInsets.all(8.0),

@@ -48,6 +48,7 @@ class _PagHomeState extends State<PagHome> {
           appBar: WidToolbar(
             showMenuButton: false,
             showBackButton: false,
+            showConfigButton: true,
             subtitle: SrvTraducciones.get('subtitulo_app'),
           ),
 
@@ -364,20 +365,20 @@ class _PagHomeState extends State<PagHome> {
 
                 const SizedBox(height: 15),
 
-                //------------------------------------------------------------------
-                // Botón para ir a la configuración
-                //------------------------------------------------------------------
-                WidBotonStandard(
-                  pTexto: SrvTraducciones.get('configuracion'),
-                  pTipoDeLetra: 'Chewy',
-                  pTamanyoLetra: 16,
-                  pColorLetra: Colores.tercero,
-                  pIcono: Icons.settings,
-                  pColorIcono: Colores.tercero,
-                  pSombra: true,
-                  pEsquinasRedondeadas: true,
-                  pNavegarA: '/config',
-                ),
+                // //------------------------------------------------------------------
+                // // Botón para ir a la configuración
+                // //------------------------------------------------------------------
+                // WidBotonStandard(
+                //   pTexto: SrvTraducciones.get('configuracion'),
+                //   pTipoDeLetra: 'Chewy',
+                //   pTamanyoLetra: 16,
+                //   pColorLetra: Colores.tercero,
+                //   pIcono: Icons.settings,
+                //   pColorIcono: Colores.tercero,
+                //   pSombra: true,
+                //   pEsquinasRedondeadas: true,
+                //   pNavegarA: '/config',
+                // ),
               ],
             ),
           ),
