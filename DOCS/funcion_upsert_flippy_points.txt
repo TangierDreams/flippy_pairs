@@ -1,0 +1,60 @@
+CREATE OR REPLACE FUNCTION public.upsert_flippy_points(
+    _id integer,
+    _nivel integer,
+    _nombre text,
+    _pais text,
+    _ciudad text,
+    _puntos integer,
+    _tiempo integer,
+    _ganada boolean
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+    ----------------------------------------------------------------------
+    -- Registro normal (nivel real)
+    ----------------------------------------------------------------------
+    INSERT INTO public.flippy_points (
+        id, nivel, nombre, pais, ciudad, puntos, actualizado,
+        partidas, tiempo_record, tiempo_total, ganadas, perdidas
+    )
+    VALUES (
+        _id, _nivel, _nombre, _pais, _ciudad, _puntos, now(),
+        1, _tiempo, _tiempo,
+        CASE WHEN _ganada THEN 1 ELSE 0 END,
+        CASE WHEN NOT _ganada THEN 1 ELSE 0 END
+    )
+    ON CONFLICT (id, nivel) DO UPDATE
+    SET
+        nombre = EXCLUDED.nombre,
+        pais = EXCLUDED.pais,
+        ciudad = EXCLUDED.ciudad,
+
+        -- Acumula puntos
+        puntos = COALESCE(flippy_points.puntos, 0) + EXCLUDED.puntos,
+
+        actualizado = now(),
+        partidas = flippy_points.partidas + 1,
+
+        -- Incrementa ganadas o perdidas según corresponda
+        ganadas = flippy_points.ganadas + CASE WHEN _ganada THEN 1 ELSE 0 END,
+        perdidas = flippy_points.perdidas + CASE WHEN NOT _ganada THEN 1 ELSE 0 END,
+
+        -- Suma el nuevo tiempo al total acumulado
+        tiempo_total = COALESCE(flippy_points.tiempo_total, 0) + EXCLUDED.tiempo_total,
+
+        -- Actualiza el récord solo si la partida fue ganada y mejora el anterior
+        tiempo_record = CASE
+            WHEN NOT _ganada THEN flippy_points.tiempo_record
+            WHEN flippy_points.tiempo_record IS NULL THEN EXCLUDED.tiempo_record
+            WHEN flippy_points.tiempo_record = 0 THEN EXCLUDED.tiempo_record
+            WHEN EXCLUDED.tiempo_record < flippy_points.tiempo_record THEN EXCLUDED.tiempo_record
+            ELSE flippy_points.tiempo_record
+        END;
+
+    RETURN;
+END;
+$$;
