@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION public.upsert_flippy_points(
-    _id integer,
+    _id text,
     _nivel integer,
     _nombre text,
     _pais text,

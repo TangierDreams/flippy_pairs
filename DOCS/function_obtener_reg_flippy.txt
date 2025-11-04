@@ -2,18 +2,18 @@ CREATE OR REPLACE FUNCTION public.obtener_reg_flippy(
     p_id text
 )
 RETURNS TABLE (
-    id integer,
-    nivel integer,
+    id text,
+    nivel smallint,
     nombre text,
     pais text,
     ciudad text,
-    puntos integer,
-    partidas integer,
-    tiempo_record integer,
+    puntos smallint,
+    partidas smallint,
+    tiempo_record smallint,
     tiempo_total integer,
-    actualizado timestamp,
-    ganadas integer,
-    perdidas integer
+    actualizado text,
+    ganadas smallint,
+    perdidas smallint
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
