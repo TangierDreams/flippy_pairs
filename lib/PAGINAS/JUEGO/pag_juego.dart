@@ -283,25 +283,45 @@ class _PagJuegoState extends State<PagJuego> {
           ),
 
           // Grid de cartas
+          // Expanded(
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(12.0),
+          //     child: GridView.builder(
+          //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          //         crossAxisCount: EstadoDelJuego.columnas,
+          //         crossAxisSpacing: 8,
+          //         mainAxisSpacing: 8,
+          //       ),
+          //       itemCount: EstadoDelJuego.cartasTotales,
+          //       itemBuilder: (context, index) {
+          //         return WidCarta(
+          //           pEstaBocaArriba:
+          //               EstadoDelJuego.listaDeCartasGiradas[index] || EstadoDelJuego.listaDeCartasEmparejadas[index],
+          //           pImagenCarta: EstadoDelJuego.listaDeImagenes[index],
+          //           pDestello: EstadoDelJuego.cartasDestello.contains(index),
+          //           pCallBackFunction: () => _cuandoPulsanUnaCarta(index),
+          //         );
+          //       },
+          //     ),
+          //   ),
+          // ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: EstadoDelJuego.columnas,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemCount: EstadoDelJuego.cartasTotales,
-                itemBuilder: (context, index) {
+              child: GridView.count(
+                crossAxisCount: EstadoDelJuego.columnas,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                children: List.generate(EstadoDelJuego.cartasTotales, (index) {
                   return WidCarta(
+                    pIndex: index,
                     pEstaBocaArriba:
                         EstadoDelJuego.listaDeCartasGiradas[index] || EstadoDelJuego.listaDeCartasEmparejadas[index],
                     pImagenCarta: EstadoDelJuego.listaDeImagenes[index],
                     pDestello: EstadoDelJuego.cartasDestello.contains(index),
                     pCallBackFunction: () => _cuandoPulsanUnaCarta(index),
                   );
-                },
+                }),
               ),
             ),
           ),

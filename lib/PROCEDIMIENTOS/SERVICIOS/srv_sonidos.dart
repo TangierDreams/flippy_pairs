@@ -99,7 +99,7 @@ class SrvSonidos {
 
   static Future<void> flip() => _reproducirSonido('flip.wav');
 
-  // Reproduce el sonido de error/retroceso
+  // Reproduce el sonido de retroceso
 
   static Future<void> goback() => _reproducirSonido('goback.wav');
 
@@ -111,7 +111,11 @@ class SrvSonidos {
 
   static Future<void> error() => _reproducirSonido('error.wav');
 
-  // Reproduce el sonido de error:
+  // Reproduce el sonido de error2:
+
+  static Future<void> error2() => _reproducirSonido('wrong.wav');
+
+  // Reproduce el sonido de empate:
 
   static Future<void> draw() => _reproducirSonido('draw.wav');
 
