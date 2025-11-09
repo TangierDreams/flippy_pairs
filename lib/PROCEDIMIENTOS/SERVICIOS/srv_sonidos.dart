@@ -60,6 +60,7 @@ class SrvSonidos {
   // ============================================================================
 
   static Future<void> iniciarMusicaFondo() async {
+    SrvLogger.grabarLog('srv_sonidos', 'iniciarMusicaFondo()', 'Iniciamos la música de fondo...');
     try {
       if (SrvDiskette.leerValor(DisketteKey.musicaActivada, defaultValue: true)) {
         await _musicaFondoPlayer.setReleaseMode(ReleaseMode.loop); // cuando se acaba, se repite.

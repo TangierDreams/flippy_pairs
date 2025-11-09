@@ -31,7 +31,7 @@ enum TipoAccion {
 }
 
 class GameSpeed {
-  static List<int> memo = [1600, 900, 500];
+  static List<int> memo = [1800, 900, 500];
   static List<int> destello = [1200, 800, 300];
   static List<int> giro = [500, 400, 150];
 }
@@ -45,7 +45,7 @@ class EstadoDelJuego {
   static int columnas = 2;
   static int nivel = 0;
   static int tema = 0;
-  static String nomTema = 'iconos';
+  static String nomTema = 'retratos';
   static int cartasTotales = 0;
   static int parejasTotales = 0;
   static List<File> listaDeImagenes = [];

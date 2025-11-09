@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,26 +15,27 @@ class SrvImagenes {
   static final supabaseImagenes = Supabase.instance.client;
   static late Directory directorioBase;
   static bool guardarVersionImagenes = true;
-
-  // Mapa que contendrá todas las imagenes: 'animales/01.png' -> File
   static Map<String, File> todasLasImagenes = {};
 
-  static final List<String> carpetasDeImagenes = [
-    'flippy/animales',
-    'flippy/coches',
-    'flippy/logos',
-    'flippy/retratos',
-    'flippy/iconos',
-    'flippy/herramientas',
-  ];
+  // Optimized configuration for small images
+  static const int _maxConcurrentDownloads = 8;
+  static const int _downloadTimeoutSeconds = 5;
+  static const int _maxRetries = 3;
+  static const Duration _retryDelay = Duration(milliseconds: 300);
+
+  static final List<String> carpetasDeImagenes = ['retratos', 'iconos', 'logos', 'coches', 'herramientas', 'animales'];
+
+  static final List<String> _imagenesFallidas = [];
+  static final _semaphore = Semaphore(_maxConcurrentDownloads);
 
   //----------------------------------------------------------------------------
   // Al inicializar nos bajamos las imagenes al dispositivo local
   //----------------------------------------------------------------------------
 
   static Future<void> inicializar() async {
-    // Obtenemos la carpeta donde vamos a almacenar las imagenes:
+    SrvLogger.grabarLog('srv_imagenes', 'inicializar()', 'Iniciando servicio de imágenes');
 
+    // Obtenemos la carpeta donde vamos a almacenar las imagenes:
     final appDir = await getApplicationDocumentsDirectory();
     directorioBase = Directory('${appDir.path}/flippy_images');
     if (!await directorioBase.exists()) {
@@ -42,13 +45,22 @@ class SrvImagenes {
     int versionLocal = SrvDiskette.leerValor(DisketteKey.versionImagenes, defaultValue: 0);
     int versionSupabase = int.parse(await SrvSupabase.getParam("flippy_images_version", pDefaultValue: "0"));
 
-    // Descargamos las imagenes de cada carpeta de supbase a la carpeta local:
+    SrvLogger.grabarLog(
+      'srv_imagenes',
+      'inicializar()',
+      'Versión local: $versionLocal, Versión Supabase: $versionSupabase',
+    );
 
+    // Descargamos las imagenes de cada carpeta de supbase a la carpeta local:
     if (versionLocal == versionSupabase && await _estanTodasLasImagenes()) {
+      SrvLogger.grabarLog('srv_imagenes', 'inicializar()', 'Cargando imágenes desde cache local');
       await _cargarImagenesDesdeLocal();
     } else {
+      SrvLogger.grabarLog('srv_imagenes', 'inicializar()', 'Descargando imágenes desde Supabase');
       await _cargarImagenesDesdeSupabase(versionSupabase);
     }
+
+    SrvLogger.grabarLog('srv_imagenes', 'inicializar()', 'Servicio de imágenes inicializado correctamente');
   }
 
   //----------------------------------------------------------------------------
@@ -59,14 +71,28 @@ class SrvImagenes {
     for (String carpeta in carpetasDeImagenes) {
       final carpetaLocal = Directory('${directorioBase.path}/$carpeta');
       if (!await carpetaLocal.exists()) {
-        SrvLogger.grabarLog('srv_imagenes', '_estanTodasLasImagenes()', 'Faltan carpetas en local');
+        SrvLogger.grabarLog(
+          'srv_imagenes',
+          '_estanTodasLasImagenes()',
+          'Falta la carpeta local: ${directorioBase.path}/$carpeta',
+        );
         return false;
       }
       final numImagenes = carpetaLocal.listSync().where((item) => item.path.endsWith('.png')).length;
 
       if (numImagenes != 36) {
-        SrvLogger.grabarLog('srv_imagenes', '_estanTodasLasImagenes()', 'Faltan imagenes en local');
+        SrvLogger.grabarLog(
+          'srv_imagenes',
+          '_estanTodasLasImagenes()',
+          'Faltan imagenes en local: ${directorioBase.path}/$carpeta ($numImagenes de 36)',
+        );
         return false;
+      } else {
+        SrvLogger.grabarLog(
+          'srv_imagenes',
+          '_estanTodasLasImagenes()',
+          'Carpeta local: ${directorioBase.path}/$carpeta ($numImagenes de 36)',
+        );
       }
     }
 
@@ -92,7 +118,11 @@ class SrvImagenes {
         }
       }
     }
-    SrvLogger.grabarLog('srv_imagenes', '_cargarImagenesDesdeLocal()', 'Finaliza la carga de imagenes desde local');
+    SrvLogger.grabarLog(
+      'srv_imagenes',
+      '_cargarImagenesDesdeLocal()',
+      'Finaliza la carga de imagenes desde local. Total: ${todasLasImagenes.length} imágenes',
+    );
   }
 
   //----------------------------------------------------------------------------
@@ -105,41 +135,111 @@ class SrvImagenes {
       '_cargarImagenesDesdeSupabase()',
       'Comienza la carga de imagenes desde Supabase',
     );
+
     for (String carpeta in carpetasDeImagenes) {
       await _descargarCarpeta(carpeta);
     }
+
     if (guardarVersionImagenes) {
       SrvDiskette.guardarValor(DisketteKey.versionImagenes, pVersionSupabase);
+      SrvLogger.grabarLog(
+        'srv_imagenes',
+        '_cargarImagenesDesdeSupabase()',
+        'Versión de imágenes guardada: $pVersionSupabase',
+      );
     }
 
     SrvLogger.grabarLog(
       'srv_imagenes',
       '_cargarImagenesDesdeSupabase()',
-      'Finaliza la carga de imagenes desde Supabase',
+      'Finaliza la carga de imagenes desde Supabase. Total: ${todasLasImagenes.length} imágenes',
     );
   }
 
   //----------------------------------------------------------------------------
   // Descargamos las imagenes de una de las carpetas de Supabase
-  // Realizamos descargas de imagenes en paralelo para agilizar el proceso.
   //----------------------------------------------------------------------------
 
   static Future<void> _descargarCarpeta(String folderPath) async {
+    _imagenesFallidas.clear();
+
     final localFolder = Directory('${directorioBase.path}/$folderPath');
     if (!await localFolder.exists()) {
       await localFolder.create(recursive: true);
     }
 
-    // Crear todas las tareas de descarga
-    List<Future<void>> downloadTasks = [];
+    SrvLogger.grabarLog('srv_imagenes', '_descargarCarpeta()', 'Iniciando descarga de carpeta: $folderPath');
+
+    final downloadTasks = <Future<void>>[];
 
     for (int i = 1; i <= 36; i++) {
       final imageName = '${i.toString().padLeft(2, '0')}.png';
-      downloadTasks.add(_descargarUnaImagen(folderPath, imageName));
+      downloadTasks.add(_descargarUnaImagenConRetry(folderPath, imageName));
     }
 
-    // Descargar todas en paralelo (máximo 10 a la vez)
     await Future.wait(downloadTasks, eagerError: false);
+
+    if (_imagenesFallidas.isNotEmpty) {
+      SrvLogger.grabarLog(
+        'srv_imagenes',
+        '_descargarCarpeta()',
+        'Reintentando ${_imagenesFallidas.length} imágenes fallidas',
+      );
+
+      final retryTasks = <Future<void>>[];
+      for (var imagen in _imagenesFallidas.toList()) {
+        retryTasks.add(_descargarUnaImagenConRetry(folderPath, imagen, isRetry: true));
+      }
+
+      await Future.wait(retryTasks, eagerError: false);
+    }
+
+    if (_imagenesFallidas.isNotEmpty) {
+      SrvLogger.grabarLog(
+        'srv_imagenes',
+        '_descargarCarpeta()',
+        'Finalizado con ${_imagenesFallidas.length} imágenes fallidas persistentes en $folderPath',
+      );
+    } else {
+      SrvLogger.grabarLog(
+        'srv_imagenes',
+        '_descargarCarpeta()',
+        'Todas las imágenes descargadas exitosamente: $folderPath',
+      );
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  // Descargar con reintentos automáticos
+  //----------------------------------------------------------------------------
+
+  static Future<void> _descargarUnaImagenConRetry(String pCarpeta, String pNombreImagen, {bool isRetry = false}) async {
+    for (int attempt = 1; attempt <= _maxRetries; attempt++) {
+      try {
+        await _semaphore.acquire();
+        await _descargarUnaImagen(pCarpeta, pNombreImagen);
+
+        if (isRetry) {
+          _imagenesFallidas.remove(pNombreImagen);
+        }
+        return;
+      } catch (e) {
+        if (attempt == _maxRetries) {
+          if (!_imagenesFallidas.contains(pNombreImagen)) {
+            _imagenesFallidas.add(pNombreImagen);
+          }
+          SrvLogger.grabarLog(
+            'srv_imagenes',
+            '_descargarUnaImagenConRetry()',
+            'Falló después de $attempt intentos: $pCarpeta/$pNombreImagen',
+          );
+        } else {
+          await Future.delayed(_retryDelay * attempt);
+        }
+      } finally {
+        _semaphore.release();
+      }
+    }
   }
 
   //----------------------------------------------------------------------------
@@ -150,34 +250,27 @@ class SrvImagenes {
     final localFile = File('${directorioBase.path}/$pCarpeta/$pNombreImagen');
 
     try {
-      // Obtener la URL pública de Supabase
       final supabasePath = '$pCarpeta/$pNombreImagen';
-      final imageUrl = supabaseImagenes.storage.from('others').getPublicUrl(supabasePath);
+      final imageUrl = supabaseImagenes.storage.from('flippy').getPublicUrl(supabasePath);
 
-      // Descargar la imagen
-      final response = await http.get(Uri.parse(imageUrl)).timeout(Duration(seconds: 2));
+      final response = await http.get(Uri.parse(imageUrl)).timeout(Duration(seconds: _downloadTimeoutSeconds));
 
       if (response.statusCode == 200) {
-        // Guardar en local (sobrescribe si ya existe)
+        if (response.bodyBytes.isEmpty) {
+          throw HttpException('Respuesta vacía');
+        }
+
         await localFile.writeAsBytes(response.bodyBytes);
 
-        // Guardar en el mapa con clave: 'animales/01.png'
         final key = '$pCarpeta/$pNombreImagen';
         todasLasImagenes[key] = localFile;
       } else {
-        guardarVersionImagenes = false;
-        SrvLogger.grabarLog(
-          'srv_imagenes',
-          '_descargarUnaImagen()',
-          'Error HTTP ${response.statusCode}: $pCarpeta/$pNombreImagen',
-        );
+        throw HttpException('HTTP ${response.statusCode}');
       }
     } on TimeoutException {
-      guardarVersionImagenes = false;
-      SrvLogger.grabarLog('srv_imagenes', '_descargarUnaImagen()', 'Error Timeout: $pCarpeta/$pNombreImagen');
+      throw TimeoutException('Timeout después de $_downloadTimeoutSeconds segundos');
     } catch (e) {
-      guardarVersionImagenes = false;
-      SrvLogger.grabarLog('srv_imagenes', '_descargarUnaImagen()', 'Error descargando $pCarpeta/$pNombreImagen: $e');
+      rethrow;
     }
   }
 
@@ -186,7 +279,7 @@ class SrvImagenes {
   //----------------------------------------------------------------------------
 
   static File obtenerUnaImagen(String pCarpeta, String pImagen) {
-    final key = 'flippy/$pCarpeta/$pImagen';
+    final key = '$pCarpeta/$pImagen';
     return todasLasImagenes[key]!;
   }
 
@@ -198,6 +291,7 @@ class SrvImagenes {
     if (await directorioBase.exists()) {
       await directorioBase.delete(recursive: true);
       todasLasImagenes.clear();
+      SrvDiskette.guardarValor(DisketteKey.versionImagenes, 0);
     }
   }
 
@@ -208,7 +302,7 @@ class SrvImagenes {
   static List<File> _imagenesDeUnaCarpeta(String pCarpeta) {
     List<File> listaImagenes = [];
     for (var entry in todasLasImagenes.entries) {
-      if (entry.key.contains('flippy/$pCarpeta/')) {
+      if (entry.key.contains('$pCarpeta/')) {
         listaImagenes.add(entry.value);
       }
     }
@@ -220,18 +314,15 @@ class SrvImagenes {
   //----------------------------------------------------------------------------
 
   static List<File> obtenerImagenesParaJugar(int pNumParejas) {
+    SrvLogger.grabarLog("srv_imagenes", "obtenerImagenesParaJugar()", "Obtener imagenes para las cartas...");
     final random = Random();
     const int totalCartas = 36;
-
-    // Empezamos a coger cartas desde un punto aleatorio:
 
     int startIndex = 0;
     if (pNumParejas < totalCartas) {
       int maxStartIndex = totalCartas - pNumParejas;
       startIndex = random.nextInt(maxStartIndex + 1);
     }
-
-    // Obtenemos todas las url's de la lista seleccionada:
 
     List<File> listaBase;
     try {
@@ -240,17 +331,46 @@ class SrvImagenes {
       return [];
     }
 
-    // A partir de la lista base, cogemos solo el número de imagenes que necesitamos:
+    debugPrint("listaBase: ${listaBase.length}");
+    debugPrint("StartIndex: $startIndex");
+    debugPrint("FinalIndex: ${startIndex + pNumParejas}");
 
     List<File> seleccionados = listaBase.sublist(startIndex, startIndex + pNumParejas).toList();
-
-    // Los duplicamos para formasr las parejas:
-
     final duplicados = [...seleccionados, ...seleccionados];
-
-    // Los desordenamos:
-
     duplicados.shuffle(random);
+    SrvLogger.grabarLog("srv_imagenes", "obtenerImagenesParaJugar()", "Devolvemos la lista de cartas duplicadas");
     return duplicados;
+  }
+}
+
+//----------------------------------------------------------------------------
+// Semaphore para controlar descargas concurrentes
+//----------------------------------------------------------------------------
+
+class Semaphore {
+  Semaphore(this._maxCapacity);
+
+  final int _maxCapacity;
+  final Queue<Completer<void>> _waiting = Queue<Completer<void>>();
+  int _current = 0;
+
+  Future<void> acquire() async {
+    if (_current < _maxCapacity) {
+      _current++;
+      return;
+    }
+
+    final completer = Completer<void>();
+    _waiting.add(completer);
+    await completer.future;
+  }
+
+  void release() {
+    _current--;
+
+    if (_waiting.isNotEmpty && _current < _maxCapacity) {
+      _current++;
+      _waiting.removeFirst().complete();
+    }
   }
 }

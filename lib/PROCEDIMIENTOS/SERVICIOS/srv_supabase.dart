@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -61,6 +62,7 @@ class SrvSupabase {
   //----------------------------------------------------------------------------
 
   static Future<List<Map<String, dynamic>>> obtenerRegFlippy({required String pId}) async {
+    SrvLogger.grabarLog('srv_supabase', 'obtenerRegFlippy()', 'Buscamos los registros del usuario: $pId');
     try {
       final response = await supabase.rpc('obtener_reg_flippy', params: {'p_id': pId});
 
@@ -80,7 +82,31 @@ class SrvSupabase {
   // Obtenemos las puntuaciones de un dispositivo.
   //----------------------------------------------------------------------------
 
+  static Future<List<Map<String, dynamic>>> obtenerTablaFlippy() async {
+    try {
+      final nivel = EstadoDelJuego.nivel;
+      final response = await supabase.rpc('obtener_tabla_flippy', params: {'p_level': nivel});
+      final output = (response as List).map((e) => Map<String, dynamic>.from(e)).toList();
+      return output;
+    } on PostgrestException catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerTablaFlippy()', 'Error obteniendo los datos: ${e.message}');
+      rethrow;
+    } catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerTablaFlippy()', 'Error inesperado: $e');
+      rethrow;
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos las puntuaciones de un dispositivo.
+  //----------------------------------------------------------------------------
+
   static Future<int> obtenerRankingFlippy({required String pId, required int pLevel}) async {
+    SrvLogger.grabarLog(
+      'srv_supabase',
+      'obtenerRankingFlippy()',
+      'Obtener ranking del usuario: $pId para el nivel: $pLevel',
+    );
     try {
       final response = await supabase.rpc('obtener_ranking_flippy', params: {'p_id': pId, 'p_level': pLevel});
       final output = response as int;

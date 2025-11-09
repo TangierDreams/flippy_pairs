@@ -5,7 +5,6 @@
 //==============================================================================
 
 import 'dart:math';
-
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
@@ -94,7 +93,7 @@ class _PagJuegoState extends State<PagJuego> {
   // Reiniciar el juego desde cero
   //----------------------------------------------------------------------------
   void _reiniciar() {
-    SrvLogger.grabarLog('pag_juego', 'reiniciar()', 'Reiniciando');
+    SrvLogger.grabarLog('pag_juego', 'reiniciar()', 'Reiniciando el juego');
 
     setState(() {
       SrvJuego.crearNuevoJuego(EstadoDelJuego.filas, EstadoDelJuego.columnas);
@@ -105,6 +104,8 @@ class _PagJuegoState extends State<PagJuego> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _claveResumen.currentState?.refrescarDatos();
+      SrvSonidos.iniciarMusicaFondo();
+      EstadoDelJuego.musicaActiva = true;
     });
   }
 
@@ -124,12 +125,6 @@ class _PagJuegoState extends State<PagJuego> {
 
     // Procesar la carta (la lógica está en srv_juego)
     SrvJuego.procesarCartaPulsada(pIndex);
-
-    // CRÍTICO: CAPTURAR EL ESTADO GLOBAL EN VARIABLES LOCALES
-    //final TipoAccion accion = ResultadoClick.accion;
-    //final int? carta1 = ResultadoClick.primeraCarta;
-    //final int? carta2 = ResultadoClick.segundaCarta;
-
     int velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
 
     // Refrescar pantalla
@@ -283,28 +278,6 @@ class _PagJuegoState extends State<PagJuego> {
           ),
 
           // Grid de cartas
-          // Expanded(
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(12.0),
-          //     child: GridView.builder(
-          //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //         crossAxisCount: EstadoDelJuego.columnas,
-          //         crossAxisSpacing: 8,
-          //         mainAxisSpacing: 8,
-          //       ),
-          //       itemCount: EstadoDelJuego.cartasTotales,
-          //       itemBuilder: (context, index) {
-          //         return WidCarta(
-          //           pEstaBocaArriba:
-          //               EstadoDelJuego.listaDeCartasGiradas[index] || EstadoDelJuego.listaDeCartasEmparejadas[index],
-          //           pImagenCarta: EstadoDelJuego.listaDeImagenes[index],
-          //           pDestello: EstadoDelJuego.cartasDestello.contains(index),
-          //           pCallBackFunction: () => _cuandoPulsanUnaCarta(index),
-          //         );
-          //       },
-          //     ),
-          //   ),
-          // ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12.0),

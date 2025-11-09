@@ -51,6 +51,12 @@ class SrvTraducciones {
     'normal': '🏃 Normal',
     'rapido': '🚀 Fast',
     'velocidad_juego': 'Game Speed',
+    'ranking': 'Ranking',
+    'primeros': 'The Protagonists',
+    'segundos': 'The Guest Stars',
+    'terceros': 'The Extras',
+    'cuartos': 'The Bad Guys',
+    'todos': 'All Players',
   };
 
   static final Map<String, String> spanish = {
@@ -104,6 +110,12 @@ class SrvTraducciones {
     'normal': '🏃 Normal',
     'rapido': '🚀 Rápido',
     'velocidad_juego': 'Velocidad',
+    'ranking': 'Ranking',
+    'primeros': 'Los Protagonistas',
+    'segundos': 'Los Invitados',
+    'terceros': 'Los Extras',
+    'cuartos': 'Los Chicos Malos',
+    'todos': 'Todos los Jugadores',
   };
 
   static final Map<String, String> catalan = {
@@ -156,6 +168,12 @@ class SrvTraducciones {
     'normal': '🏃 Normal',
     'rapido': '🚀 Ràpid',
     'velocidad_juego': 'Velocitat',
+    'ranking': 'Ranking',
+    'primeros': 'Els Protagonistes',
+    'segundos': 'Els Convidats',
+    'terceros': 'Els Extres',
+    'cuartos': 'Els Nois Dolents',
+    'todos': 'Tots els Jugadors',
   };
 
   //----------------------------------------------------------------------------

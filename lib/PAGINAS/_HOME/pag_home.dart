@@ -57,7 +57,11 @@ class _PagHomeState extends State<PagHome> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(SrvTraducciones.get('temas'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+                Text(
+                  SrvTraducciones.get('temas'),
+                  textAlign: TextAlign.center,
+                  style: Textos.chewy(30, Colores.segundo),
+                ),
 
                 const SizedBox(height: 10),
 
@@ -68,33 +72,33 @@ class _PagHomeState extends State<PagHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     BotonTema(
-                      pListaImagenes: 'iconos',
+                      pListaImagenes: 'retratos',
                       pNumBoton: 0,
                       pCallBackFunction: () {
                         setState(() {
-                          EstadoDelJuego.nomTema = 'iconos';
+                          EstadoDelJuego.nomTema = 'retratos';
                           EstadoDelJuego.tema = 0;
                         });
                       },
                     ),
 
                     BotonTema(
-                      pListaImagenes: 'animales',
+                      pListaImagenes: 'iconos',
                       pNumBoton: 1,
                       pCallBackFunction: () {
                         setState(() {
-                          EstadoDelJuego.nomTema = 'animales';
+                          EstadoDelJuego.nomTema = 'iconos';
                           EstadoDelJuego.tema = 1;
                         });
                       },
                     ),
 
                     BotonTema(
-                      pListaImagenes: 'retratos',
+                      pListaImagenes: 'logos',
                       pNumBoton: 2,
                       pCallBackFunction: () {
                         setState(() {
-                          EstadoDelJuego.nomTema = 'retratos';
+                          EstadoDelJuego.nomTema = 'logos';
                           EstadoDelJuego.tema = 2;
                         });
                       },
@@ -102,7 +106,7 @@ class _PagHomeState extends State<PagHome> {
                   ],
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 05),
 
                 //------------------------------------------------------------------
                 // Segunda línea de imagenes
@@ -111,33 +115,33 @@ class _PagHomeState extends State<PagHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     BotonTema(
-                      pListaImagenes: 'herramientas',
+                      pListaImagenes: 'coches',
                       pNumBoton: 3,
                       pCallBackFunction: () {
                         setState(() {
-                          EstadoDelJuego.nomTema = 'herramientas';
+                          EstadoDelJuego.nomTema = 'coches';
                           EstadoDelJuego.tema = 3;
                         });
                       },
                     ),
 
                     BotonTema(
-                      pListaImagenes: 'coches',
+                      pListaImagenes: 'herramientas',
                       pNumBoton: 4,
                       pCallBackFunction: () {
                         setState(() {
-                          EstadoDelJuego.nomTema = 'coches';
+                          EstadoDelJuego.nomTema = 'herramientas';
                           EstadoDelJuego.tema = 4;
                         });
                       },
                     ),
 
                     BotonTema(
-                      pListaImagenes: 'logos',
+                      pListaImagenes: 'animales',
                       pNumBoton: 5,
                       pCallBackFunction: () {
                         setState(() {
-                          EstadoDelJuego.nomTema = 'logos';
+                          EstadoDelJuego.nomTema = 'animales';
                           EstadoDelJuego.tema = 5;
                         });
                       },
@@ -147,7 +151,11 @@ class _PagHomeState extends State<PagHome> {
 
                 const SizedBox(height: 15),
 
-                Text(SrvTraducciones.get('dificultad'), textAlign: TextAlign.center, style: Textos.textStyleOrange30),
+                Text(
+                  SrvTraducciones.get('dificultad'),
+                  textAlign: TextAlign.center,
+                  style: Textos.chewy(30, Colores.segundo),
+                ),
 
                 const SizedBox(height: 10),
 
@@ -273,7 +281,7 @@ class _PagHomeState extends State<PagHome> {
                 Text(
                   SrvTraducciones.get('velocidad_juego'),
                   textAlign: TextAlign.center,
-                  style: Textos.textStyleOrange30,
+                  style: Textos.chewy(30, Colores.segundo),
                 ),
 
                 const SizedBox(height: 10),
@@ -347,7 +355,7 @@ class _PagHomeState extends State<PagHome> {
                   },
                 ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
                 //------------------------------------------------------------------
                 // Botón para comenzar a jugar
@@ -363,22 +371,22 @@ class _PagHomeState extends State<PagHome> {
                   pNavegarA: '/game',
                 ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
-                // //------------------------------------------------------------------
-                // // Botón para ir a la configuración
-                // //------------------------------------------------------------------
-                // WidBotonStandard(
-                //   pTexto: SrvTraducciones.get('configuracion'),
-                //   pTipoDeLetra: 'Chewy',
-                //   pTamanyoLetra: 16,
-                //   pColorLetra: Colores.tercero,
-                //   pIcono: Icons.settings,
-                //   pColorIcono: Colores.tercero,
-                //   pSombra: true,
-                //   pEsquinasRedondeadas: true,
-                //   pNavegarA: '/config',
-                // ),
+                //------------------------------------------------------------------
+                // Botón para ir al Ranking
+                //------------------------------------------------------------------
+                WidBotonStandard(
+                  pTexto: SrvTraducciones.get('ranking'),
+                  pTipoDeLetra: 'Chewy',
+                  pTamanyoLetra: 16,
+                  pColorLetra: Colores.tercero,
+                  pIcono: Icons.settings,
+                  pColorIcono: Colores.tercero,
+                  pSombra: true,
+                  pEsquinasRedondeadas: true,
+                  pNavegarA: '/ranking',
+                ),
               ],
             ),
           ),
@@ -413,7 +421,7 @@ class BotonTema extends StatelessWidget {
         foregroundColor: Colores.onPrimero,
         elevation: estaSeleccionado ? 15 : 10,
       ),
-      child: Image.file(primeraImagenTema, width: 60, height: 60, fit: BoxFit.contain),
+      child: Image.file(primeraImagenTema, width: 60, height: 50, fit: BoxFit.contain),
     );
   }
 }
@@ -452,13 +460,13 @@ class BotonNivel extends StatelessWidget {
           pCallBackFunction();
         },
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
           backgroundColor: estaSeleccionado ? Colores.segundo : Colores.primero,
           foregroundColor: Colores.onPrimero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: estaSeleccionado ? 15 : 10,
         ),
-        child: Text(titulo, style: Textos.textStyleYellow30, textAlign: TextAlign.center),
+        child: Text(titulo, style: Textos.chewy(30, Colores.tercero), textAlign: TextAlign.center),
       ),
     );
   }

@@ -50,10 +50,10 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
         mainAxisSize: MainAxisSize.min, // don't stretch vertically
         children: [
           const SizedBox(height: 6),
-          Text(DatosGenerales.nombreApp, style: Textos.textStyleOrange32),
+          Text(DatosGenerales.nombreApp, style: Textos.luckiestGuy(32, Colores.segundo)),
           if (subtitle != null) ...[
             const SizedBox(height: 1), // Pequeño espacio entre título y subtítulo
-            Text(subtitle!, style: Textos.textStyleYellow14),
+            Text(subtitle!, style: Textos.chewy(14, Colores.tercero)),
           ],
         ],
       ),

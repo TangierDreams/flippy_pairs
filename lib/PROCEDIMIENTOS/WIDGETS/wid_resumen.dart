@@ -1,6 +1,7 @@
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,6 +33,7 @@ class WidResumenState extends State<WidResumen> {
   // Función pública para que la página pueda llamar y refrescar los datos al empezar un nuevo juego
 
   Future<void> refrescarDatos() async {
+    SrvLogger.grabarLog("wid_resumen", "refrescarDatos()", "Refrescar los datos del resumen");
     // Aquí llamas a Supabase
     final datos = await SrvSupabase.obtenerRegFlippy(
       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),

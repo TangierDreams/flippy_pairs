@@ -45,6 +45,7 @@ class SrvJuego {
     EstadoDelJuego.parejasAcertadas = 0;
     EstadoDelJuego.parejasFalladas = 0;
     EstadoDelJuego.cartasDestello = {};
+    SrvLogger.grabarLog("srv_juego", "crearNuevoJuego()", "Nuevo juego creado.");
   }
 
   //----------------------------------------------------------------------------
@@ -128,16 +129,6 @@ class SrvJuego {
     }
   }
 
-  // static void ocultarCartasFalladas() {
-  //   for (int i = 0; i < EstadoDelJuego.listaDeCartasGiradas.length; i++) {
-  //     if (EstadoDelJuego.listaDeCartasGiradas[i] == true) {
-  //       if (EstadoDelJuego.listaDeCartasEmparejadas[i] == false) {
-  //         EstadoDelJuego.listaDeCartasGiradas[i] = false;
-  //       }
-  //     }
-  //   }
-  // }
-
   static void ocultarCartasFalladas(int pCarta1, int pCarta2) {
     EstadoDelJuego.listaDeCartasGiradas[pCarta1] = false;
     EstadoDelJuego.listaDeCartasGiradas[pCarta2] = false;
@@ -158,7 +149,7 @@ class SrvJuego {
   // Guardar la partida en la base de datos
   //----------------------------------------------------------------------------
   static Future<void> guardarPartida() async {
-    SrvLogger.grabarLog("srv_juego", "guardarPartida()", "Guardando partida");
+    SrvLogger.grabarLog("srv_juego", "guardarPartida()", "Guardando la partida");
 
     await SrvSupabase.grabarPartida(
       pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '?'),

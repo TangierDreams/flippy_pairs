@@ -43,8 +43,8 @@ class SrvLogger {
         final String fecha = SrvFechas.hoyEnYYYYMMDD();
         final String hora = SrvFechas.ahoraEnHHMMSSCC();
         final String linea = '$fecha;$hora;$modulo;$funcion;$mensaje\n';
-
         await _logFile.writeAsString(linea, mode: FileMode.append, flush: true);
+        debugPrint(linea);
       } catch (e) {
         debugPrint('Error al grabar log (dentro del lock): $e');
       }

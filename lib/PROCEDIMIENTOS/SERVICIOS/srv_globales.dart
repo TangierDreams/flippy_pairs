@@ -8,9 +8,9 @@ class DatosGenerales {
   static String rutaArchivoLogs = '';
   static String rutaArchivoLogsOld = '';
   static const String logoApp = 'assets/imagenes/general/app_logo.png';
-  static const String supabaseUrl = 'https://nygzlnrhbrdvjjhrbsdz.supabase.co';
+  static const String supabaseUrl = 'https://dvkiegomytwhagitceje.supabase.co';
   static const String supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im55Z3psbnJoYnJkdmpqaHJic2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE3MDQ3MTMsImV4cCI6MjAxNzI4MDcxM30.0ioZe3S_uqanr_Ulm_yWVxYEOHi7pHCNHKyu9zsq8fE';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2a2llZ29teXR3aGFnaXRjZWplIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2NTg1NzEsImV4cCI6MjA3ODIzNDU3MX0.jO91Qji7IyMQRpr-PWn__Qj89h64amjrijyX2o_IpHo';
 }
 
 class Colores {
@@ -27,58 +27,29 @@ class Colores {
 }
 
 class Textos {
-  static final textStyleOrange32 = GoogleFonts.luckiestGuy(
-    textStyle: TextStyle(
-      fontSize: 32,
-      height: 0.9,
-      color: Colores.segundo,
-      shadows: [Shadow(blurRadius: 8, color: Colores.textos, offset: Offset(3, 3))],
-    ),
-  );
+  static TextStyle chewy(double pSize, Color pColor, {Color? pColorSombra}) {
+    pColorSombra ??= Colores.textos;
+    final output = GoogleFonts.chewy(
+      textStyle: TextStyle(
+        fontSize: pSize,
+        height: 0.7,
+        color: pColor,
+        shadows: [Shadow(blurRadius: 4, color: pColorSombra, offset: Offset(2, 2))],
+      ),
+    );
+    return output;
+  }
 
-  static final textStyleOrange30 = GoogleFonts.chewy(
-    textStyle: TextStyle(
-      fontSize: 30,
-      height: 0.7,
-      color: Colores.segundo,
-      shadows: [Shadow(blurRadius: 4, color: Colores.textos, offset: Offset(2, 2))],
-    ),
-  );
-
-  static final textStyleOrange28 = GoogleFonts.luckiestGuy(
-    textStyle: TextStyle(
-      fontSize: 28,
-      //height: 0.9,
-      color: Colores.segundo,
-      shadows: [Shadow(blurRadius: 8, color: Colores.textos, offset: Offset(3, 3))],
-    ),
-  );
-
-  static final textStyleYellow30 = GoogleFonts.chewy(
-    textStyle: TextStyle(
-      fontSize: 30,
-      height: 0.7,
-      color: Colores.tercero,
-      shadows: [Shadow(blurRadius: 4, color: Colores.textos, offset: Offset(2, 2))],
-    ),
-  );
-
-  static final textStyleYellow14 = GoogleFonts.chewy(
-    textStyle: TextStyle(
-      fontSize: 14,
-      height: 0.7,
-      color: Colores.tercero,
-      shadows: [Shadow(blurRadius: 4, color: Colores.textos, offset: Offset(2, 2))],
-    ),
-  );
-
-  static final TextStyle subtitle = TextStyle(fontSize: 20, color: Colores.onPrimero);
-
-  static final TextStyle smallSubtitle = TextStyle(fontSize: 12, color: Colores.textos);
-
-  static final TextStyle normal = TextStyle(fontSize: 14, color: Colores.textos);
-
-  static final TextStyle highlighted = TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colores.textos);
-
-  static final TextStyle buttonDisabled = TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colores.fondo);
+  static TextStyle luckiestGuy(double pSize, Color pColor, {Color? pColorSombra}) {
+    pColorSombra ??= Colores.textos;
+    final output = GoogleFonts.luckiestGuy(
+      textStyle: TextStyle(
+        fontSize: pSize,
+        //height: 0.9,
+        color: pColor,
+        shadows: [Shadow(blurRadius: 8, color: pColorSombra, offset: Offset(3, 3))],
+      ),
+    );
+    return output;
+  }
 }
