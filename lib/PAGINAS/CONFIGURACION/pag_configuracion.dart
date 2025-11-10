@@ -93,7 +93,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   TextField(
                     controller: _nombreUsuario,
                     focusNode: _focusNodeAlias,
-                    inputFormatters: [LengthLimitingTextInputFormatter(20)],
+                    inputFormatters: [LengthLimitingTextInputFormatter(25)],
                     style: GoogleFonts.luckiestGuy(color: Colors.black, fontSize: 16),
                     decoration: InputDecoration(
                       labelText: SrvTraducciones.get('alias'),
@@ -149,9 +149,9 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   ),
                   const SizedBox(height: 15),
 
-                  //------------------------------------------------------------------
+                  //------------------------------------------------------------
                   // Activar o desactivar música
-                  //------------------------------------------------------------------
+                  //------------------------------------------------------------
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[

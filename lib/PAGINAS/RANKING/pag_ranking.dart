@@ -4,6 +4,7 @@
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/MODELOS/player_group.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
@@ -22,6 +23,27 @@ class PagRanking extends StatefulWidget {
 class _PagRankingState extends State<PagRanking> {
   // Aquí almacenamos la lista completa de jugadores:
   late Future<List<Map<String, dynamic>>> listaRanking;
+
+  // Mi id:
+
+  String miId = SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '');
+
+  // Posición en la lista:
+
+  int posicion = 0;
+
+  //----------------------------------------------------------------------------
+  // Buscamos la posición del usuario en la lista
+  //----------------------------------------------------------------------------
+
+  int _encontrarMiPosicion(List<Map<String, dynamic>> jugadores) {
+    for (int i = 0; i < jugadores.length; i++) {
+      if (jugadores[i]['id'] == miId) {
+        return i + 1; // +1 porque las posiciones empiezan en 1
+      }
+    }
+    return 0; // Si no se encuentra
+  }
 
   @override
   void initState() {
@@ -140,6 +162,7 @@ class _PagRankingState extends State<PagRanking> {
   //----------------------------------------------------------------------------
 
   Widget _mostrarJugador(Map<String, dynamic> player) {
+    posicion += 1;
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -148,61 +171,107 @@ class _PagRankingState extends State<PagRanking> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // Columna de posición
           Expanded(
-            flex: 3,
-            child: Text(
-              player['nombre']?.toString() ?? '',
-              style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+            flex: 1,
+            child: Container(
+              alignment: Alignment.center,
+              child: player['id'] == miId
+                  ? Container(
+                      padding: const EdgeInsets.all(8),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: Colores.primero, shape: BoxShape.circle),
+                      child: Text(
+                        posicion.toString(),
+                        style: Textos.chewy(12, Colores.blanco, pColorSombra: Colores.fondo),
+                      ),
+                    )
+                  : Text(posicion.toString(), style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco)),
             ),
           ),
+
+          // Columna de nombre y ubicación (ahora en dos líneas)
           Expanded(
-            flex: 2,
-            child: Row(
+            flex: 4, // Aumentamos el flex ya que ahora contendrá más información
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Country flag
-                Image.network(
-                  'https://flagcdn.com/16x12/${player['pais']?.toLowerCase()}.png',
-                  width: 16,
-                  height: 12,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
+                // Línea 1: Nombre del jugador
+                Text(
+                  player['nombre']?.toString() ?? '',
+                  style: player['id'] == miId
+                      ? Textos.chewy(14, Colores.primero, pColorSombra: Colores.blanco)
+                      : Textos.chewy(14, Colores.negro, pColorSombra: Colores.blanco),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 10),
+                // Línea 2: Ciudad y bandera
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Country flag
+                    Image.network(
+                      'https://flagcdn.com/16x12/${player['pais']?.toLowerCase()}.png',
                       width: 16,
                       height: 12,
-                      color: Colors.grey[300],
-                      child: Icon(Icons.error_outline, size: 10, color: Colors.grey),
-                    );
-                  },
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 16,
+                          height: 12,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.error_outline, size: 10, color: Colors.grey),
+                        );
+                      },
+                    ),
+                    SizedBox(width: 4), // Espacio reducido
+                    // City name
+                    Text(
+                      player['ciudad']?.toString() ?? '',
+                      style: player['id'] == miId
+                          ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
+                          : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-                SizedBox(width: 8), // Add some spacing
-                // City name
-                Text(player['ciudad'], style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco)),
               ],
             ),
           ),
+
+          // Columna de puntos
           Expanded(
             flex: 2,
             child: Text(
               player['puntos']?.toString() ?? '',
-              style: Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              player['partidas']?.toString() ?? '',
-              style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+              style: player['id'] == miId
+                  ? Textos.chewy(16, Colores.primero, pColorSombra: Colores.blanco)
+                  : Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco),
               textAlign: TextAlign.center,
             ),
           ),
 
+          // Columna de partidas
+          Expanded(
+            flex: 1,
+            child: Text(
+              player['partidas']?.toString() ?? '',
+              style: player['id'] == miId
+                  ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
+                  : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          // Columna de tiempo récord
           Expanded(
             flex: 1,
             child: Text(
               SrvFechas.segundosAMinutosYSegundos(player['tiempo_record'] ?? 0),
-              style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+              style: player['id'] == miId
+                  ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
+                  : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
               textAlign: TextAlign.center,
             ),
           ),
@@ -244,7 +313,10 @@ class _PagRankingState extends State<PagRanking> {
             ],
           ),
         ),
-        // Group Header Row (same as your original header)
+
+        //------------------------------------------------
+        // Cabeceras de las columnas de cada grupo
+        //------------------------------------------------
         Container(
           padding: EdgeInsets.all(8),
           color: Colores.fondo,
@@ -252,15 +324,19 @@ class _PagRankingState extends State<PagRanking> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                flex: 3,
+                flex: 1, // Posición
+                child: Text(
+                  '📍',
+                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Expanded(
+                flex: 4, // Jugador (ahora incluye nombre y ubicación)
                 child: Text('👤', style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo)),
               ),
               Expanded(
-                flex: 2,
-                child: Text('📍', style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo)),
-              ),
-              Expanded(
-                flex: 2,
+                flex: 2, // Puntos
                 child: Text(
                   '🏅',
                   style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
@@ -268,16 +344,15 @@ class _PagRankingState extends State<PagRanking> {
                 ),
               ),
               Expanded(
-                flex: 1,
+                flex: 1, // Partidas
                 child: Text(
                   '🕹️',
                   style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
                   textAlign: TextAlign.center,
                 ),
               ),
-
               Expanded(
-                flex: 1,
+                flex: 1, // Tiempo
                 child: Text(
                   '⌚',
                   style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
@@ -299,6 +374,7 @@ class _PagRankingState extends State<PagRanking> {
 
   @override
   Widget build(BuildContext context) {
+    posicion = 0;
     return Scaffold(
       //Toolbar:
       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
@@ -321,9 +397,43 @@ class _PagRankingState extends State<PagRanking> {
           final allPlayers = snapshot.data!;
           final groups = _crearGruposDeJugadores(allPlayers);
 
-          return ListView(children: groups.map((group) => _buildGroupSection(group)).toList());
+          // Encontrar mi posición
+          final miPosicion = _encontrarMiPosicion(allPlayers);
+
+          return Column(
+            children: [
+              // Mensaje de posición del jugador - SIEMPRE VISIBLE
+              if (miPosicion > 0)
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(12),
+                  color: Colores.fondo,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.place, color: Colores.cuarto, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        '${SrvTraducciones.get('estas_en_posicion')} $miPosicion',
+                        style: Textos.chewy(18, Colores.primero, pColorSombra: Colores.fondo),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Lista de grupos
+              Expanded(child: ListView(children: groups.map((group) => _buildGroupSection(group)).toList())),
+            ],
+          );
         },
       ),
     );
   }
+
+  //         return ListView(children: groups.map((group) => _buildGroupSection(group)).toList());
+  //       },
+  //     ),
+  //   );
+  // }
 }

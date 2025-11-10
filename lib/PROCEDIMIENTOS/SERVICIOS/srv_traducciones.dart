@@ -57,6 +57,7 @@ class SrvTraducciones {
     'terceros': 'The Extras',
     'cuartos': 'The Bad Guys',
     'todos': 'All Players',
+    'estas_en_posicion': 'You are in position ',
   };
 
   static final Map<String, String> spanish = {
@@ -116,6 +117,7 @@ class SrvTraducciones {
     'terceros': 'Los Extras',
     'cuartos': 'Los Chicos Malos',
     'todos': 'Todos los Jugadores',
+    'estas_en_posicion': 'Estás en la posición ',
   };
 
   static final Map<String, String> catalan = {
@@ -174,6 +176,7 @@ class SrvTraducciones {
     'terceros': 'Els Extres',
     'cuartos': 'Els Nois Dolents',
     'todos': 'Tots els Jugadors',
+    'estas_en_posicion': 'Estàs a la posició ',
   };
 
   //----------------------------------------------------------------------------
