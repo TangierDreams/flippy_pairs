@@ -19,11 +19,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  //----------------------------------------------------------------------------
+  // Inicializamos Supabase
+  //----------------------------------------------------------------------------
+
   try {
     await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Supabase: $e');
   }
+
+  //----------------------------------------------------------------------------
+  // Inicializamos el Diskette
+  //----------------------------------------------------------------------------
 
   try {
     await SrvDiskette.inicializar();
@@ -31,11 +39,19 @@ Future<void> main() async {
     SrvLogger.grabarLog('Main', 'main()', 'Error Diskette: $e');
   }
 
+  //----------------------------------------------------------------------------
+  // Inicializamos las imagenes
+  //----------------------------------------------------------------------------
+
   try {
     await SrvImagenes.inicializar();
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Imagenes: $e');
   }
+
+  //----------------------------------------------------------------------------
+  // Inicializamos los idiomas
+  //----------------------------------------------------------------------------
 
   try {
     await SrvIdiomas.inicializar();
@@ -43,11 +59,20 @@ Future<void> main() async {
     SrvLogger.grabarLog('Main', 'main()', 'Error Idioma: $e');
   }
 
+  //----------------------------------------------------------------------------
+  // Inicializamos Sonidos
+  //----------------------------------------------------------------------------
+
   try {
     await SrvSonidos.inicializar();
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Sonidos: $e');
   }
+
+  //----------------------------------------------------------------------------
+  // Asignamos una ID al dispositivo
+  //----------------------------------------------------------------------------
+
   try {
     await SrvDispositivo.obtenerId();
     SrvLogger.grabarLog(
@@ -58,8 +83,17 @@ Future<void> main() async {
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Dispositivo: $e');
   }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos la localización del dispositivo.
+  //----------------------------------------------------------------------------
+
   try {
-    await SrvTracking.obtenerDatos();
+    if (SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '') == '' ||
+        SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '') == '' ||
+        SrvDiskette.leerValor(DisketteKey.ip, defaultValue: '') == '') {
+      await SrvTracking.obtenerDatos();
+    }
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Tracking: $e');
   }

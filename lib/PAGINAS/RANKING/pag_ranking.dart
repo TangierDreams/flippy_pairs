@@ -183,10 +183,10 @@ class _PagRankingState extends State<PagRanking> {
                       decoration: BoxDecoration(color: Colores.primero, shape: BoxShape.circle),
                       child: Text(
                         posicion.toString(),
-                        style: Textos.chewy(12, Colores.blanco, pColorSombra: Colores.fondo),
+                        style: Textos.chewy(16, Colores.blanco, pColorSombra: Colores.fondo),
                       ),
                     )
-                  : Text(posicion.toString(), style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco)),
+                  : Text(posicion.toString(), style: Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco)),
             ),
           ),
 

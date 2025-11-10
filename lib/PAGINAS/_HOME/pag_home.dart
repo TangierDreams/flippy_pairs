@@ -376,16 +376,45 @@ class _PagHomeState extends State<PagHome> {
                 //------------------------------------------------------------------
                 // Botón para ir al Ranking
                 //------------------------------------------------------------------
-                WidBotonStandard(
-                  pTexto: SrvTraducciones.get('ranking'),
-                  pTipoDeLetra: 'Chewy',
-                  pTamanyoLetra: 16,
-                  pColorLetra: Colores.tercero,
-                  pIcono: Icons.settings,
-                  pColorIcono: Colores.tercero,
-                  pSombra: true,
-                  pEsquinasRedondeadas: true,
-                  pNavegarA: '/ranking',
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    WidBotonStandard(
+                      pTexto: 'FWC 🔷',
+                      pTipoDeLetra: 'Chewy',
+                      pTamanyoLetra: 18,
+                      pColorLetra: Colores.tercero,
+                      //pIcono: Icons.settings,
+                      //pColorIcono: Colores.tercero,
+                      pSombra: true,
+                      pEsquinasRedondeadas: true,
+                      pNavegarA: '/ranking',
+                    ),
+
+                    WidBotonStandard(
+                      pTexto: 'FWC 🕒',
+                      pTipoDeLetra: 'Chewy',
+                      pTamanyoLetra: 18,
+                      pColorLetra: Colores.tercero,
+                      //pIcono: Icons.settings,
+                      //pColorIcono: Colores.tercero,
+                      pSombra: true,
+                      pEsquinasRedondeadas: true,
+                      pNavegarA: '/ranking',
+                    ),
+
+                    WidBotonStandard(
+                      pTexto: 'FWC 🌍',
+                      pTipoDeLetra: 'Chewy',
+                      pTamanyoLetra: 18,
+                      pColorLetra: Colores.tercero,
+                      //pIcono: Icons.settings,
+                      //pColorIcono: Colores.tercero,
+                      pSombra: true,
+                      pEsquinasRedondeadas: true,
+                      pNavegarA: '/ranking',
+                    ),
+                  ],
                 ),
               ],
             ),

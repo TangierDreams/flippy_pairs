@@ -12,6 +12,7 @@ enum DisketteKey {
   deviceName,
   idioma,
   idPais,
+  ip,
   musicaActivada,
   nombrePais,
   puntuacion,
