@@ -2,12 +2,14 @@
 // PAGINA DONDE MOSTRAMOS LAS OPCIONES DE CONFIGURACION DEL JUEGO.
 //------------------------------------------------------------------------------
 
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_confirmacion.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_idiomas.dart';
@@ -191,6 +193,30 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     pTipoDeLetra: "Luckiest Guy",
                     pTamanyoLetra: 16,
                     pColorLetra: Colores.negro,
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  //---------------------------------------
+                  // Botón para eliminar mi puntuación:
+                  //---------------------------------------
+                  WidBotonStandard(
+                    pTexto: 'Eliminar',
+                    pColorDeFondo: Colores.cuarto,
+                    pColorLetra: Colores.blanco,
+                    pEmitirSonido: true,
+                    pEsquinasRedondeadas: true,
+                    pFuncionCallBack: () => SrvConfirmacion.confirmacionConAccion(
+                      context: context,
+                      titulo: "Confirmar eliminación",
+                      descripcion:
+                          "¿Estás seguro de que quieres eliminar todos tus puntos? Esta acción no se puede deshacer.",
+                      textoBotonOk: "Eliminar",
+                      colorBotonOk: Colors.red,
+                      onConfirmar: () {
+                        SrvSupabase.borrarPuntosUsuario(SrvDiskette.leerValor(DisketteKey.deviceId));
+                      },
+                    ),
                   ),
 
                   const SizedBox(height: 10),

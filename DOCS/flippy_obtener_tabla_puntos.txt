@@ -1,6 +1,4 @@
-CREATE OR REPLACE FUNCTION public.obtener_reg_flippy(
-    p_id text
-)
+CREATE OR REPLACE FUNCTION public.flippy_obtener_tabla_puntos(p_level integer)
 RETURNS TABLE (
     id text,
     nivel smallint,
@@ -20,7 +18,6 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
- 
   RETURN QUERY
   SELECT 
     f.id,
@@ -36,7 +33,7 @@ BEGIN
     f.ganadas,
     f.perdidas
   FROM public.flippy_points f
-  WHERE f.id = p_id
-  ORDER BY f.nivel;
+  where f.nivel = p_level
+  ORDER BY f.puntos desc;
 END;
 $$;

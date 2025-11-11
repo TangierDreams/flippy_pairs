@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.upsert_flippy_points(
+CREATE OR REPLACE FUNCTION public.flippy_actualizar_puntuacion(
     _id text,
     _nivel integer,
     _nombre text,

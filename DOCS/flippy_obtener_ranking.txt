@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION public.obtener_ranking_flippy(
+CREATE OR REPLACE FUNCTION public.flippy_obtener_ranking(
     p_id text,
     p_level integer
 )

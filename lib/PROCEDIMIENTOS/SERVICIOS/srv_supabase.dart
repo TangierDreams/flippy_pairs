@@ -47,7 +47,7 @@ class SrvSupabase {
     };
 
     try {
-      await supabase.rpc('upsert_flippy_points', params: params);
+      await supabase.rpc('flippy_actualizar_puntuacion', params: params);
     } on PostgrestException catch (e) {
       SrvLogger.grabarLog('srv_supabase', 'grabarPartida()', 'Error de Supabase (RPC): ${e.message}');
       rethrow;
@@ -64,7 +64,7 @@ class SrvSupabase {
   static Future<List<Map<String, dynamic>>> obtenerRegFlippy({required String pId}) async {
     SrvLogger.grabarLog('srv_supabase', 'obtenerRegFlippy()', 'Buscamos los registros del usuario: $pId');
     try {
-      final response = await supabase.rpc('obtener_reg_flippy', params: {'p_id': pId});
+      final response = await supabase.rpc('flippy_obtener_registros_usuario', params: {'p_id': pId});
 
       final output = (response as List).map((e) => Map<String, dynamic>.from(e)).toList();
 
@@ -85,7 +85,7 @@ class SrvSupabase {
   static Future<List<Map<String, dynamic>>> obtenerTablaFlippy() async {
     try {
       final nivel = EstadoDelJuego.nivel;
-      final response = await supabase.rpc('obtener_tabla_flippy', params: {'p_level': nivel});
+      final response = await supabase.rpc('flippy_obtener_tabla_puntos', params: {'p_level': nivel});
       final output = (response as List).map((e) => Map<String, dynamic>.from(e)).toList();
       return output;
     } on PostgrestException catch (e) {
@@ -108,7 +108,7 @@ class SrvSupabase {
       'Obtener ranking del usuario: $pId para el nivel: $pLevel',
     );
     try {
-      final response = await supabase.rpc('obtener_ranking_flippy', params: {'p_id': pId, 'p_level': pLevel});
+      final response = await supabase.rpc('flippy_obtener_ranking', params: {'p_id': pId, 'p_level': pLevel});
       final output = response as int;
       return output;
     } on PostgrestException catch (e) {
@@ -116,6 +116,27 @@ class SrvSupabase {
       rethrow;
     } catch (e) {
       SrvLogger.grabarLog('srv_supabase', 'obtenerRankingFlippy()', 'Error inesperado: $e');
+      rethrow;
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos las puntuaciones de un dispositivo.
+  //----------------------------------------------------------------------------
+
+  static Future<void> borrarPuntosUsuario(String pId) async {
+    SrvLogger.grabarLog('srv_supabase', 'borrarPuntosUsuario()', 'Borramos la puntuacion de este usuario: $pId');
+    try {
+      await supabase.rpc('flippy_borrar_puntuacion', params: {'p_id': pId});
+    } on PostgrestException catch (e) {
+      SrvLogger.grabarLog(
+        'srv_supabase',
+        'borrarPuntosUsuario()',
+        'Error borrando la puntuacion de este usuario: $pId',
+      );
+      rethrow;
+    } catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'borrarPuntosUsuario()', 'Error inesperado: $e');
       rethrow;
     }
   }

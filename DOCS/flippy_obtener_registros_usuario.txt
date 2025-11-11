@@ -1,4 +1,6 @@
-CREATE OR REPLACE FUNCTION public.obtener_tabla_flippy(p_level integer)
+CREATE OR REPLACE FUNCTION public.flippy_obtener_registros_usuario(
+    p_id text
+)
 RETURNS TABLE (
     id text,
     nivel smallint,
@@ -18,6 +20,7 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
+ 
   RETURN QUERY
   SELECT 
     f.id,
@@ -33,7 +36,7 @@ BEGIN
     f.ganadas,
     f.perdidas
   FROM public.flippy_points f
-  where f.nivel = p_level
-  ORDER BY f.puntos desc;
+  WHERE f.id = p_id
+  ORDER BY f.nivel;
 END;
 $$;
