@@ -16,6 +16,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_idiomas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PagConfiguracion extends StatefulWidget {
@@ -201,20 +202,36 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   // Botón para eliminar mi puntuación:
                   //---------------------------------------
                   WidBotonStandard(
-                    pTexto: 'Eliminar',
+                    pTexto: 'Eliminar mis puntuaciones',
                     pColorDeFondo: Colores.cuarto,
                     pColorLetra: Colores.blanco,
                     pEmitirSonido: true,
                     pEsquinasRedondeadas: true,
-                    pFuncionCallBack: () => SrvConfirmacion.confirmacionConAccion(
+                    pFuncionCallBack: () => SrvConfirmacion.confirmacion(
                       context: context,
-                      titulo: "Confirmar eliminación",
-                      descripcion:
+                      pTitulo: "Borrar Puntuación",
+                      pTituloFont: 'Luckiest Guy',
+                      pDescripcion:
                           "¿Estás seguro de que quieres eliminar todos tus puntos? Esta acción no se puede deshacer.",
-                      textoBotonOk: "Eliminar",
-                      colorBotonOk: Colors.red,
-                      onConfirmar: () {
+                      pDescripcionFont: 'Chewy',
+                      pBotonOkTexto: "Eliminar",
+                      pBotonOkFont: 'Chewy',
+                      pBotonOkColor: Colores.cuarto,
+                      pBotonKoTexto: "Salir",
+                      pBotonKoFont: 'Chewy',
+                      pOnConfirmar: () {
+                        // 1. Eliminamos los registros:
                         SrvSupabase.borrarPuntosUsuario(SrvDiskette.leerValor(DisketteKey.deviceId));
+
+                        // 2. Mostrar toast de confirmación:
+                        Fluttertoast.showToast(
+                          msg: "🗑️ Puntuaciones eliminadas",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.BOTTOM,
+                          backgroundColor: Colores.primero,
+                          textColor: Colores.onPrimero,
+                          fontSize: 16.0,
+                        );
                       },
                     ),
                   ),
@@ -258,8 +275,5 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
     _nombreUsuario.text = SrvDiskette.leerValor(DisketteKey.deviceName, defaultValue: '');
     _sonidoActivado = SrvDiskette.leerValor(DisketteKey.sonidoActivado, defaultValue: true);
     _musicaActivada = SrvDiskette.leerValor(DisketteKey.musicaActivada, defaultValue: true);
-    // _velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
-    // _isSelected.fillRange(0, 3, false);
-    // _isSelected[_velocidadJuego] = true;
   }
 }

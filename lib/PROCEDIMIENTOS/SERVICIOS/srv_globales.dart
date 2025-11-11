@@ -20,8 +20,9 @@ class Colores {
   static const Color cuarto = Colors.red;
   static const Color quinto = Colors.cyan;
   static const Color onPrimero = Colors.white;
-  static final Color fondo = Colors.grey.shade300;
-  static final Color textos = Colors.grey.shade800;
+  static const Color fondo = Colors.black12;
+  //static final Color fondo = Colors.grey.shade300;
+  static const Color textos = Colors.black54;
   static const Color blanco = Colors.white;
   static const Color negro = Colors.black;
 }
