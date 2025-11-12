@@ -50,6 +50,7 @@ class _PagJuegoState extends State<PagJuego> {
   void dispose() async {
     await SrvSonidos.detenerMusicaFondo();
     EstadoDelJuego.musicaActiva = false;
+    SrvCronometro.reset();
     SrvLogger.grabarLog('pag_juego', 'dispose()', 'Salimos de la página');
     super.dispose();
   }

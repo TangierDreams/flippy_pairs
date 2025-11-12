@@ -202,22 +202,23 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   // Botón para eliminar mi puntuación:
                   //---------------------------------------
                   WidBotonStandard(
-                    pTexto: 'Eliminar mis puntuaciones',
+                    pTexto: SrvTraducciones.get('eliminar_mis_puntuaciones'),
+                    pTipoDeLetra: 'Chewy',
+                    pTamanyoLetra: 18,
                     pColorDeFondo: Colores.cuarto,
                     pColorLetra: Colores.blanco,
                     pEmitirSonido: true,
                     pEsquinasRedondeadas: true,
                     pFuncionCallBack: () => SrvConfirmacion.confirmacion(
                       context: context,
-                      pTitulo: "Borrar Puntuación",
+                      pTitulo: SrvTraducciones.get('borrar_puntuacion'),
                       pTituloFont: 'Luckiest Guy',
-                      pDescripcion:
-                          "¿Estás seguro de que quieres eliminar todos tus puntos? Esta acción no se puede deshacer.",
+                      pDescripcion: SrvTraducciones.get('seguro_eliminar_puntos'),
                       pDescripcionFont: 'Chewy',
-                      pBotonOkTexto: "Eliminar",
+                      pBotonOkTexto: SrvTraducciones.get('borrar'),
                       pBotonOkFont: 'Chewy',
                       pBotonOkColor: Colores.cuarto,
-                      pBotonKoTexto: "Salir",
+                      pBotonKoTexto: SrvTraducciones.get('salir'),
                       pBotonKoFont: 'Chewy',
                       pOnConfirmar: () {
                         // 1. Eliminamos los registros:
@@ -225,7 +226,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
 
                         // 2. Mostrar toast de confirmación:
                         Fluttertoast.showToast(
-                          msg: "🗑️ Puntuaciones eliminadas",
+                          msg: SrvTraducciones.get('puntuaciones_eliminadas'),
                           toastLength: Toast.LENGTH_LONG,
                           gravity: ToastGravity.BOTTOM,
                           backgroundColor: Colores.primero,

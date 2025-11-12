@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// PAGINA DONDE MOSTRAMOS EL RANKING DE LA COMPETICION MUNDIAL FLIPPY.
+// PAGINA DONDE MOSTRAMOS EL RANKING POR TIEMPOS DE LA COMPETICION MUNDIAL FLIPPY.
 //------------------------------------------------------------------------------
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
@@ -13,14 +13,14 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
 import 'package:flutter/material.dart';
 
-class PagRanking extends StatefulWidget {
-  const PagRanking({super.key});
+class PagRankingTiempos extends StatefulWidget {
+  const PagRankingTiempos({super.key});
 
   @override
-  State<PagRanking> createState() => _PagRankingState();
+  State<PagRankingTiempos> createState() => _PagRankingTiemposState();
 }
 
-class _PagRankingState extends State<PagRanking> {
+class _PagRankingTiemposState extends State<PagRankingTiempos> {
   // Aquí almacenamos la lista completa de jugadores:
   late Future<List<Map<String, dynamic>>> listaRanking;
 
@@ -48,13 +48,13 @@ class _PagRankingState extends State<PagRanking> {
   @override
   void initState() {
     super.initState();
-    SrvLogger.grabarLog('pag_ranking', 'initState()', 'Entramos en la pagina de ranking');
-    listaRanking = SrvSupabase.obtenerTablaFlippy();
+    SrvLogger.grabarLog('pag_ranking_tiempos', 'initState()', 'Entramos en la pagina de ranking de tiempos');
+    listaRanking = SrvSupabase.obtenerTiemposFlippy();
   }
 
   @override
   void dispose() {
-    SrvLogger.grabarLog('pag_ranking', 'dispose()', 'Salimos de la pagina de ranking');
+    SrvLogger.grabarLog('pag_ranking_tiempos', 'dispose()', 'Salimos de la pagina de ranking de tiempos');
     super.dispose();
   }
 
@@ -408,7 +408,7 @@ class _PagRankingState extends State<PagRanking> {
                 child: Column(
                   children: [
                     Text(
-                      "World Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
+                      "Time Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
                       style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
                       textAlign: TextAlign.center,
                     ),

@@ -79,7 +79,7 @@ class SrvSupabase {
   }
 
   //----------------------------------------------------------------------------
-  // Obtenemos las puntuaciones de un dispositivo.
+  // Obtenemos las puntuaciones de la competición.
   //----------------------------------------------------------------------------
 
   static Future<List<Map<String, dynamic>>> obtenerTablaFlippy() async {
@@ -93,6 +93,25 @@ class SrvSupabase {
       rethrow;
     } catch (e) {
       SrvLogger.grabarLog('srv_supabase', 'obtenerTablaFlippy()', 'Error inesperado: $e');
+      rethrow;
+    }
+  }
+
+  //----------------------------------------------------------------------------
+  // Obtenemos los tiempos de la competición.
+  //----------------------------------------------------------------------------
+
+  static Future<List<Map<String, dynamic>>> obtenerTiemposFlippy() async {
+    try {
+      final nivel = EstadoDelJuego.nivel;
+      final response = await supabase.rpc('flippy_obtener_tabla_tiempos', params: {'p_level': nivel});
+      final output = (response as List).map((e) => Map<String, dynamic>.from(e)).toList();
+      return output;
+    } on PostgrestException catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerTiemposFlippy()', 'Error obteniendo los datos: ${e.message}');
+      rethrow;
+    } catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerTiemposFlippy()', 'Error inesperado: $e');
       rethrow;
     }
   }

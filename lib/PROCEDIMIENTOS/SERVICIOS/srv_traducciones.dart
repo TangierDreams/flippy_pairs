@@ -58,6 +58,14 @@ class SrvTraducciones {
     'cuartos': 'The Bad Guys',
     'todos': 'All Players',
     'estas_en_posicion': 'You are in position ',
+    'sin_datos': 'No available data',
+    'no_has_jugado': "You still haven't played in this Level",
+    'eliminar_mis_puntuaciones': 'Delete my scores',
+    'borrar_puntuacion': 'Delete Scores',
+    'seguro_eliminar_puntos': 'Are you sure you want to delete all your rankings? This action cannot be undone.',
+    'borrar': 'Delete',
+    'cancelar': 'Cancel',
+    'puntuaciones_eliminadas': '🗑️ Scores deleted!',
   };
 
   static final Map<String, String> spanish = {
@@ -118,6 +126,15 @@ class SrvTraducciones {
     'cuartos': 'Los Chicos Malos',
     'todos': 'Todos los Jugadores',
     'estas_en_posicion': 'Estás en la posición ',
+    'sin_datos': 'No hay datos disponibles',
+    'no_has_jugado': "Todavía no has jugado en este Nivel",
+    'eliminar_mis_puntuaciones': 'Eliminar mis puntuaciones',
+    'borrar_puntuacion': 'Eliminar Puntuación',
+    'seguro_eliminar_puntos':
+        '¿Estás seguro de que quieres eliminar todas tus puntuaciones? Esta acción no se puede deshacer.',
+    'borrar': 'Borrar',
+    'cancelar': 'Cancelar',
+    'puntuaciones_eliminadas': '🗑️ Puntuaciones eliminadas!',
   };
 
   static final Map<String, String> catalan = {
@@ -177,6 +194,15 @@ class SrvTraducciones {
     'cuartos': 'Els Nois Dolents',
     'todos': 'Tots els Jugadors',
     'estas_en_posicion': 'Estàs a la posició ',
+    'sin_datos': "No n'hi han dades disponibles",
+    'no_has_jugado': "Encara no has jugat en aquest Nivell",
+    'eliminar_mis_puntuaciones': 'Eliminar les meves puntuacions',
+    'borrar_puntuacion': 'Eliminar Puntuació',
+    'seguro_eliminar_puntos':
+        'Estàs segur de que vols eliminar totes les teves puntuacións? Aquesta acció no es pot desfer.',
+    'borrar': 'Esborrar',
+    'cancelar': 'Cancel·lar',
+    'puntuaciones_eliminadas': '🗑️ Puntuacions esborrades!',
   };
 
   //----------------------------------------------------------------------------

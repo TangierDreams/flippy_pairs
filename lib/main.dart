@@ -3,6 +3,7 @@ import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/pag_juego.dart';
 import 'package:flippy_pairs/PAGINAS/LOGS/pag_logs.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/pag_ranking.dart';
+import 'package:flippy_pairs/PAGINAS/RANKING/pag_ranking_tiempos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
@@ -172,6 +173,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         '/game': (context) => PagJuego(),
         '/config': (context) => PagConfiguracion(),
         '/ranking': (context) => PagRanking(),
+        '/ranking_time': (context) => PagRankingTiempos(),
         '/logs': (context) => PagLogs(),
       },
     );

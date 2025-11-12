@@ -367,7 +367,7 @@ class _PagHomeState extends State<PagHome> {
                   pColorLetra: Colores.segundo,
                   pSombra: true,
                   pEsquinasRedondeadas: true,
-                  pFuncionSonido: SrvSonidos.play,
+                  pFuncionSonido: SrvSonidos.boton,
                   pNavegarA: '/game',
                 ),
 
@@ -400,7 +400,7 @@ class _PagHomeState extends State<PagHome> {
                       //pColorIcono: Colores.tercero,
                       pSombra: true,
                       pEsquinasRedondeadas: true,
-                      pNavegarA: '/ranking',
+                      pNavegarA: '/ranking_time',
                     ),
 
                     WidBotonStandard(
@@ -442,7 +442,7 @@ class BotonTema extends StatelessWidget {
 
     return ElevatedButton(
       onPressed: () {
-        SrvSonidos.level();
+        SrvSonidos.boton();
         pCallBackFunction();
       },
       style: ElevatedButton.styleFrom(
@@ -485,7 +485,7 @@ class BotonNivel extends StatelessWidget {
       curve: Curves.easeOutBack,
       child: ElevatedButton(
         onPressed: () async {
-          SrvSonidos.level();
+          SrvSonidos.boton();
           pCallBackFunction();
         },
         style: ElevatedButton.styleFrom(
