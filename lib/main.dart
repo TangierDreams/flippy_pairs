@@ -90,11 +90,12 @@ Future<void> main() async {
   //----------------------------------------------------------------------------
 
   try {
-    if (SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '') == '' ||
-        SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '') == '' ||
-        SrvDiskette.leerValor(DisketteKey.ip, defaultValue: '') == '') {
-      await SrvTracking.obtenerDatos();
-    }
+    // if (SrvDiskette.leerValor(DisketteKey.idPais, defaultValue: '') == '' ||
+    //     SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '') == '' ||
+    //     SrvDiskette.leerValor(DisketteKey.ip, defaultValue: '') == '') {
+    //   await SrvTracking.obtenerDatos();
+    // }
+    await SrvTracking.obtenerDatos();
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Tracking: $e');
   }

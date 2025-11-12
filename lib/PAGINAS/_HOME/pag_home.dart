@@ -380,7 +380,7 @@ class _PagHomeState extends State<PagHome> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     WidBotonStandard(
-                      pTexto: 'FWC 🔷',
+                      pTexto: '🌎 WFC 🌎',
                       pTipoDeLetra: 'Chewy',
                       pTamanyoLetra: 18,
                       pColorLetra: Colores.tercero,
@@ -392,7 +392,7 @@ class _PagHomeState extends State<PagHome> {
                     ),
 
                     WidBotonStandard(
-                      pTexto: 'FWC 🕒',
+                      pTexto: '🕒 TFC 🕒',
                       pTipoDeLetra: 'Chewy',
                       pTamanyoLetra: 18,
                       pColorLetra: Colores.tercero,
@@ -404,7 +404,7 @@ class _PagHomeState extends State<PagHome> {
                     ),
 
                     WidBotonStandard(
-                      pTexto: 'FWC 🌍',
+                      pTexto: '🏛️ CFC 🏛️',
                       pTipoDeLetra: 'Chewy',
                       pTamanyoLetra: 18,
                       pColorLetra: Colores.tercero,

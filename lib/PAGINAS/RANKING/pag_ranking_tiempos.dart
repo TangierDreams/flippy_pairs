@@ -93,9 +93,9 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     if (topPlayersCount > 0) {
       gruposDeJugadores.add(
         PlayerGroup(
-          title: SrvTraducciones.get('primeros'),
+          title: SrvTraducciones.get('primerost'),
           players: pJugadores.sublist(0, topPlayersCount),
-          giphy: '🏆',
+          giphy: '🚀',
         ),
       );
     }
@@ -107,9 +107,9 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     if (goodPlayersCount > 0 && topPlayersCount + goodPlayersCount <= totalPlayers) {
       gruposDeJugadores.add(
         PlayerGroup(
-          title: SrvTraducciones.get('segundos'),
+          title: SrvTraducciones.get('segundost'),
           players: pJugadores.sublist(topPlayersCount, topPlayersCount + goodPlayersCount),
-          giphy: '✨',
+          giphy: '🏎️💨',
         ),
       );
     }
@@ -122,12 +122,12 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
         topPlayersCount + goodPlayersCount + adjustedNormalPlayersCount <= totalPlayers) {
       gruposDeJugadores.add(
         PlayerGroup(
-          title: SrvTraducciones.get('terceros'),
+          title: SrvTraducciones.get('tercerost'),
           players: pJugadores.sublist(
             topPlayersCount + goodPlayersCount,
             topPlayersCount + goodPlayersCount + adjustedNormalPlayersCount,
           ),
-          giphy: '🚶',
+          giphy: '🚴',
         ),
       );
     }
@@ -139,9 +139,9 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     if (adjustedBadPlayersCount > 0) {
       gruposDeJugadores.add(
         PlayerGroup(
-          title: SrvTraducciones.get('cuartos'),
+          title: SrvTraducciones.get('cuartost'),
           players: pJugadores.sublist(totalPlayers - adjustedBadPlayersCount),
-          giphy: '😈',
+          giphy: '🛴',
         ),
       );
     }
@@ -151,7 +151,7 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     //----------------------------------------------------
 
     if (gruposDeJugadores.isEmpty) {
-      gruposDeJugadores.add(PlayerGroup(title: SrvTraducciones.get('todos'), players: pJugadores, giphy: '🏆'));
+      gruposDeJugadores.add(PlayerGroup(title: SrvTraducciones.get('todos'), players: pJugadores, giphy: '🚀'));
     }
 
     return gruposDeJugadores;
@@ -240,14 +240,26 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
             ),
           ),
 
-          // Columna de puntos
+          // Columna de tiempo récord
           Expanded(
             flex: 2,
             child: Text(
-              player['puntos']?.toString() ?? '',
+              SrvFechas.segundosAMinutosYSegundos(player['tiempo_record'] ?? 0),
               style: player['id'] == miId
                   ? Textos.chewy(16, Colores.primero, pColorSombra: Colores.blanco)
                   : Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          // Columna de puntos
+          Expanded(
+            flex: 1,
+            child: Text(
+              player['puntos']?.toString() ?? '',
+              style: player['id'] == miId
+                  ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
+                  : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
               textAlign: TextAlign.center,
             ),
           ),
@@ -257,18 +269,6 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
             flex: 1,
             child: Text(
               player['partidas']?.toString() ?? '',
-              style: player['id'] == miId
-                  ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
-                  : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // Columna de tiempo récord
-          Expanded(
-            flex: 1,
-            child: Text(
-              SrvFechas.segundosAMinutosYSegundos(player['tiempo_record'] ?? 0),
               style: player['id'] == miId
                   ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
                   : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
@@ -332,8 +332,18 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
                 flex: 4, // Jugador (ahora incluye nombre y ubicación)
                 child: Text('👤', style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo)),
               ),
+
               Expanded(
-                flex: 2, // Puntos
+                flex: 2, // Tiempo
+                child: Text(
+                  '⌚',
+                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
+              Expanded(
+                flex: 1, // Puntos
                 child: Text(
                   '🏅',
                   style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
@@ -344,14 +354,6 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
                 flex: 1, // Partidas
                 child: Text(
                   '🕹️',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Expanded(
-                flex: 1, // Tiempo
-                child: Text(
-                  '⌚',
                   style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
                   textAlign: TextAlign.center,
                 ),
@@ -407,11 +409,30 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
                 color: Colores.blanco,
                 child: Column(
                   children: [
-                    Text(
-                      "Time Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
-                      style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
+                    RichText(
                       textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Time ",
+                            style: Textos.luckiestGuy(
+                              24,
+                              Colores.segundo,
+                              pColorSombra: Colores.fondo,
+                            ), // Tamaño y color diferente
+                          ),
+                          TextSpan(
+                            text: "Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
+                            style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
+                          ),
+                        ],
+                      ),
                     ),
+                    // Text(
+                    //   "Time Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
+                    //   style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
+                    //   textAlign: TextAlign.center,
+                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

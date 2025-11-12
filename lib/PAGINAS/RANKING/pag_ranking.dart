@@ -407,10 +407,24 @@ class _PagRankingState extends State<PagRanking> {
                 color: Colores.blanco,
                 child: Column(
                   children: [
-                    Text(
-                      "World Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
-                      style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
+                    RichText(
                       textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "World ",
+                            style: Textos.luckiestGuy(
+                              24,
+                              Colores.segundo,
+                              pColorSombra: Colores.fondo,
+                            ), // Tamaño y color diferente
+                          ),
+                          TextSpan(
+                            text: "Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
+                            style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
+                          ),
+                        ],
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

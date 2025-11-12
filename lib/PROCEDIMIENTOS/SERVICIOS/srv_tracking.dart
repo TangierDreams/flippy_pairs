@@ -39,7 +39,7 @@ class SrvTracking {
         SrvLogger.grabarLog(
           'srv_tracking',
           'obtenerDatos()',
-          "Recogido de IpInfo: ${data['country']} - ${data['city']} - ${data['ip']}",
+          "IpInfo: ${data['country']} - ${data['country_name']} - ${data['city']} - ${data['ip']}",
         );
       } else {
         SrvLogger.grabarLog(
