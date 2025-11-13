@@ -374,7 +374,7 @@ class _PagHomeState extends State<PagHome> {
                 const SizedBox(height: 10),
 
                 //------------------------------------------------------------------
-                // Botón para ir al Ranking
+                // Botón para ir al Ranking de puntos
                 //------------------------------------------------------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -391,6 +391,9 @@ class _PagHomeState extends State<PagHome> {
                       pNavegarA: '/ranking',
                     ),
 
+                    //------------------------------------------------------------------
+                    // Botón para ir al Ranking de Tiempo
+                    //------------------------------------------------------------------
                     WidBotonStandard(
                       pTexto: '🕒 TFC 🕒',
                       pTipoDeLetra: 'Chewy',
@@ -403,6 +406,9 @@ class _PagHomeState extends State<PagHome> {
                       pNavegarA: '/ranking_time',
                     ),
 
+                    //------------------------------------------------------------------
+                    // Botón para ir al Ranking de Paises
+                    //------------------------------------------------------------------
                     WidBotonStandard(
                       pTexto: '🏛️ CFC 🏛️',
                       pTipoDeLetra: 'Chewy',
@@ -412,7 +418,7 @@ class _PagHomeState extends State<PagHome> {
                       //pColorIcono: Colores.tercero,
                       pSombra: true,
                       pEsquinasRedondeadas: true,
-                      pNavegarA: '/ranking',
+                      pNavegarA: '/ranking_countries',
                     ),
                   ],
                 ),

@@ -117,6 +117,25 @@ class SrvSupabase {
   }
 
   //----------------------------------------------------------------------------
+  // Obtenemos las puntuaciones agrupadas por paises.
+  //----------------------------------------------------------------------------
+
+  static Future<List<Map<String, dynamic>>> obtenerPaisesFlippy() async {
+    try {
+      final nivel = EstadoDelJuego.nivel;
+      final response = await supabase.rpc('flippy_obtener_tabla_paises', params: {'p_level': nivel});
+      final output = (response as List).map((e) => Map<String, dynamic>.from(e)).toList();
+      return output;
+    } on PostgrestException catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerPaisesFlippy()', 'Error obteniendo los datos: ${e.message}');
+      rethrow;
+    } catch (e) {
+      SrvLogger.grabarLog('srv_supabase', 'obtenerPaisesFlippy()', 'Error inesperado: $e');
+      rethrow;
+    }
+  }
+
+  //----------------------------------------------------------------------------
   // Obtenemos las puntuaciones de un dispositivo.
   //----------------------------------------------------------------------------
 

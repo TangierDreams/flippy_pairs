@@ -1,0 +1,20 @@
+CREATE OR REPLACE FUNCTION public.flippy_obtener_tabla_paises(p_level integer)
+RETURNS TABLE (
+    pais text,
+    puntos integer,
+    tiempo integer,
+    partidas integer
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  RETURN QUERY
+  select t.pais, cast(sum(t.puntos) as int) as puntos, cast(avg(t.tiempo_record) as int) as tiempo, cast(sum(t.partidas) as int) as partidas 
+  from public.flippy_points t
+  where t.nivel = p_level
+  group by t.pais
+  order by puntos desc, tiempo asc;
+END;
+$$;
