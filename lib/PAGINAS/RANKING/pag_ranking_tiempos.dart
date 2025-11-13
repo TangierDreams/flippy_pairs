@@ -201,8 +201,8 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
                 Text(
                   player['nombre']?.toString() ?? '',
                   style: player['id'] == miId
-                      ? Textos.chewy(14, Colores.primero, pColorSombra: Colores.blanco)
-                      : Textos.chewy(14, Colores.negro, pColorSombra: Colores.blanco),
+                      ? Textos.chewy(16, Colores.primero, pColorSombra: Colores.blanco)
+                      : Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 10),

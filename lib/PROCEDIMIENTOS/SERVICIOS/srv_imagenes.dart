@@ -52,7 +52,8 @@ class SrvImagenes {
     );
 
     // Descargamos las imagenes de cada carpeta de supbase a la carpeta local:
-    if (versionLocal == versionSupabase && await _estanTodasLasImagenes()) {
+    //versionLocal
+    if (0 == versionSupabase && await _estanTodasLasImagenes()) {
       SrvLogger.grabarLog('srv_imagenes', 'inicializar()', 'Cargando imágenes desde cache local');
       await _cargarImagenesDesdeLocal();
     } else {

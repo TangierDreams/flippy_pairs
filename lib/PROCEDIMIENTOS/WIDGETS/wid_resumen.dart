@@ -111,7 +111,7 @@ class WidResumenState extends State<WidResumen> {
             ),
           ),
           Text(
-            "CMF: $posicion",
+            "WFC: $posicion",
             style: GoogleFonts.comicNeue(
               fontSize: 14,
               fontWeight: FontWeight.bold,

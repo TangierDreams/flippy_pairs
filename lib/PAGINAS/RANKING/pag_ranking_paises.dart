@@ -272,7 +272,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
               ),
               Expanded(
                 flex: 4, // Jugador (ahora incluye nombre y ubicación)
-                child: Text('👤', style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo)),
+                child: Text('🎌', style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo)),
               ),
 
               Expanded(
