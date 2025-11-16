@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
@@ -52,7 +53,7 @@ Future<void> widJuegoAcabado(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colores.quinto, Colores.primero],
+                  colors: [SrvColores.get(context, 'quinto'), SrvColores.get(context, 'primero')],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -77,8 +78,10 @@ Future<void> widJuegoAcabado(
                         : SrvTraducciones.get('empatada$msgAleatorio'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 36,
-                      color: Colores.blanco,
-                      shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                      color: SrvColores.get(context, 'onPrimero'),
+                      shadows: [
+                        Shadow(blurRadius: 6, color: SrvColores.get(context, 'fondo'), offset: const Offset(2, 2)),
+                      ],
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -87,8 +90,10 @@ Future<void> widJuegoAcabado(
                     '${SrvTraducciones.get('nivel')}: $pNivel',
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 28,
-                      color: Colores.segundo,
-                      shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                      color: SrvColores.get(context, 'segundo'),
+                      shadows: [
+                        Shadow(blurRadius: 6, color: SrvColores.get(context, 'fondo'), offset: const Offset(2, 2)),
+                      ],
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -100,7 +105,11 @@ Future<void> widJuegoAcabado(
                         : pPuntosPartida < 0
                         ? SrvTraducciones.get('has_perdido', pArgumento: pPuntosPartida.abs().toString())
                         : SrvTraducciones.get('has_empatado'),
-                    style: GoogleFonts.baloo2(fontSize: 20, color: Colores.blanco, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.baloo2(
+                      fontSize: 20,
+                      color: SrvColores.get(context, 'onPrimero'),
+                      fontWeight: FontWeight.bold,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
@@ -118,7 +127,10 @@ Future<void> widJuegoAcabado(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
                               SrvTraducciones.get('pos_flippy'),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                           Align(
@@ -128,7 +140,10 @@ Future<void> widJuegoAcabado(
                               height: 40, // Define la altura del círculo (debe ser igual al ancho)
                               alignment: Alignment.center, // Centra el texto dentro del círculo
                               decoration: BoxDecoration(
-                                color: Colores.segundo, // Color de fondo del círculo (naranja oscuro)
+                                color: SrvColores.get(
+                                  context,
+                                  'segundo',
+                                ), // Color de fondo del círculo (naranja oscuro)
                                 shape: BoxShape.circle, // Forma circular
                                 boxShadow: [
                                   BoxShadow(
@@ -143,7 +158,7 @@ Future<void> widJuegoAcabado(
                                 style: GoogleFonts.baloo2(
                                   fontSize: 20,
                                   // Usamos un color que contraste bien con el naranja, como blanco o un color claro
-                                  color: Colors.white,
+                                  color: SrvColores.get(context, 'onPrimero'),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -158,14 +173,20 @@ Future<void> widJuegoAcabado(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
                               SrvTraducciones.get('partidas_jugadas'),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: Text(
                               pPartidasDelNivel.toString(),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                         ],
@@ -176,14 +197,20 @@ Future<void> widJuegoAcabado(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
                               SrvTraducciones.get('puntuacion_total'),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
                             child: Text(
                               pPuntosDelNivel.toString(),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                         ],
@@ -194,12 +221,18 @@ Future<void> widJuegoAcabado(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
                               SrvTraducciones.get('finalizado_en'),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
-                            child: Text(pTiempoPartida, style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco)),
+                            child: Text(
+                              pTiempoPartida,
+                              style: GoogleFonts.baloo2(fontSize: 18, color: SrvColores.get(context, 'onPrimero')),
+                            ),
                           ),
                         ],
                       ),
@@ -209,12 +242,18 @@ Future<void> widJuegoAcabado(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
                               SrvTraducciones.get('tiempo_medio'),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
-                            child: Text(pTiempoMedio, style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco)),
+                            child: Text(
+                              pTiempoMedio,
+                              style: GoogleFonts.baloo2(fontSize: 18, color: SrvColores.get(context, 'onPrimero')),
+                            ),
                           ),
                         ],
                       ),
@@ -224,12 +263,18 @@ Future<void> widJuegoAcabado(
                             padding: const EdgeInsets.only(bottom: 8.0, right: 8.0),
                             child: Text(
                               SrvTraducciones.get('tiempo_record'),
-                              style: GoogleFonts.baloo2(fontSize: tamanyoTexto, color: Colores.blanco),
+                              style: GoogleFonts.baloo2(
+                                fontSize: tamanyoTexto,
+                                color: SrvColores.get(context, 'onPrimero'),
+                              ),
                             ),
                           ),
                           Align(
                             alignment: Alignment.centerRight,
-                            child: Text(pTiempoRecord, style: GoogleFonts.baloo2(fontSize: 18, color: Colores.blanco)),
+                            child: Text(
+                              pTiempoRecord,
+                              style: GoogleFonts.baloo2(fontSize: 18, color: SrvColores.get(context, 'onPrimero')),
+                            ),
                           ),
                         ],
                       ),
@@ -241,8 +286,8 @@ Future<void> widJuegoAcabado(
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colores.cuarto,
-                          foregroundColor: Colores.blanco,
+                          backgroundColor: SrvColores.get(context, 'cuarto'),
+                          foregroundColor: SrvColores.get(context, 'onPrimero'),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                         ),
                         onPressed: () {
@@ -255,12 +300,20 @@ Future<void> widJuegoAcabado(
                             }
                           }
                         },
-                        child: Text(SrvTraducciones.get('volver_a_jugar'), style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text(
+                          SrvTraducciones.get('volver_a_jugar'),
+                          style: Textos.chewy(
+                            context,
+                            18,
+                            SrvColores.get(context, 'onPrimero'),
+                            pColorSombra: SrvColores.get(context, 'cuarto'),
+                          ),
+                        ),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colores.segundo,
-                          foregroundColor: Colores.blanco,
+                          backgroundColor: SrvColores.get(context, 'segundo'),
+                          foregroundColor: SrvColores.get(context, 'onPrimero'),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                         ),
                         onPressed: () {
@@ -271,7 +324,15 @@ Future<void> widJuegoAcabado(
                             Navigator.of(context).pop();
                           }
                         },
-                        child: Text(SrvTraducciones.get('salir'), style: GoogleFonts.baloo2(fontSize: 18)),
+                        child: Text(
+                          SrvTraducciones.get('salir'),
+                          style: Textos.chewy(
+                            context,
+                            18,
+                            SrvColores.get(context, 'onPrimero'),
+                            pColorSombra: SrvColores.get(context, 'segundo'),
+                          ),
+                        ),
                       ),
                     ],
                   ),

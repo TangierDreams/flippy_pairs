@@ -8,6 +8,7 @@ import 'dart:math';
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
@@ -247,6 +248,7 @@ class _PagJuegoState extends State<PagJuego> {
     }
 
     return Scaffold(
+      backgroundColor: SrvColores.get(context, 'fondo'),
       appBar: WidToolbar(
         showMenuButton: false,
         showBackButton: true,
@@ -264,41 +266,88 @@ class _PagJuegoState extends State<PagJuego> {
           const SizedBox(height: 5),
 
           // Contadores
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              WidContador(pTexto: SrvTraducciones.get('puntos'), pContador: EstadoDelJuego.puntosPartida, pModo: 1),
-              WidContador(
-                pTexto: SrvTraducciones.get('aciertos'),
-                pContador: EstadoDelJuego.parejasAcertadas,
-                pModo: 1,
-              ),
-              WidContador(pTexto: SrvTraducciones.get('errores'), pContador: EstadoDelJuego.parejasFalladas, pModo: 2),
-              WidCronometro(),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                WidContador(pTexto: SrvTraducciones.get('puntos'), pContador: EstadoDelJuego.puntosPartida, pModo: 1),
+                SizedBox(width: 10),
+                WidContador(
+                  pTexto: SrvTraducciones.get('aciertos'),
+                  pContador: EstadoDelJuego.parejasAcertadas,
+                  pModo: 1,
+                ),
+                SizedBox(width: 10),
+                WidContador(
+                  pTexto: SrvTraducciones.get('errores'),
+                  pContador: EstadoDelJuego.parejasFalladas,
+                  pModo: 2,
+                ),
+                SizedBox(width: 10),
+                WidCronometro(),
+              ],
+            ),
           ),
 
           // Grid de cartas
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: GridView.count(
-                crossAxisCount: EstadoDelJuego.columnas,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                children: List.generate(EstadoDelJuego.cartasTotales, (index) {
-                  return WidCarta(
-                    pIndex: index,
-                    pEstaBocaArriba:
-                        EstadoDelJuego.listaDeCartasGiradas[index] || EstadoDelJuego.listaDeCartasEmparejadas[index],
-                    pImagenCarta: EstadoDelJuego.listaDeImagenes[index],
-                    pDestello: EstadoDelJuego.cartasDestello.contains(index),
-                    pCallBackFunction: () => _cuandoPulsanUnaCarta(index),
-                  );
-                }),
-              ),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // IMPORTANTE: Restamos el espacio del banner del alto disponible
+                const double espacioBanner = 60;
+
+                // Espacio disponible (restamos padding y spacing)
+                final double anchoDisponible = constraints.maxWidth - 24; // padding 12 + 12
+                final double altoDisponible = constraints.maxHeight - 24 - espacioBanner;
+
+                // Espacio entre cartas
+                final double crossSpacing = 8;
+                final double mainSpacing = 8;
+
+                // Calculamos el ancho de cada carta
+                final double anchoCartaPorEspacio =
+                    (anchoDisponible - (crossSpacing * (EstadoDelJuego.columnas - 1))) / EstadoDelJuego.columnas;
+
+                // Calculamos el alto de cada carta si usáramos todo el espacio vertical
+                final double altoCartaPorEspacio =
+                    (altoDisponible - (mainSpacing * (EstadoDelJuego.filas - 1))) / EstadoDelJuego.filas;
+
+                // Para mantener proporción cuadrada (o cercana), elegimos el menor de los dos
+                final double sizeCarta = min(anchoCartaPorEspacio, altoCartaPorEspacio);
+
+                // Calculamos el childAspectRatio basándonos en el tamaño real que tendrá cada carta
+                // Ratio = ancho / alto de cada celda del grid
+                final double childAspectRatio = anchoCartaPorEspacio / sizeCarta;
+
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: EstadoDelJuego.columnas,
+                      crossAxisSpacing: crossSpacing,
+                      mainAxisSpacing: mainSpacing,
+                      childAspectRatio: childAspectRatio,
+                      children: List.generate(EstadoDelJuego.cartasTotales, (index) {
+                        return WidCarta(
+                          pIndex: index,
+                          pEstaBocaArriba:
+                              EstadoDelJuego.listaDeCartasGiradas[index] ||
+                              EstadoDelJuego.listaDeCartasEmparejadas[index],
+                          pImagenCarta: EstadoDelJuego.listaDeImagenes[index],
+                          pDestello: EstadoDelJuego.cartasDestello.contains(index),
+                          pCallBackFunction: () => _cuandoPulsanUnaCarta(index),
+                        );
+                      }),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
+          const SizedBox(height: 60),
         ],
       ),
     );

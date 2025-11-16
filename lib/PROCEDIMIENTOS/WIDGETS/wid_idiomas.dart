@@ -1,5 +1,5 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flutter/material.dart';
@@ -7,22 +7,22 @@ import 'package:google_fonts/google_fonts.dart';
 
 class WidIdiomas extends StatefulWidget {
   final String pLabel;
-  final Color pColorLabel;
+  final Color? pColorLabel;
   final String pTipoDeLetra;
   final double pTamanyoLetra;
   final bool pLetraBold;
-  final Color pColorLetra;
+  final Color? pColorLetra;
   final bool pEmitirSonido;
   final VoidCallback? pFuncionSonido;
 
   const WidIdiomas({
     super.key,
     required this.pLabel,
-    this.pColorLabel = Colores.primero,
+    this.pColorLabel, // = Colores.primero,
     this.pTipoDeLetra = 'Roboto',
     this.pTamanyoLetra = 14,
     this.pLetraBold = false,
-    this.pColorLetra = Colores.negro,
+    this.pColorLetra, // = Colores.negro,
     this.pEmitirSonido = true,
     this.pFuncionSonido,
   });
@@ -54,20 +54,17 @@ class WidIdiomasState extends State<WidIdiomas> {
 
   @override
   Widget build(BuildContext context) {
+    final Color colorLabel = widget.pColorLabel ?? SrvColores.get(context, 'primero');
+    final Color colorLetra = widget.pColorLetra ?? SrvColores.get(context, 'textos');
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           widget.pLabel,
-          // style: GoogleFonts.luckiestGuy(
-          //   fontSize: 16,
-          //   color: Colores.primero,
-          //   shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
-          // ),
           style: GoogleFonts.getFont(
             widget.pTipoDeLetra,
             textStyle: TextStyle(
-              color: widget.pColorLabel,
+              color: colorLabel,
               fontSize: widget.pTamanyoLetra,
               fontWeight: widget.pLetraBold ? FontWeight.bold : FontWeight.normal,
             ),
@@ -76,12 +73,17 @@ class WidIdiomasState extends State<WidIdiomas> {
 
         DropdownButton<String>(
           value: _idiomaActual,
+
+          // Color de Fondo del menú desplegable (popup)
+          dropdownColor: SrvColores.get(context, 'fondo'),
+
           icon: const Icon(Icons.language),
+          iconEnabledColor: colorLetra,
 
           style: GoogleFonts.getFont(
             widget.pTipoDeLetra,
             textStyle: TextStyle(
-              color: widget.pColorLetra,
+              color: colorLetra,
               fontSize: widget.pTamanyoLetra,
               fontWeight: widget.pLetraBold ? FontWeight.bold : FontWeight.normal,
             ),

@@ -1,3 +1,4 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_flecha_atras.dart';
@@ -42,18 +43,34 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
               },
             )
           : appLogo,
-      backgroundColor: Colores.primero,
-      foregroundColor: Colores.onPrimero,
+      backgroundColor: SrvColores.get(context, 'primero'),
+      foregroundColor: SrvColores.get(context, 'onPrimero'),
       centerTitle: true,
       toolbarHeight: 72.0, // <-- Altura del toolbar
       title: Column(
         mainAxisSize: MainAxisSize.min, // don't stretch vertically
         children: [
           const SizedBox(height: 6),
-          Text(DatosGenerales.nombreApp, style: Textos.luckiestGuy(32, Colores.segundo)),
+          Text(
+            DatosGenerales.nombreApp,
+            style: Textos.luckiestGuy(
+              context,
+              32,
+              SrvColores.get(context, 'segundo'),
+              pColorSombra: SrvColores.get(context, 'negro'),
+            ),
+          ),
           if (subtitle != null) ...[
             const SizedBox(height: 1), // Pequeño espacio entre título y subtítulo
-            Text(subtitle!, style: Textos.chewy(14, Colores.tercero)),
+            Text(
+              subtitle!,
+              style: Textos.chewy(
+                context,
+                14,
+                SrvColores.get(context, 'tercero'),
+                pColorSombra: SrvColores.get(context, 'negro'),
+              ),
+            ),
           ],
         ],
       ),
@@ -63,7 +80,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             iconSize: 38, // 👈 Tamaño del icono
-            color: Colores.tercero, // 👈 Color del icono
+            color: SrvColores.get(context, 'tercero'), // 👈 Color del icono
             tooltip: 'Configuración',
             onPressed: () async {
               SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'Botón de configuración pulsado');

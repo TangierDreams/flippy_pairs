@@ -1,11 +1,11 @@
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidBotonStandard extends StatelessWidget {
   //boton:
-  final Color pColorDeFondo;
+  final Color? pColorDeFondo;
   final bool pEsquinasRedondeadas;
   final bool pSombra;
   final bool pEmitirSonido;
@@ -18,17 +18,17 @@ class WidBotonStandard extends StatelessWidget {
   final String pTipoDeLetra;
   final double pTamanyoLetra;
   final bool pLetraBold;
-  final Color pColorLetra;
+  final Color? pColorLetra;
 
   //icono:
   final IconData? pIcono;
-  final Color pColorIcono;
+  final Color? pColorIcono;
   final double pTamanyoIcono;
 
   const WidBotonStandard({
     super.key,
     //boton:
-    this.pColorDeFondo = Colores.primero,
+    this.pColorDeFondo,
     this.pEsquinasRedondeadas = false,
     this.pSombra = false,
     this.pEmitirSonido = true,
@@ -41,16 +41,19 @@ class WidBotonStandard extends StatelessWidget {
     this.pTipoDeLetra = 'Roboto',
     this.pTamanyoLetra = 14,
     this.pLetraBold = false,
-    this.pColorLetra = Colores.onPrimero,
+    this.pColorLetra,
 
     //icono:
     this.pIcono,
-    this.pColorIcono = Colores.onPrimero,
+    this.pColorIcono,
     this.pTamanyoIcono = 25,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Color colorDeFondo = pColorDeFondo ?? SrvColores.get(context, 'primero');
+    final Color colorLetra = pColorLetra ?? SrvColores.get(context, 'onPrimero');
+    final Color colorIcono = pColorIcono ?? SrvColores.get(context, 'onPrimero');
     return ElevatedButton(
       onPressed: () async {
         if (pEmitirSonido) {
@@ -71,8 +74,8 @@ class WidBotonStandard extends StatelessWidget {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        backgroundColor: pColorDeFondo,
-        foregroundColor: pColorLetra,
+        backgroundColor: colorDeFondo,
+        foregroundColor: colorLetra,
         shape: pEsquinasRedondeadas
             ? RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))
             : RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
@@ -83,7 +86,7 @@ class WidBotonStandard extends StatelessWidget {
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(pIcono, color: pColorIcono, size: pTamanyoIcono),
+                Icon(pIcono, color: colorIcono, size: pTamanyoIcono),
 
                 const SizedBox(width: 12),
 
@@ -92,7 +95,7 @@ class WidBotonStandard extends StatelessWidget {
                   style: GoogleFonts.getFont(
                     pTipoDeLetra,
                     textStyle: TextStyle(
-                      color: pColorLetra,
+                      color: colorLetra,
                       fontSize: pTamanyoLetra,
                       fontWeight: pLetraBold ? FontWeight.bold : FontWeight.normal,
                     ),
@@ -106,7 +109,7 @@ class WidBotonStandard extends StatelessWidget {
               style: GoogleFonts.getFont(
                 pTipoDeLetra,
                 textStyle: TextStyle(
-                  color: pColorLetra,
+                  color: colorLetra,
                   fontSize: pTamanyoLetra,
                   fontWeight: pLetraBold ? FontWeight.bold : FontWeight.normal,
                 ),

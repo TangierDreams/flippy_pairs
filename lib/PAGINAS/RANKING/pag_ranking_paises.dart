@@ -4,6 +4,7 @@
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/MODELOS/player_group.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
@@ -143,7 +144,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        //border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -153,7 +154,15 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             flex: 1,
             child: Container(
               alignment: Alignment.center,
-              child: Text(posicion.toString(), style: Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco)),
+              child: Text(
+                posicion.toString(),
+                style: Textos.chewy(
+                  context,
+                  16,
+                  SrvColores.get(context, 'textos'),
+                  pColorSombra: SrvColores.get(context, 'fondo'),
+                ),
+              ),
             ),
           ),
 
@@ -181,7 +190,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 SizedBox(width: 4), // Espacio reducido
                 Text(
                   player['nombre']?.toString() ?? '',
-                  style: Textos.chewy(14, Colores.negro, pColorSombra: Colores.blanco),
+                  style: Textos.chewy(
+                    context,
+                    14,
+                    SrvColores.get(context, 'textos'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -193,7 +207,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             flex: 2,
             child: Text(
               player['puntos']?.toString() ?? '',
-              style: Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco),
+              style: Textos.chewy(
+                context,
+                16,
+                SrvColores.get(context, 'textos'),
+                pColorSombra: SrvColores.get(context, 'fondo'),
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -203,7 +222,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             flex: 1,
             child: Text(
               SrvFechas.segundosAMinutosYSegundos(player['tiempo'] ?? 0),
-              style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+              style: Textos.chewy(
+                context,
+                12,
+                SrvColores.get(context, 'textos'),
+                pColorSombra: SrvColores.get(context, 'fondo'),
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -213,7 +237,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             flex: 1,
             child: Text(
               player['partidas']?.toString() ?? '',
-              style: Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+              style: Textos.chewy(
+                context,
+                12,
+                SrvColores.get(context, 'textos'),
+                pColorSombra: SrvColores.get(context, 'fondo'),
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -227,28 +256,50 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Divider(height: 10, thickness: 2, color: SrvColores.get(context, 'segundo'), indent: 8, endIndent: 8),
         // Group Header
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(12),
-          color: Colores.fondo,
+          color: SrvColores.get(context, 'fondo'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Icono del Grupo:
-              Text(group.giphy, style: Textos.luckiestGuy(32, Colores.primero, pColorSombra: Colores.fondo)),
+              Text(
+                group.giphy,
+                style: Textos.luckiestGuy(
+                  context,
+                  32,
+                  SrvColores.get(context, 'primero'),
+                  pColorSombra: SrvColores.get(context, 'fondo'),
+                ),
+              ),
 
               // Texto Central
               Expanded(
                 child: Text(
                   '${group.title} • ${group.players.length}',
                   textAlign: TextAlign.center,
-                  style: Textos.luckiestGuy(18, Colores.primero, pColorSombra: Colores.fondo),
+                  style: Textos.luckiestGuy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'primero'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                 ),
               ),
 
               // Icono del grupo
-              Text(group.giphy, style: Textos.luckiestGuy(32, Colores.primero, pColorSombra: Colores.fondo)),
+              Text(
+                group.giphy,
+                style: Textos.luckiestGuy(
+                  context,
+                  32,
+                  SrvColores.get(context, 'primero'),
+                  pColorSombra: SrvColores.get(context, 'fondo'),
+                ),
+              ),
             ],
           ),
         ),
@@ -258,7 +309,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
         //------------------------------------------------
         Container(
           padding: EdgeInsets.all(8),
-          color: Colores.fondo,
+          color: SrvColores.get(context, 'fondo'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -266,20 +317,38 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 flex: 1, // Posición
                 child: Text(
                   '📍',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
               Expanded(
                 flex: 4, // Jugador (ahora incluye nombre y ubicación)
-                child: Text('🎌', style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo)),
+                child: Text(
+                  '🎌',
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
+                ),
               ),
 
               Expanded(
                 flex: 2, // Puntos
                 child: Text(
                   '🏅',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -288,7 +357,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 flex: 1, // Tiempo
                 child: Text(
                   '⌚',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -297,13 +371,20 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 flex: 1, // Partidas
                 child: Text(
                   '🕹️',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
             ],
           ),
         ),
+
+        Divider(height: 10, thickness: 2, color: SrvColores.get(context, 'segundo'), indent: 8, endIndent: 8),
 
         //-----------------------------------------
         // Mostramos los jugadores del grupo actual
@@ -318,6 +399,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   Widget build(BuildContext context) {
     posicion = 0;
     return Scaffold(
+      backgroundColor: SrvColores.get(context, 'fondo'),
       //Toolbar:
       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
 
@@ -349,7 +431,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(12),
-                color: Colores.blanco,
+                color: SrvColores.get(context, 'fondo'),
                 child: Column(
                   children: [
                     RichText(
@@ -359,14 +441,20 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                           TextSpan(
                             text: "Countries ",
                             style: Textos.luckiestGuy(
+                              context,
                               24,
-                              Colores.segundo,
-                              pColorSombra: Colores.fondo,
+                              SrvColores.get(context, 'segundo'),
+                              pColorSombra: SrvColores.get(context, 'fondo'),
                             ), // Tamaño y color diferente
                           ),
                           TextSpan(
                             text: "Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
-                            style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
+                            style: Textos.luckiestGuy(
+                              context,
+                              22,
+                              SrvColores.get(context, 'primero'),
+                              pColorSombra: SrvColores.get(context, 'fondo'),
+                            ),
                           ),
                         ],
                       ),

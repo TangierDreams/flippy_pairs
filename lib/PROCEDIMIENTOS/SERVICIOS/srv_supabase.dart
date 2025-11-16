@@ -166,7 +166,7 @@ class SrvSupabase {
     SrvLogger.grabarLog('srv_supabase', 'borrarPuntosUsuario()', 'Borramos la puntuacion de este usuario: $pId');
     try {
       await supabase.rpc('flippy_borrar_puntuacion', params: {'p_id': pId});
-    } on PostgrestException catch (e) {
+    } on PostgrestException {
       SrvLogger.grabarLog(
         'srv_supabase',
         'borrarPuntosUsuario()',

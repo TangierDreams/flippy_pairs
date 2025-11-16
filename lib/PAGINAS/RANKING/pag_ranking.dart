@@ -4,6 +4,7 @@
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/MODELOS/player_group.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
@@ -166,7 +167,7 @@ class _PagRankingState extends State<PagRanking> {
     return Container(
       padding: EdgeInsets.all(8),
       decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
+        //border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -180,13 +181,26 @@ class _PagRankingState extends State<PagRanking> {
                   ? Container(
                       padding: const EdgeInsets.all(8),
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(color: Colores.primero, shape: BoxShape.circle),
+                      decoration: BoxDecoration(color: SrvColores.get(context, 'primero'), shape: BoxShape.circle),
                       child: Text(
                         posicion.toString(),
-                        style: Textos.chewy(16, Colores.blanco, pColorSombra: Colores.fondo),
+                        style: Textos.chewy(
+                          context,
+                          16,
+                          SrvColores.get(context, 'blanco'),
+                          pColorSombra: SrvColores.get(context, 'fondo'),
+                        ),
                       ),
                     )
-                  : Text(posicion.toString(), style: Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco)),
+                  : Text(
+                      posicion.toString(),
+                      style: Textos.chewy(
+                        context,
+                        16,
+                        SrvColores.get(context, 'textos'),
+                        pColorSombra: SrvColores.get(context, 'fondo'),
+                      ),
+                    ),
             ),
           ),
 
@@ -201,8 +215,18 @@ class _PagRankingState extends State<PagRanking> {
                 Text(
                   player['nombre']?.toString() ?? '',
                   style: player['id'] == miId
-                      ? Textos.chewy(16, Colores.primero, pColorSombra: Colores.blanco)
-                      : Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco),
+                      ? Textos.chewy(
+                          context,
+                          16,
+                          SrvColores.get(context, 'primero'),
+                          pColorSombra: SrvColores.get(context, 'fondo'),
+                        )
+                      : Textos.chewy(
+                          context,
+                          16,
+                          SrvColores.get(context, 'textos'),
+                          pColorSombra: SrvColores.get(context, 'fondo'),
+                        ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 10),
@@ -220,8 +244,8 @@ class _PagRankingState extends State<PagRanking> {
                         return Container(
                           width: 16,
                           height: 12,
-                          color: Colors.grey[300],
-                          child: Icon(Icons.error_outline, size: 10, color: Colors.grey),
+                          color: SrvColores.get(context, 'segundo'),
+                          child: Icon(Icons.error_outline, size: 10, color: SrvColores.get(context, 'quinto')),
                         );
                       },
                     ),
@@ -230,8 +254,18 @@ class _PagRankingState extends State<PagRanking> {
                     Text(
                       player['ciudad']?.toString() ?? '',
                       style: player['id'] == miId
-                          ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
-                          : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+                          ? Textos.chewy(
+                              context,
+                              12,
+                              SrvColores.get(context, 'primero'),
+                              pColorSombra: SrvColores.get(context, 'fondo'),
+                            )
+                          : Textos.chewy(
+                              context,
+                              12,
+                              SrvColores.get(context, 'textos'),
+                              pColorSombra: SrvColores.get(context, 'fondo'),
+                            ),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -246,8 +280,18 @@ class _PagRankingState extends State<PagRanking> {
             child: Text(
               player['puntos']?.toString() ?? '',
               style: player['id'] == miId
-                  ? Textos.chewy(16, Colores.primero, pColorSombra: Colores.blanco)
-                  : Textos.chewy(16, Colores.negro, pColorSombra: Colores.blanco),
+                  ? Textos.chewy(
+                      context,
+                      16,
+                      SrvColores.get(context, 'primero'),
+                      pColorSombra: SrvColores.get(context, 'fondo'),
+                    )
+                  : Textos.chewy(
+                      context,
+                      16,
+                      SrvColores.get(context, 'textos'),
+                      pColorSombra: SrvColores.get(context, 'fondo'),
+                    ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -258,8 +302,18 @@ class _PagRankingState extends State<PagRanking> {
             child: Text(
               player['partidas']?.toString() ?? '',
               style: player['id'] == miId
-                  ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
-                  : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+                  ? Textos.chewy(
+                      context,
+                      12,
+                      SrvColores.get(context, 'primero'),
+                      pColorSombra: SrvColores.get(context, 'fondo'),
+                    )
+                  : Textos.chewy(
+                      context,
+                      12,
+                      SrvColores.get(context, 'textos'),
+                      pColorSombra: SrvColores.get(context, 'fondo'),
+                    ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -270,8 +324,18 @@ class _PagRankingState extends State<PagRanking> {
             child: Text(
               SrvFechas.segundosAMinutosYSegundos(player['tiempo_record'] ?? 0),
               style: player['id'] == miId
-                  ? Textos.chewy(12, Colores.primero, pColorSombra: Colores.blanco)
-                  : Textos.chewy(12, Colores.negro, pColorSombra: Colores.blanco),
+                  ? Textos.chewy(
+                      context,
+                      12,
+                      SrvColores.get(context, 'primero'),
+                      pColorSombra: SrvColores.get(context, 'fondo'),
+                    )
+                  : Textos.chewy(
+                      context,
+                      12,
+                      SrvColores.get(context, 'textos'),
+                      pColorSombra: SrvColores.get(context, 'fondo'),
+                    ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -285,28 +349,50 @@ class _PagRankingState extends State<PagRanking> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Divider(height: 10, thickness: 2, color: SrvColores.get(context, 'segundo'), indent: 8, endIndent: 8),
         // Group Header
         Container(
           width: double.infinity,
           padding: EdgeInsets.all(12),
-          color: Colores.fondo,
+          color: SrvColores.get(context, 'fondo'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               // Icono del Grupo:
-              Text(group.giphy, style: Textos.luckiestGuy(32, Colores.primero, pColorSombra: Colores.fondo)),
+              Text(
+                group.giphy,
+                style: Textos.luckiestGuy(
+                  context,
+                  32,
+                  SrvColores.get(context, 'primero'),
+                  pColorSombra: SrvColores.get(context, 'fondo'),
+                ),
+              ),
 
               // Texto Central
               Expanded(
                 child: Text(
                   '${group.title} • ${group.players.length}',
                   textAlign: TextAlign.center,
-                  style: Textos.luckiestGuy(18, Colores.primero, pColorSombra: Colores.fondo),
+                  style: Textos.luckiestGuy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'primero'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                 ),
               ),
 
               // Icono del grupo
-              Text(group.giphy, style: Textos.luckiestGuy(32, Colores.primero, pColorSombra: Colores.fondo)),
+              Text(
+                group.giphy,
+                style: Textos.luckiestGuy(
+                  context,
+                  32,
+                  SrvColores.get(context, 'primero'),
+                  pColorSombra: SrvColores.get(context, 'fondo'),
+                ),
+              ),
             ],
           ),
         ),
@@ -316,7 +402,7 @@ class _PagRankingState extends State<PagRanking> {
         //------------------------------------------------
         Container(
           padding: EdgeInsets.all(8),
-          color: Colores.fondo,
+          color: SrvColores.get(context, 'fondo'),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -324,19 +410,37 @@ class _PagRankingState extends State<PagRanking> {
                 flex: 1, // Posición
                 child: Text(
                   '📍',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
               Expanded(
                 flex: 4, // Jugador (ahora incluye nombre y ubicación)
-                child: Text('👤', style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo)),
+                child: Text(
+                  '👤',
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
+                ),
               ),
               Expanded(
                 flex: 2, // Puntos
                 child: Text(
                   '🏅',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -344,7 +448,12 @@ class _PagRankingState extends State<PagRanking> {
                 flex: 1, // Partidas
                 child: Text(
                   '🕹️',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -352,13 +461,20 @@ class _PagRankingState extends State<PagRanking> {
                 flex: 1, // Tiempo
                 child: Text(
                   '⌚',
-                  style: Textos.chewy(18, Colores.negro, pColorSombra: Colores.fondo),
+                  style: Textos.chewy(
+                    context,
+                    18,
+                    SrvColores.get(context, 'negro'),
+                    pColorSombra: SrvColores.get(context, 'fondo'),
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
             ],
           ),
         ),
+
+        Divider(height: 10, thickness: 2, color: SrvColores.get(context, 'segundo'), indent: 8, endIndent: 8),
 
         //-----------------------------------------
         // Mostramos los jugadores del grupo actual
@@ -373,6 +489,7 @@ class _PagRankingState extends State<PagRanking> {
   Widget build(BuildContext context) {
     posicion = 0;
     return Scaffold(
+      backgroundColor: SrvColores.get(context, 'fondo'),
       //Toolbar:
       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
 
@@ -404,7 +521,7 @@ class _PagRankingState extends State<PagRanking> {
               Container(
                 width: double.infinity,
                 padding: EdgeInsets.all(12),
-                color: Colores.blanco,
+                color: SrvColores.get(context, 'fondo'),
                 child: Column(
                   children: [
                     RichText(
@@ -414,14 +531,20 @@ class _PagRankingState extends State<PagRanking> {
                           TextSpan(
                             text: "World ",
                             style: Textos.luckiestGuy(
+                              context,
                               24,
-                              Colores.segundo,
-                              pColorSombra: Colores.fondo,
+                              SrvColores.get(context, 'segundo'),
+                              pColorSombra: SrvColores.get(context, 'fondo'),
                             ), // Tamaño y color diferente
                           ),
                           TextSpan(
                             text: "Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
-                            style: Textos.luckiestGuy(22, Colores.primero, pColorSombra: Colores.fondo),
+                            style: Textos.luckiestGuy(
+                              context,
+                              22,
+                              SrvColores.get(context, 'primero'),
+                              pColorSombra: SrvColores.get(context, 'fondo'),
+                            ),
                           ),
                         ],
                       ),
@@ -429,13 +552,18 @@ class _PagRankingState extends State<PagRanking> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.place, color: Colores.cuarto, size: 20),
+                        Icon(Icons.place, color: SrvColores.get(context, 'cuarto'), size: 20),
                         SizedBox(width: 8),
                         Text(
                           miPosicion > 0
                               ? '${SrvTraducciones.get('estas_en_posicion')} $miPosicion'
                               : SrvTraducciones.get('no_has_jugado'),
-                          style: Textos.chewy(18, Colores.primero, pColorSombra: Colores.fondo),
+                          style: Textos.chewy(
+                            context,
+                            18,
+                            SrvColores.get(context, 'primero'),
+                            pColorSombra: SrvColores.get(context, 'fondo'),
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ],

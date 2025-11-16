@@ -1,7 +1,7 @@
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 
 class WidCronometro extends StatelessWidget {
   const WidCronometro({super.key});
@@ -12,43 +12,56 @@ class WidCronometro extends StatelessWidget {
     return ValueListenableBuilder<String>(
       valueListenable: SrvCronometro.tiempoEnMMSS,
       builder: (context, tiempoEnMMSS, child) {
-        return Container(
-          width: 70,
-          alignment: Alignment.center,
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-          decoration: BoxDecoration(
-            color: Colores.quinto,
-            borderRadius: BorderRadius.circular(12.0),
-            border: Border.all(color: Colores.primero, width: 3),
-            boxShadow: [
-              BoxShadow(color: Colores.primero, blurRadius: 8, offset: const Offset(4, 4)),
-              BoxShadow(color: Colores.blanco, blurRadius: 4, offset: Offset(-2, -2)),
-            ],
-          ),
-          child: Column(
-            children: [
-              Text(
-                'Timer',
-                style: GoogleFonts.comicNeue(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colores.blanco,
-                  shadows: [Shadow(color: Colores.primero, blurRadius: 3, offset: const Offset(2, 2))],
-                  //color: Colors.white,
-                ),
+        return Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [SrvColores.get(context, 'quinto'), SrvColores.get(context, 'primero')],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              // Use the time string provided by the ValueListenableBuilder
-              Text(
-                tiempoEnMMSS,
-                style: GoogleFonts.comicNeue(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colores.blanco,
-                  shadows: [Shadow(color: Colores.primero, blurRadius: 3, offset: const Offset(2, 2))],
-                  //color: Colors.white,
+              borderRadius: BorderRadius.circular(12.0),
+              border: Border.all(color: SrvColores.get(context, 'primero'), width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 20,
+                  spreadRadius: 2,
+                  offset: const Offset(0, 8),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Timer',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.comicNeue(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: SrvColores.get(context, 'onPrimero'),
+                    shadows: [
+                      Shadow(color: SrvColores.get(context, 'primero'), blurRadius: 3, offset: const Offset(2, 2)),
+                    ],
+                  ),
+                ),
+                Text(
+                  tiempoEnMMSS,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.comicNeue(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: SrvColores.get(context, 'onPrimero'),
+                    shadows: [
+                      Shadow(color: SrvColores.get(context, 'primero'), blurRadius: 3, offset: const Offset(2, 2)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

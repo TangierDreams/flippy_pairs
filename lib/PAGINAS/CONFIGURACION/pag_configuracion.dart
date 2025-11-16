@@ -2,6 +2,7 @@
 // PAGINA DONDE MOSTRAMOS LAS OPCIONES DE CONFIGURACION DEL JUEGO.
 //------------------------------------------------------------------------------
 
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_confirmacion.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
@@ -66,6 +67,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
       valueListenable: SrvIdiomas.idiomaSeleccionado,
       builder: (context, idiomaActual, _) {
         return Scaffold(
+          backgroundColor: SrvColores.get(context, 'fondo'),
           //Toolbar:
           appBar: WidToolbar(
             showMenuButton: false,
@@ -87,8 +89,10 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     SrvTraducciones.get('texto_alias'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 20,
-                      color: Colores.primero,
-                      shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                      color: SrvColores.get(context, 'primero'),
+                      shadows: [
+                        Shadow(blurRadius: 6, color: SrvColores.get(context, 'fondo'), offset: const Offset(2, 2)),
+                      ],
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -97,22 +101,25 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     controller: _nombreUsuario,
                     focusNode: _focusNodeAlias,
                     inputFormatters: [LengthLimitingTextInputFormatter(25)],
-                    style: GoogleFonts.luckiestGuy(color: Colors.black, fontSize: 16),
+                    style: GoogleFonts.luckiestGuy(color: SrvColores.get(context, 'textos'), fontSize: 16),
                     decoration: InputDecoration(
                       labelText: SrvTraducciones.get('alias'),
-                      labelStyle: GoogleFonts.luckiestGuy(color: Colores.segundo, fontSize: 18),
+                      labelStyle: GoogleFonts.luckiestGuy(color: SrvColores.get(context, 'segundo'), fontSize: 18),
                       hintText: SrvTraducciones.get('alias_hint'),
-                      hintStyle: GoogleFonts.luckiestGuy(color: Colores.primero.withValues(alpha: 0.7), fontSize: 14),
+                      hintStyle: GoogleFonts.luckiestGuy(
+                        color: SrvColores.get(context, 'primero').withValues(alpha: 0.7),
+                        fontSize: 14,
+                      ),
 
                       // 1. Define the default border style
-                      border: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colores.primero, width: 2.0),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: SrvColores.get(context, 'primero'), width: 2.0),
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       ),
 
                       // 2. Define the focused border style (when the user taps it)
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colores.primero, width: 3.0),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: SrvColores.get(context, 'primero'), width: 3.0),
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       ),
                     ),
@@ -129,13 +136,15 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                         SrvTraducciones.get('activar_sonidos'),
                         style: GoogleFonts.luckiestGuy(
                           fontSize: 16,
-                          color: Colores.primero,
-                          shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                          color: SrvColores.get(context, 'primero'),
+                          shadows: [
+                            Shadow(blurRadius: 6, color: SrvColores.get(context, 'fondo'), offset: const Offset(2, 2)),
+                          ],
                         ),
                       ),
                       Switch(
-                        activeThumbColor: Colors.white,
-                        activeTrackColor: Colors.black,
+                        activeThumbColor: SrvColores.get(context, 'segundo'),
+                        activeTrackColor: SrvColores.get(context, 'primero'),
                         // 1. Valor actual del estado
                         value: _sonidoActivado,
                         // 2. Función que se llama cuando el usuario toca el switch
@@ -162,13 +171,15 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                         SrvTraducciones.get('activar_musica'),
                         style: GoogleFonts.luckiestGuy(
                           fontSize: 16,
-                          color: Colores.primero,
-                          shadows: [Shadow(blurRadius: 6, color: Colores.fondo, offset: const Offset(2, 2))],
+                          color: SrvColores.get(context, 'primero'),
+                          shadows: [
+                            Shadow(blurRadius: 6, color: SrvColores.get(context, 'fondo'), offset: const Offset(2, 2)),
+                          ],
                         ),
                       ),
                       Switch(
-                        activeThumbColor: Colors.white,
-                        activeTrackColor: Colors.black,
+                        activeThumbColor: SrvColores.get(context, 'segundo'),
+                        activeTrackColor: SrvColores.get(context, 'primero'),
                         // 1. Valor actual del estado
                         value: _musicaActivada,
                         // 2. Función que se llama cuando el usuario toca el switch
@@ -190,10 +201,10 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   //-----------------------------------------
                   WidIdiomas(
                     pLabel: SrvTraducciones.get('selec_idioma'),
-                    pColorLabel: Colores.primero,
+                    pColorLabel: SrvColores.get(context, 'primero'),
                     pTipoDeLetra: "Luckiest Guy",
                     pTamanyoLetra: 16,
-                    pColorLetra: Colores.negro,
+                    pColorLetra: SrvColores.get(context, 'textos'),
                   ),
 
                   const SizedBox(height: 10),
@@ -205,8 +216,8 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                     pTexto: SrvTraducciones.get('eliminar_mis_puntuaciones'),
                     pTipoDeLetra: 'Chewy',
                     pTamanyoLetra: 18,
-                    pColorDeFondo: Colores.cuarto,
-                    pColorLetra: Colores.blanco,
+                    pColorDeFondo: SrvColores.get(context, 'cuarto'),
+                    pColorLetra: SrvColores.get(context, 'onCuarto'),
                     pEmitirSonido: true,
                     pEsquinasRedondeadas: true,
                     pFuncionCallBack: () => SrvConfirmacion.confirmacion(
@@ -217,7 +228,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                       pDescripcionFont: 'Chewy',
                       pBotonOkTexto: SrvTraducciones.get('borrar'),
                       pBotonOkFont: 'Chewy',
-                      pBotonOkColor: Colores.cuarto,
+                      pBotonOkColor: SrvColores.get(context, 'cuarto'),
                       pBotonKoTexto: SrvTraducciones.get('salir'),
                       pBotonKoFont: 'Chewy',
                       pOnConfirmar: () {
@@ -229,8 +240,8 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                           msg: SrvTraducciones.get('puntuaciones_eliminadas'),
                           toastLength: Toast.LENGTH_LONG,
                           gravity: ToastGravity.BOTTOM,
-                          backgroundColor: Colores.primero,
-                          textColor: Colores.onPrimero,
+                          backgroundColor: SrvColores.get(context, 'primero'),
+                          textColor: SrvColores.get(context, 'onPrimero'),
                           fontSize: 16.0,
                         );
                       },
@@ -245,8 +256,8 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   if (DatosGenerales.logsActivados)
                     WidBotonStandard(
                       pTexto: 'Ver registro de logs',
-                      pColorDeFondo: Colores.primero,
-                      pColorLetra: Colores.onPrimero,
+                      pColorDeFondo: SrvColores.get(context, 'primero'),
+                      pColorLetra: SrvColores.get(context, 'onPrimero'),
                       pEmitirSonido: true,
                       pEsquinasRedondeadas: true,
                       pNavegarA: '/logs',

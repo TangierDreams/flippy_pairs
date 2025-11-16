@@ -1,4 +1,4 @@
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_confirmacion.dart';
 import 'package:flutter/material.dart';
 
@@ -49,13 +49,13 @@ class SrvConfirmacion {
         pTitulo: pTitulo,
         pTituloFont: pTituloFont ?? 'Roboto',
         pTituloSize: pTituloSize ?? 22,
-        pTituloColor: pTituloColor ?? Colores.primero,
+        pTituloColor: pTituloColor ?? SrvColores.get(context, 'primero'),
         pTituloBold: pTituloBold ?? true,
         //Descripción:
         pDescripcion: pDescripcion,
         pDescripcionFont: pDescripcionFont ?? 'Roboto',
         pDescripcionSize: pDescripcionSize ?? 14,
-        pDescripcionColor: pDescripcionColor ?? Colores.textos,
+        pDescripcionColor: pDescripcionColor ?? SrvColores.get(context, 'textos'),
         pDescripcionBold: pDescripcionBold ?? false,
         //Imagen:
         pImagen: pImagen,
@@ -68,13 +68,13 @@ class SrvConfirmacion {
         pBotonOkTexto: pBotonOkTexto ?? 'Aceptar',
         pBotonOkFont: pBotonOkFont ?? 'Roboto',
         pBotonOkSize: pBotonOkSize ?? 14,
-        pBotonOkColor: pBotonOkColor ?? Colores.segundo,
+        pBotonOkColor: pBotonOkColor ?? SrvColores.get(context, 'segundo'),
         pBotonOkBold: pBotonOkBold ?? false,
         //Boton Ko:
         pBotonKoTexto: pBotonKoTexto ?? 'Cancelar',
         pBotonKoFont: pBotonKoFont ?? 'Roboto',
         pBotonKoSize: pBotonKoSize ?? 14,
-        pBotonKoColor: pBotonKoColor ?? Colores.textos,
+        pBotonKoColor: pBotonKoColor ?? SrvColores.get(context, 'textos'),
         pBotonKoBold: pBotonKoBold ?? false,
         pOnConfirmar: pOnConfirmar,
       ),

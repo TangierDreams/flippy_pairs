@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_generales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
@@ -44,6 +46,7 @@ class _PagHomeState extends State<PagHome> {
       valueListenable: SrvIdiomas.idiomaSeleccionado,
       builder: (context, idiomaActual, _) {
         return Scaffold(
+          backgroundColor: SrvColores.get(context, 'fondo'),
           //Toolbar:
           appBar: WidToolbar(
             showMenuButton: false,
@@ -60,10 +63,16 @@ class _PagHomeState extends State<PagHome> {
                 Text(
                   SrvTraducciones.get('temas'),
                   textAlign: TextAlign.center,
-                  style: Textos.chewy(30, Colores.segundo),
+                  style: Textos.chewy(
+                    context,
+                    30,
+                    SrvColores.get(context, 'segundo'),
+                    pColorSombra: SrvColores.get(context, 'negro'),
+                  ),
                 ),
 
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
+                SrvGenerales.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Primera línea de imagenes
@@ -71,42 +80,53 @@ class _PagHomeState extends State<PagHome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    BotonTema(
-                      pListaImagenes: 'retratos',
-                      pNumBoton: 0,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nomTema = 'retratos';
-                          EstadoDelJuego.tema = 0;
-                        });
-                      },
+                    Expanded(
+                      child: BotonTema(
+                        pListaImagenes: 'retratos',
+                        pNumBoton: 0,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nomTema = 'retratos';
+                            EstadoDelJuego.tema = 0;
+                          });
+                        },
+                      ),
                     ),
 
-                    BotonTema(
-                      pListaImagenes: 'iconos',
-                      pNumBoton: 1,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nomTema = 'iconos';
-                          EstadoDelJuego.tema = 1;
-                        });
-                      },
+                    const SizedBox(width: 40),
+
+                    Expanded(
+                      child: BotonTema(
+                        pListaImagenes: 'iconos',
+                        pNumBoton: 1,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nomTema = 'iconos';
+                            EstadoDelJuego.tema = 1;
+                          });
+                        },
+                      ),
                     ),
 
-                    BotonTema(
-                      pListaImagenes: 'logos',
-                      pNumBoton: 2,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nomTema = 'logos';
-                          EstadoDelJuego.tema = 2;
-                        });
-                      },
+                    const SizedBox(width: 40),
+
+                    Expanded(
+                      child: BotonTema(
+                        pListaImagenes: 'logos',
+                        pNumBoton: 2,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nomTema = 'logos';
+                            EstadoDelJuego.tema = 2;
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 05),
+                //const SizedBox(height: 10),
+                SrvGenerales.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Segunda línea de imagenes
@@ -114,50 +134,70 @@ class _PagHomeState extends State<PagHome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    BotonTema(
-                      pListaImagenes: 'coches',
-                      pNumBoton: 3,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nomTema = 'coches';
-                          EstadoDelJuego.tema = 3;
-                        });
-                      },
+                    Expanded(
+                      child: BotonTema(
+                        pListaImagenes: 'coches',
+                        pNumBoton: 3,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nomTema = 'coches';
+                            EstadoDelJuego.tema = 3;
+                          });
+                        },
+                      ),
                     ),
 
-                    BotonTema(
-                      pListaImagenes: 'herramientas',
-                      pNumBoton: 4,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nomTema = 'herramientas';
-                          EstadoDelJuego.tema = 4;
-                        });
-                      },
+                    const SizedBox(width: 40),
+
+                    Expanded(
+                      child: BotonTema(
+                        pListaImagenes: 'herramientas',
+                        pNumBoton: 4,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nomTema = 'herramientas';
+                            EstadoDelJuego.tema = 4;
+                          });
+                        },
+                      ),
                     ),
 
-                    BotonTema(
-                      pListaImagenes: 'animales',
-                      pNumBoton: 5,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nomTema = 'animales';
-                          EstadoDelJuego.tema = 5;
-                        });
-                      },
+                    const SizedBox(width: 40),
+
+                    Expanded(
+                      child: BotonTema(
+                        pListaImagenes: 'animales',
+                        pNumBoton: 5,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nomTema = 'animales';
+                            EstadoDelJuego.tema = 5;
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 15),
+                //const SizedBox(height: 25),
+                SrvGenerales.espacioVertical(context, 2),
 
+                //------------------------------------------------------------------
+                // Botones de dificultad
+                //------------------------------------------------------------------
                 Text(
                   SrvTraducciones.get('dificultad'),
                   textAlign: TextAlign.center,
-                  style: Textos.chewy(30, Colores.segundo),
+                  style: Textos.chewy(
+                    context,
+                    30,
+                    SrvColores.get(context, 'segundo'),
+                    pColorSombra: SrvColores.get(context, 'negro'),
+                  ),
                 ),
 
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
+                SrvGenerales.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Primera fila de niveles de juego:
@@ -168,54 +208,65 @@ class _PagHomeState extends State<PagHome> {
                     //-----------
                     // Nivel 3x2:
                     //-----------
-                    BotonNivel(
-                      pFilas: 3,
-                      pColumnas: 2,
-                      pNivel: 0,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nivel = 0;
-                          EstadoDelJuego.filas = 3;
-                          EstadoDelJuego.columnas = 2;
-                        });
-                      },
+                    Expanded(
+                      child: BotonNivel(
+                        pFilas: 3,
+                        pColumnas: 2,
+                        pNivel: 0,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nivel = 0;
+                            EstadoDelJuego.filas = 3;
+                            EstadoDelJuego.columnas = 2;
+                          });
+                        },
+                      ),
                     ),
+
+                    const SizedBox(width: 40),
 
                     //-----------
                     // Nivel 4x3:
                     //-----------
-                    BotonNivel(
-                      pFilas: 4,
-                      pColumnas: 3,
-                      pNivel: 1,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nivel = 1;
-                          EstadoDelJuego.filas = 4;
-                          EstadoDelJuego.columnas = 3;
-                        });
-                      },
+                    Expanded(
+                      child: BotonNivel(
+                        pFilas: 4,
+                        pColumnas: 3,
+                        pNivel: 1,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nivel = 1;
+                            EstadoDelJuego.filas = 4;
+                            EstadoDelJuego.columnas = 3;
+                          });
+                        },
+                      ),
                     ),
+
+                    const SizedBox(width: 40),
 
                     //-----------
                     // Nivel 5x4:
                     //-----------
-                    BotonNivel(
-                      pFilas: 5,
-                      pColumnas: 4,
-                      pNivel: 2,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nivel = 2;
-                          EstadoDelJuego.filas = 5;
-                          EstadoDelJuego.columnas = 4;
-                        });
-                      },
+                    Expanded(
+                      child: BotonNivel(
+                        pFilas: 5,
+                        pColumnas: 4,
+                        pNivel: 2,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nivel = 2;
+                            EstadoDelJuego.filas = 5;
+                            EstadoDelJuego.columnas = 4;
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
+                SrvGenerales.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Segunda fila de niveles de juego:
@@ -226,54 +277,65 @@ class _PagHomeState extends State<PagHome> {
                     //-----------
                     // Nivel 6x5:
                     //-----------
-                    BotonNivel(
-                      pFilas: 6,
-                      pColumnas: 5,
-                      pNivel: 3,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nivel = 3;
-                          EstadoDelJuego.filas = 6;
-                          EstadoDelJuego.columnas = 5;
-                        });
-                      },
+                    Expanded(
+                      child: BotonNivel(
+                        pFilas: 6,
+                        pColumnas: 5,
+                        pNivel: 3,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nivel = 3;
+                            EstadoDelJuego.filas = 6;
+                            EstadoDelJuego.columnas = 5;
+                          });
+                        },
+                      ),
                     ),
+
+                    const SizedBox(width: 40),
 
                     //-----------
                     // Nivel 8x7:
                     //-----------
-                    BotonNivel(
-                      pFilas: 8,
-                      pColumnas: 7,
-                      pNivel: 4,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nivel = 4;
-                          EstadoDelJuego.filas = 8;
-                          EstadoDelJuego.columnas = 7;
-                        });
-                      },
+                    Expanded(
+                      child: BotonNivel(
+                        pFilas: 8,
+                        pColumnas: 7,
+                        pNivel: 4,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nivel = 4;
+                            EstadoDelJuego.filas = 8;
+                            EstadoDelJuego.columnas = 7;
+                          });
+                        },
+                      ),
                     ),
+
+                    const SizedBox(width: 40),
 
                     //-----------
                     // Nivel 9x8:
                     //-----------
-                    BotonNivel(
-                      pFilas: 9,
-                      pColumnas: 8,
-                      pNivel: 5,
-                      pCallBackFunction: () {
-                        setState(() {
-                          EstadoDelJuego.nivel = 5;
-                          EstadoDelJuego.filas = 9;
-                          EstadoDelJuego.columnas = 8;
-                        });
-                      },
+                    Expanded(
+                      child: BotonNivel(
+                        pFilas: 9,
+                        pColumnas: 8,
+                        pNivel: 5,
+                        pCallBackFunction: () {
+                          setState(() {
+                            EstadoDelJuego.nivel = 5;
+                            EstadoDelJuego.filas = 9;
+                            EstadoDelJuego.columnas = 8;
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 15),
+                //const SizedBox(height: 25),
+                SrvGenerales.espacioVertical(context, 2),
 
                 //--------------------------------------------------------------
                 // Aquí seleccionamos la velocidad del juego.
@@ -281,10 +343,16 @@ class _PagHomeState extends State<PagHome> {
                 Text(
                   SrvTraducciones.get('velocidad_juego'),
                   textAlign: TextAlign.center,
-                  style: Textos.chewy(30, Colores.segundo),
+                  style: Textos.chewy(
+                    context,
+                    30,
+                    SrvColores.get(context, 'segundo'),
+                    pColorSombra: SrvColores.get(context, 'negro'),
+                  ),
                 ),
 
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
+                SrvGenerales.espacioVertical(context, 1),
 
                 LayoutBuilder(
                   builder: (context, constraints) {
@@ -308,11 +376,11 @@ class _PagHomeState extends State<PagHome> {
                       isSelected: _isSelected,
 
                       // 4. Custom Styling (Matching your previous colors):
-                      borderColor: Colores.primero,
-                      selectedBorderColor: Colores.primero,
-                      fillColor: Colores.segundo,
-                      color: Colores.primero,
-                      selectedColor: Colores.negro,
+                      borderColor: SrvColores.get(context, 'primero'),
+                      selectedBorderColor: SrvColores.get(context, 'primero'),
+                      fillColor: SrvColores.get(context, 'segundo'),
+                      color: SrvColores.get(context, 'primero'),
+                      selectedColor: SrvColores.get(context, 'negro'),
                       borderRadius: BorderRadius.circular(10.0),
 
                       // 1. The Children: Your three styled Text widgets
@@ -355,70 +423,85 @@ class _PagHomeState extends State<PagHome> {
                   },
                 ),
 
-                const SizedBox(height: 10),
+                //const SizedBox(height: 25),
+                SrvGenerales.espacioVertical(context, 2),
 
                 //------------------------------------------------------------------
                 // Botón para comenzar a jugar
                 //------------------------------------------------------------------
-                WidBotonStandard(
-                  pTexto: SrvTraducciones.get('comenzar_juego'),
-                  pTipoDeLetra: 'Luckiest Guy',
-                  pTamanyoLetra: 28,
-                  pColorLetra: Colores.segundo,
-                  pSombra: true,
-                  pEsquinasRedondeadas: true,
-                  pFuncionSonido: SrvSonidos.boton,
-                  pNavegarA: '/game',
+                SizedBox(
+                  height: 80,
+                  child: WidBotonStandard(
+                    pTexto: SrvTraducciones.get('comenzar_juego'),
+                    pTipoDeLetra: 'Luckiest Guy',
+                    pTamanyoLetra: 28,
+                    pColorLetra: SrvColores.get(context, 'segundo'),
+                    pSombra: true,
+                    pEsquinasRedondeadas: true,
+                    pFuncionSonido: SrvSonidos.boton,
+                    pNavegarA: '/game',
+                  ),
                 ),
 
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
+                SrvGenerales.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Botón para ir al Ranking de puntos
                 //------------------------------------------------------------------
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    WidBotonStandard(
-                      pTexto: '🌎 WFC 🌎',
-                      pTipoDeLetra: 'Chewy',
-                      pTamanyoLetra: 18,
-                      pColorLetra: Colores.tercero,
-                      //pIcono: Icons.settings,
-                      //pColorIcono: Colores.tercero,
-                      pSombra: true,
-                      pEsquinasRedondeadas: true,
-                      pNavegarA: '/ranking',
+                    Expanded(
+                      child: WidBotonStandard(
+                        pTexto: '🌎 WFC',
+                        pTipoDeLetra: 'Chewy',
+                        pTamanyoLetra: 18,
+                        pColorLetra: SrvColores.get(context, 'tercero'), //Colores.tercero,
+                        //pIcono: Icons.settings,
+                        //pColorIcono: Colores.tercero,
+                        pSombra: true,
+                        pEsquinasRedondeadas: true,
+                        pNavegarA: '/ranking',
+                      ),
                     ),
+
+                    const SizedBox(width: 10),
 
                     //------------------------------------------------------------------
                     // Botón para ir al Ranking de Tiempo
                     //------------------------------------------------------------------
-                    WidBotonStandard(
-                      pTexto: '🕒 TFC 🕒',
-                      pTipoDeLetra: 'Chewy',
-                      pTamanyoLetra: 18,
-                      pColorLetra: Colores.tercero,
-                      //pIcono: Icons.settings,
-                      //pColorIcono: Colores.tercero,
-                      pSombra: true,
-                      pEsquinasRedondeadas: true,
-                      pNavegarA: '/ranking_time',
+                    Expanded(
+                      child: WidBotonStandard(
+                        pTexto: '🕒 TFC',
+                        pTipoDeLetra: 'Chewy',
+                        pTamanyoLetra: 18,
+                        pColorLetra: SrvColores.get(context, 'tercero'),
+                        //pIcono: Icons.settings,
+                        //pColorIcono: Colores.tercero,
+                        pSombra: true,
+                        pEsquinasRedondeadas: true,
+                        pNavegarA: '/ranking_time',
+                      ),
                     ),
+
+                    const SizedBox(width: 10),
 
                     //------------------------------------------------------------------
                     // Botón para ir al Ranking de Paises
                     //------------------------------------------------------------------
-                    WidBotonStandard(
-                      pTexto: '🏛️ CFC 🏛️',
-                      pTipoDeLetra: 'Chewy',
-                      pTamanyoLetra: 18,
-                      pColorLetra: Colores.tercero,
-                      //pIcono: Icons.settings,
-                      //pColorIcono: Colores.tercero,
-                      pSombra: true,
-                      pEsquinasRedondeadas: true,
-                      pNavegarA: '/ranking_countries',
+                    Expanded(
+                      child: WidBotonStandard(
+                        pTexto: '🏛️ CFC',
+                        pTipoDeLetra: 'Chewy',
+                        pTamanyoLetra: 18,
+                        pColorLetra: SrvColores.get(context, 'tercero'),
+                        //pIcono: Icons.settings,
+                        //pColorIcono: Colores.tercero,
+                        pSombra: true,
+                        pEsquinasRedondeadas: true,
+                        pNavegarA: '/ranking_countries',
+                      ),
                     ),
                   ],
                 ),
@@ -446,17 +529,22 @@ class BotonTema extends StatelessWidget {
     bool estaSeleccionado = pNumBoton == EstadoDelJuego.tema;
     File primeraImagenTema = SrvImagenes.obtenerUnaImagen(pListaImagenes, "01.png");
 
-    return ElevatedButton(
-      onPressed: () {
-        SrvSonidos.boton();
-        pCallBackFunction();
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: estaSeleccionado ? Colores.segundo : null,
-        foregroundColor: Colores.onPrimero,
-        elevation: estaSeleccionado ? 15 : 10,
+    return AnimatedScale(
+      scale: estaSeleccionado ? 1.1 : 1.0,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOutBack,
+      child: ElevatedButton(
+        onPressed: () {
+          SrvSonidos.boton();
+          pCallBackFunction();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: estaSeleccionado ? SrvColores.get(context, 'segundo') : SrvColores.get(context, 'primero'),
+          foregroundColor: SrvColores.get(context, 'onPrimero'),
+          elevation: estaSeleccionado ? 15 : 10,
+        ),
+        child: Image.file(primeraImagenTema, width: 60, height: 50, fit: BoxFit.contain),
       ),
-      child: Image.file(primeraImagenTema, width: 60, height: 50, fit: BoxFit.contain),
     );
   }
 }
@@ -486,7 +574,7 @@ class BotonNivel extends StatelessWidget {
     bool estaSeleccionado = pNivel == EstadoDelJuego.nivel;
 
     return AnimatedScale(
-      scale: estaSeleccionado ? 1.2 : 1.0,
+      scale: estaSeleccionado ? 1.1 : 1.0,
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOutBack,
       child: ElevatedButton(
@@ -495,13 +583,24 @@ class BotonNivel extends StatelessWidget {
           pCallBackFunction();
         },
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
-          backgroundColor: estaSeleccionado ? Colores.segundo : Colores.primero,
-          foregroundColor: Colores.onPrimero,
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          backgroundColor: estaSeleccionado ? SrvColores.get(context, 'segundo') : SrvColores.get(context, 'primero'),
+          foregroundColor: SrvColores.get(context, 'onPrimero'),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: estaSeleccionado ? 15 : 10,
         ),
-        child: Text(titulo, style: Textos.chewy(30, Colores.tercero), textAlign: TextAlign.center),
+        child: Text(
+          titulo,
+          style: estaSeleccionado
+              ? Textos.chewy(context, 30, SrvColores.get(context, 'onSegundo'))
+              : Textos.chewy(
+                  context,
+                  30,
+                  SrvColores.get(context, 'tercero'),
+                  pColorSombra: SrvColores.get(context, 'negro'),
+                ),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

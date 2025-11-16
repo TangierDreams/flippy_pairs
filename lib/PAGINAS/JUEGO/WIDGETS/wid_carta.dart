@@ -6,8 +6,8 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flutter/material.dart';
 
@@ -95,7 +95,9 @@ class _WidCartaState extends State<WidCarta> with SingleTickerProviderStateMixin
             builder: (context, value, child) {
               double angle = value * pi;
               bool mostrarCarta = value > 0.5;
-              final Color colorBase = mostrarCarta ? Colores.onPrimero : Colores.primero;
+              final Color colorBase = mostrarCarta
+                  ? SrvColores.get(context, 'onPrimero')
+                  : SrvColores.get(context, 'primero');
 
               return AnimatedScale(
                 scale: widget.pDestello ? 1.15 : 1.0,
@@ -107,7 +109,13 @@ class _WidCartaState extends State<WidCarta> with SingleTickerProviderStateMixin
                   decoration: BoxDecoration(
                     color: widget.pDestello ? colorBase.withValues(alpha: 0.95) : colorBase,
                     boxShadow: widget.pDestello
-                        ? [BoxShadow(color: Colores.cuarto.withValues(alpha: 0.80), blurRadius: 20, spreadRadius: 4)]
+                        ? [
+                            BoxShadow(
+                              color: SrvColores.get(context, 'cuarto').withValues(alpha: 0.80),
+                              blurRadius: 20,
+                              spreadRadius: 4,
+                            ),
+                          ]
                         : [],
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -147,148 +155,3 @@ class _WidCartaState extends State<WidCarta> with SingleTickerProviderStateMixin
     );
   }
 }
-
-// import 'dart:io';
-// import 'dart:math';
-// import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
-// import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
-// import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
-// import 'package:flutter/material.dart';
-
-// class WidCarta extends StatelessWidget {
-//   final bool pEstaBocaArriba;
-//   final File pImagenCarta;
-//   final bool pDestello;
-//   final VoidCallback pCallBackFunction;
-
-//   const WidCarta({
-//     super.key,
-//     required this.pEstaBocaArriba,
-//     required this.pImagenCarta,
-//     required this.pDestello,
-//     required this.pCallBackFunction,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     int velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
-//     return Material(
-//       color: Colors.transparent,
-//       borderRadius: BorderRadius.circular(12),
-//       child: InkWell(
-//         onTapDown: (TapDownDetails details) {
-//           pCallBackFunction();
-//         },
-//         child: TweenAnimationBuilder<double>(
-//           tween: Tween<double>(begin: 0, end: pEstaBocaArriba ? 1 : 0),
-//           duration: Duration(
-//             milliseconds: pEstaBocaArriba ? GameSpeed.giro[velocidadJuego] : GameSpeed.giro[velocidadJuego],
-//           ),
-//           builder: (context, value, child) {
-//             double angle = value * pi;
-//             bool mostrarCarta = value > 0.5;
-//             final Color colorBase = mostrarCarta ? Colores.onPrimero : Colores.primero;
-
-//             return AnimatedScale(
-//               scale: pDestello ? 1.15 : 1.0,
-//               duration: const Duration(milliseconds: 300),
-//               curve: Curves.easeOut,
-//               child: AnimatedContainer(
-//                 duration: const Duration(milliseconds: 300),
-//                 curve: Curves.easeInOut,
-//                 decoration: BoxDecoration(
-//                   color: pDestello ? colorBase.withValues(alpha: 0.95) : colorBase,
-//                   boxShadow: pDestello
-//                       ? [BoxShadow(color: Colores.cuarto.withValues(alpha: 0.80), blurRadius: 20, spreadRadius: 4)]
-//                       : [],
-//                   borderRadius: BorderRadius.circular(12),
-//                 ),
-//                 child: Transform(
-//                   alignment: Alignment.center,
-//                   transform: Matrix4.identity()
-//                     ..setEntry(3, 2, 0.001)
-//                     ..rotateY(angle),
-//                   child: Center(
-//                     child: LayoutBuilder(
-//                       builder: (context, dimensiones) {
-//                         final double dynamicPadding = dimensiones.maxHeight * 0.16;
-
-//                         return Transform(
-//                           alignment: Alignment.center,
-//                           transform: Matrix4.identity()..rotateY(mostrarCarta ? pi : 0),
-//                           child: Padding(
-//                             padding: EdgeInsets.all(dynamicPadding),
-//                             child: FittedBox(
-//                               fit: BoxFit.contain,
-//                               child: mostrarCarta
-//                                   ? Image.file(pImagenCarta)
-//                                   : Image.asset('assets/imagenes/general/interrogacion.png'),
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-//==============================================================================
-// WIDGET DE CARTA - VERSIÓN SIMPLIFICADA SIN ANIMACIONES
-// Solo muestra una carta. Nada de lógica. Nada de animaciones.
-//==============================================================================
-
-// import 'dart:io';
-// //import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
-// import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
-// import 'package:flutter/material.dart';
-
-// class WidCarta extends StatelessWidget {
-//   final bool pEstaBocaArriba;
-//   final File pImagenCarta;
-//   final bool pDestello;
-//   final VoidCallback pCallBackFunction;
-
-//   const WidCarta({
-//     super.key,
-//     required this.pEstaBocaArriba,
-//     required this.pImagenCarta,
-//     required this.pDestello,
-//     required this.pCallBackFunction,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Material(
-//       color: Colors.transparent, // ← IMPORTANTE: Material necesita color
-//       borderRadius: BorderRadius.circular(12),
-//       child: InkWell(
-//         onTapDown: (TapDownDetails details) {
-//           pCallBackFunction();
-//         },
-//         borderRadius: BorderRadius.circular(12),
-//         child: Container(
-//           decoration: BoxDecoration(
-//             color: pEstaBocaArriba ? Colores.onPrimero : Colores.primero,
-//             borderRadius: BorderRadius.circular(12),
-//           ),
-//           child: Padding(
-//             padding: const EdgeInsets.all(12.0),
-//             child: FittedBox(
-//               fit: BoxFit.contain,
-//               child: pEstaBocaArriba
-//                   ? Image.file(pImagenCarta)
-//                   : Image.asset('assets/imagenes/general/interrogacion.png'),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

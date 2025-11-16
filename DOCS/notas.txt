@@ -26,3 +26,36 @@ GRANT EXECUTE ON FUNCTION public.obtener_reg_flippy TO anon;
 GRANT EXECUTE ON FUNCTION public.obtener_tabla_flippy TO anon;
 GRANT EXECUTE ON FUNCTION public.upsert_flippy_points TO anon;
 
+
+
+Para crear una splash screen:
+=============================
+
+En pubspec.yaml debemos tener el "flutter_native_splash" de la siguiente manera:
+--------------------------------------------------------------------------------
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_native_splash: ^2.3.7
+  flutter_lints: ^6.0.0
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/imagenes/general/app_splash.png
+  android: true
+  ios: false
+  android_12:
+    color: "#FFFFFF"
+    image: assets/imagenes/general/app_splash.png
+    icon_background_color: "#FFFFFF"
+
+
+En la consola ejecutar lo siguiente:
+------------------------------------
+
+dart run flutter_native_splash:create
+flutter clean
+flutter run
+
+

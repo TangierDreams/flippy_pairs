@@ -1,4 +1,4 @@
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flutter/material.dart';
 
 class WidFlechaAtras extends StatelessWidget {
@@ -10,15 +10,20 @@ class WidFlechaAtras extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: Colores.tercero,
+        color: SrvColores.get(context, 'tercero'),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colores.segundo, width: 3),
+        border: Border.all(color: SrvColores.get(context, 'segundo'), width: 3),
         boxShadow: [
-          BoxShadow(color: Colores.cuarto, blurRadius: 10, offset: const Offset(4, 4), spreadRadius: 1),
-          BoxShadow(color: Colores.quinto, blurRadius: 5, offset: const Offset(-3, -3)),
+          BoxShadow(
+            color: SrvColores.get(context, 'cuarto'),
+            blurRadius: 10,
+            offset: const Offset(4, 4),
+            spreadRadius: 1,
+          ),
+          BoxShadow(color: SrvColores.get(context, 'quinto'), blurRadius: 5, offset: const Offset(-3, -3)),
         ],
         gradient: LinearGradient(
-          colors: [Colores.segundo, Colores.tercero],
+          colors: [SrvColores.get(context, 'segundo'), SrvColores.get(context, 'tercero')],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -31,10 +36,10 @@ class WidFlechaAtras extends StatelessWidget {
           Center(
             child: Icon(
               Icons.arrow_back_rounded,
-              color: Colores.blanco,
+              color: SrvColores.get(context, 'blanco'),
               size: 30,
               weight: 1000, // Máximo grosor
-              shadows: [Shadow(color: Colores.segundo, blurRadius: 4, offset: const Offset(2, 2))],
+              shadows: [Shadow(color: SrvColores.get(context, 'segundo'), blurRadius: 4, offset: const Offset(2, 2))],
             ),
           ),
         ],

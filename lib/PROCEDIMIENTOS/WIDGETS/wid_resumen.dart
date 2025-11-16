@@ -1,6 +1,6 @@
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
 import 'package:flutter/material.dart';
@@ -62,15 +62,15 @@ class WidResumenState extends State<WidResumen> {
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colores.quinto, Colores.primero],
+          colors: [SrvColores.get(context, 'quinto'), SrvColores.get(context, 'primero')],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colores.primero, width: 3),
+        border: Border.all(color: SrvColores.get(context, 'primero'), width: 3),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.3),
@@ -88,8 +88,8 @@ class WidResumenState extends State<WidResumen> {
             style: GoogleFonts.comicNeue(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colores.segundo,
-              shadows: [const Shadow(color: Colores.primero, blurRadius: 3, offset: Offset(2, 2))],
+              color: SrvColores.get(context, 'segundo'),
+              shadows: [Shadow(color: SrvColores.get(context, 'primero'), blurRadius: 3, offset: Offset(2, 2))],
             ),
           ),
           Text(
@@ -97,8 +97,8 @@ class WidResumenState extends State<WidResumen> {
             style: GoogleFonts.comicNeue(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Colores.blanco,
-              shadows: [const Shadow(color: Colores.primero, blurRadius: 3, offset: Offset(2, 2))],
+              color: SrvColores.get(context, 'onPrimero'),
+              shadows: [Shadow(color: SrvColores.get(context, 'primero'), blurRadius: 3, offset: Offset(2, 2))],
             ),
           ),
           Text(
@@ -106,8 +106,8 @@ class WidResumenState extends State<WidResumen> {
             style: GoogleFonts.comicNeue(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Colores.blanco,
-              shadows: [const Shadow(color: Colores.primero, blurRadius: 3, offset: Offset(2, 2))],
+              color: SrvColores.get(context, 'onPrimero'),
+              shadows: [Shadow(color: SrvColores.get(context, 'primero'), blurRadius: 3, offset: Offset(2, 2))],
             ),
           ),
           Text(
@@ -115,8 +115,8 @@ class WidResumenState extends State<WidResumen> {
             style: GoogleFonts.comicNeue(
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              color: Colores.blanco,
-              shadows: [const Shadow(color: Colores.primero, blurRadius: 3, offset: Offset(2, 2))],
+              color: SrvColores.get(context, 'onPrimero'),
+              shadows: [Shadow(color: SrvColores.get(context, 'primero'), blurRadius: 3, offset: Offset(2, 2))],
             ),
           ),
         ],
