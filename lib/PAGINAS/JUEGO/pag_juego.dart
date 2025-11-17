@@ -9,17 +9,17 @@ import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/srv_cronometro.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_contador.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_contador.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_resumen.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_cronometro.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_cronometro.dart';
 
 class PagJuego extends StatefulWidget {
   const PagJuego({super.key});

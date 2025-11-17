@@ -5,7 +5,7 @@ import 'package:flippy_pairs/PAGINAS/LOGS/pag_logs.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/pag_ranking.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/pag_ranking_paises.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/pag_ranking_tiempos.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_cronometro.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/srv_cronometro.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';

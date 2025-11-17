@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SrvFuentes {
-  static TextStyle chewy(BuildContext pContexto, double pSize, Color pColor, {Color? pColorSombra}) {
-    pColorSombra ??= SrvColores.get(pContexto, ColorKey.texto);
+  static TextStyle chewy(BuildContext context, double pSize, Color pColor, {Color? pColorSombra}) {
+    pColorSombra ??= SrvColores.get(context, ColorKey.texto);
     final output = GoogleFonts.chewy(
       textStyle: TextStyle(
         fontSize: pSize,
@@ -16,8 +16,8 @@ class SrvFuentes {
     return output;
   }
 
-  static TextStyle luckiestGuy(BuildContext pContexto, double pSize, Color pColor, {Color? pColorSombra}) {
-    pColorSombra ??= SrvColores.get(pContexto, ColorKey.texto);
+  static TextStyle luckiestGuy(BuildContext context, double pSize, Color pColor, {Color? pColorSombra}) {
+    pColorSombra ??= SrvColores.get(context, ColorKey.texto);
     final output = GoogleFonts.luckiestGuy(
       textStyle: TextStyle(
         fontSize: pSize,

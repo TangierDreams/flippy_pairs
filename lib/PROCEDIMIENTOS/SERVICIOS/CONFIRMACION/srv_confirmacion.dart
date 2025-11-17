@@ -1,5 +1,5 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_confirmacion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/CONFIRMACION/wid_confirmacion.dart';
 import 'package:flutter/material.dart';
 
 class SrvConfirmacion {
@@ -8,6 +8,8 @@ class SrvConfirmacion {
   //----------------------------------------------------------------------------
   static Future<bool?> confirmacion({
     required BuildContext context,
+    //Ventana:
+    Color? pBackgroundColor,
     //Titulo:
     required String pTitulo,
     String? pTituloFont,
@@ -31,12 +33,14 @@ class SrvConfirmacion {
     String? pBotonOkTexto,
     String? pBotonOkFont,
     double? pBotonOkSize,
+    Color? pBotonOkColorFondo,
     Color? pBotonOkColor,
     bool? pBotonOkBold,
     //Boton Ko:
     String? pBotonKoTexto,
     String? pBotonKoFont,
     double? pBotonKoSize,
+    Color? pBotonKoColorFondo,
     Color? pBotonKoColor,
     bool? pBotonKoBold,
     //Acción a realizar:
@@ -45,6 +49,8 @@ class SrvConfirmacion {
     return showDialog<bool>(
       context: context,
       builder: (context) => WidConfirmacion(
+        //Ventana:
+        pBackgroundColor: pBackgroundColor ?? SrvColores.get(context, ColorKey.fondo),
         //Titulo:
         pTitulo: pTitulo,
         pTituloFont: pTituloFont ?? 'Roboto',
@@ -68,12 +74,14 @@ class SrvConfirmacion {
         pBotonOkTexto: pBotonOkTexto ?? 'Aceptar',
         pBotonOkFont: pBotonOkFont ?? 'Roboto',
         pBotonOkSize: pBotonOkSize ?? 14,
+        pBotonOkColorFondo: pBotonOkColorFondo ?? SrvColores.get(context, ColorKey.contrasteFondo),
         pBotonOkColor: pBotonOkColor ?? SrvColores.get(context, ColorKey.destacado),
         pBotonOkBold: pBotonOkBold ?? false,
         //Boton Ko:
         pBotonKoTexto: pBotonKoTexto ?? 'Cancelar',
         pBotonKoFont: pBotonKoFont ?? 'Roboto',
         pBotonKoSize: pBotonKoSize ?? 14,
+        pBotonKoColorFondo: pBotonKoColorFondo ?? SrvColores.get(context, ColorKey.contrasteFondo),
         pBotonKoColor: pBotonKoColor ?? SrvColores.get(context, ColorKey.texto),
         pBotonKoBold: pBotonKoBold ?? false,
         pOnConfirmar: pOnConfirmar,

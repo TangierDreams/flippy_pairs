@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidConfirmacion extends StatelessWidget {
+  //Ventana:
+  final Color pBackgroundColor;
   //Titulo:
   final String pTitulo;
   final String pTituloFont;
@@ -26,12 +28,14 @@ class WidConfirmacion extends StatelessWidget {
   final String pBotonOkTexto;
   final String pBotonOkFont;
   final double pBotonOkSize;
+  final Color pBotonOkColorFondo;
   final Color pBotonOkColor;
   final bool pBotonOkBold;
   //Boton Ko:
   final String pBotonKoTexto;
   final String pBotonKoFont;
   final double pBotonKoSize;
+  final Color pBotonKoColorFondo;
   final Color pBotonKoColor;
   final bool pBotonKoBold;
   //Acción a realizar:
@@ -39,6 +43,8 @@ class WidConfirmacion extends StatelessWidget {
 
   const WidConfirmacion({
     super.key,
+    //Ventana:
+    required this.pBackgroundColor,
     //Titulo:
     required this.pTitulo,
     required this.pTituloFont,
@@ -62,12 +68,14 @@ class WidConfirmacion extends StatelessWidget {
     required this.pBotonOkTexto,
     required this.pBotonOkFont,
     required this.pBotonOkSize,
+    required this.pBotonOkColorFondo,
     required this.pBotonOkColor,
     required this.pBotonOkBold,
     //Boton KO:
     required this.pBotonKoTexto,
     required this.pBotonKoFont,
     required this.pBotonKoSize,
+    required this.pBotonKoColorFondo,
     required this.pBotonKoColor,
     required this.pBotonKoBold,
     //Acción a realizar
@@ -77,6 +85,7 @@ class WidConfirmacion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: pBackgroundColor,
       title: Text(
         pTitulo,
         style: GoogleFonts.getFont(
@@ -118,6 +127,11 @@ class WidConfirmacion extends StatelessWidget {
     if (!pDosBotones) {
       return [
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: pBotonOkColorFondo,
+            //foregroundColor: pBotonOkColor,
+            //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          ),
           child: Text(
             pBotonOkTexto,
             style: GoogleFonts.getFont(
@@ -140,6 +154,11 @@ class WidConfirmacion extends StatelessWidget {
 
     return [
       ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: pBotonKoColorFondo,
+          //foregroundColor: pBotonOkColor,
+          //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
         child: Text(
           pBotonKoTexto,
           style: GoogleFonts.getFont(
@@ -157,6 +176,11 @@ class WidConfirmacion extends StatelessWidget {
         },
       ),
       ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: pBotonOkColorFondo,
+          //foregroundColor: pBotonOkColor,
+          //shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
         child: Text(
           pBotonOkTexto,
           style: GoogleFonts.getFont(

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_confirmacion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/CONFIRMACION/srv_confirmacion.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
@@ -34,6 +34,9 @@ class _PagHomeState extends State<PagHome> {
     SrvLogger.grabarLog('pag_home', 'initState()', 'Entramos en la pagina Home');
     int velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
     _isSelected[velocidadJuego] = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      comprobarVersion(context);
+    });
   }
 
   @override
@@ -42,18 +45,45 @@ class _PagHomeState extends State<PagHome> {
     super.dispose();
   }
 
-  void comprobarVersion(BuildContext pContexto) async {
+  //----------------------------------------------------------------------------
+  // Comprobamos si ha salido una nueva versión.
+  //----------------------------------------------------------------------------
+  void comprobarVersion(BuildContext context) async {
     String cadena = await SrvSupabase.getParam('flippy_version', pDefaultValue: '0.0;O');
+    if (!context.mounted) return;
     List<String> partes = cadena.split(';');
     double versionNumero = double.parse(partes[0]);
     String versionTipo = partes[1];
     if (SrvDatosGenerales.versionLocal < versionNumero) {
-      SrvConfirmacion.confirmacion(
-        context: pContexto,
-        pTitulo: 'Nueva Versión',
-        pDescripcion:
-            'Ha salido una nueva versión de Flippy Points. Por favor, actualice la app cuando pueda. Muchas gracias.',
-      );
+      if (versionTipo == 'M') {
+        SrvConfirmacion.confirmacion(
+          context: context,
+          pTitulo: 'Nueva Versión',
+          pTituloFont: 'Luckiest Guy',
+          pDescripcion:
+              'Ha salido una nueva versión de Flippy Points. Es necesario actualizar la versión para poder seguir jugando. Disculpa las molestias.',
+          pDescripcionFont: 'Chewy',
+          pDosBotones: false,
+          pBotonOkTexto: 'Descargar',
+          pBotonOkFont: 'Chewy',
+          pBotonOkColor: SrvColores.get(context, ColorKey.exito),
+        );
+      } else {
+        SrvConfirmacion.confirmacion(
+          context: context,
+          pTitulo: 'Nueva Versión',
+          pTituloFont: 'Luckiest Guy',
+          pDescripcion:
+              'Ha salido una nueva versión de Flippy Points. Por favor, actualiza la app cuando puedas. Muchas gracias.',
+          pDescripcionFont: 'Chewy',
+          pBotonOkTexto: 'Descargar',
+          pBotonOkFont: 'Chewy',
+          pBotonOkColor: SrvColores.get(context, ColorKey.exito),
+          pBotonKoTexto: 'Después',
+          pBotonKoFont: 'Chewy',
+          pBotonKoColor: SrvColores.get(context, ColorKey.texto),
+        );
+      }
     }
   }
 

@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_confirmacion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/CONFIRMACION/srv_confirmacion.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_dispositivo.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
@@ -243,7 +243,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                       pDescripcionFont: 'Chewy',
                       pBotonOkTexto: SrvTraducciones.get('borrar'),
                       pBotonOkFont: 'Chewy',
-                      pBotonOkColor: SrvColores.get(context, ColorKey.muyResaltado),
+                      pBotonOkColor: SrvColores.get(context, ColorKey.error),
                       pBotonKoTexto: SrvTraducciones.get('salir'),
                       pBotonKoFont: 'Chewy',
                       pOnConfirmar: () {

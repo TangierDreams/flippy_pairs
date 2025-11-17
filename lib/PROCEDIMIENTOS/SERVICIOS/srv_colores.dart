@@ -15,6 +15,7 @@ enum ColorKey {
   error,
   exito,
   fondo,
+  contrasteFondo,
   texto,
   blanco,
   negro,
@@ -34,8 +35,9 @@ class SrvColores {
     ColorKey.onApoyo: Colors.white,
     ColorKey.aviso: const Color.fromARGB(255, 247, 120, 2),
     ColorKey.error: Colors.red,
-    ColorKey.exito: const Color.fromARGB(255, 3, 212, 66),
+    ColorKey.exito: const Color.fromARGB(255, 2, 139, 43),
     ColorKey.fondo: Color(0xFFE0E0E0),
+    ColorKey.contrasteFondo: Color.fromARGB(255, 255, 255, 255),
     ColorKey.texto: Colors.black87,
     ColorKey.blanco: Colors.white,
     ColorKey.negro: Colors.black,
@@ -53,21 +55,22 @@ class SrvColores {
     ColorKey.onMuyResaltado: Colors.black,
     ColorKey.onApoyo: Colors.black,
     ColorKey.aviso: const Color.fromARGB(255, 247, 120, 2),
-    ColorKey.error: Colors.red,
-    ColorKey.exito: const Color.fromARGB(255, 3, 212, 66),
+    ColorKey.error: const Color.fromARGB(255, 158, 43, 35),
+    ColorKey.exito: const Color.fromARGB(255, 1, 97, 30),
     ColorKey.fondo: Color.fromARGB(255, 30, 30, 30),
+    ColorKey.contrasteFondo: Color.fromARGB(255, 139, 139, 139),
     ColorKey.texto: Colors.white70,
     ColorKey.blanco: Colors.white,
     ColorKey.negro: Colors.black,
   };
 
-  static bool _estamosEnModoOscuro(BuildContext pContexto) {
-    final Brightness brightness = MediaQuery.of(pContexto).platformBrightness;
+  static bool _estamosEnModoOscuro(BuildContext context) {
+    final Brightness brightness = MediaQuery.of(context).platformBrightness;
     return brightness == Brightness.dark;
   }
 
-  static Color get(BuildContext pContexto, ColorKey pColor) {
-    final tema = _estamosEnModoOscuro(pContexto) ? _temaOscuro : _temaClaro;
+  static Color get(BuildContext context, ColorKey pColor) {
+    final tema = _estamosEnModoOscuro(context) ? _temaOscuro : _temaClaro;
     return tema[pColor]!;
   }
 }
