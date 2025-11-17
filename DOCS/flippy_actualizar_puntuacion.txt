@@ -6,7 +6,7 @@ CREATE OR REPLACE FUNCTION public.flippy_actualizar_puntuacion(
     _ciudad text,
     _puntos integer,
     _tiempo integer,
-    _ganada boolean
+    _ip text
 )
 RETURNS void
 LANGUAGE plpgsql
@@ -19,19 +19,24 @@ BEGIN
     ----------------------------------------------------------------------
     INSERT INTO public.flippy_points (
         id, nivel, nombre, pais, ciudad, puntos, actualizado,
-        partidas, tiempo_record, tiempo_total, ganadas, perdidas
+        partidas, tiempo_record, tiempo_total, ganadas, perdidas, empatadas, ip
     )
     VALUES (
         _id, _nivel, _nombre, _pais, _ciudad, _puntos, now(),
-        1, _tiempo, _tiempo,
-        CASE WHEN _ganada THEN 1 ELSE 0 END,
-        CASE WHEN NOT _ganada THEN 1 ELSE 0 END
+        1, 
+        CASE WHEN _puntos < 0 THEN NULL ELSE _tiempo END,
+        _tiempo,
+        CASE WHEN _puntos > 0 THEN 1 ELSE 0 END,
+        CASE WHEN _puntos < 0 THEN 1 ELSE 0 END,
+        CASE WHEN _puntos = 0 THEN 1 ELSE 0 END,
+        _ip
     )
     ON CONFLICT (id, nivel) DO UPDATE
     SET
         nombre = EXCLUDED.nombre,
         pais = EXCLUDED.pais,
         ciudad = EXCLUDED.ciudad,
+        ip = EXCLUDED.ip,
 
         -- Acumula puntos
         puntos = COALESCE(flippy_points.puntos, 0) + EXCLUDED.puntos,
@@ -40,15 +45,16 @@ BEGIN
         partidas = flippy_points.partidas + 1,
 
         -- Incrementa ganadas o perdidas según corresponda
-        ganadas = flippy_points.ganadas + CASE WHEN _ganada THEN 1 ELSE 0 END,
-        perdidas = flippy_points.perdidas + CASE WHEN NOT _ganada THEN 1 ELSE 0 END,
+        ganadas = flippy_points.ganadas + CASE WHEN EXCLUDED.puntos > 0 THEN 1 ELSE 0 END,
+        perdidas = flippy_points.perdidas + CASE WHEN EXCLUDED.puntos < 0 THEN 1 ELSE 0 END,
+        empatadas = flippy_points.empatadas + CASE WHEN EXCLUDED.puntos = 0 THEN 1 ELSE 0 END,
 
         -- Suma el nuevo tiempo al total acumulado
         tiempo_total = COALESCE(flippy_points.tiempo_total, 0) + EXCLUDED.tiempo_total,
 
         -- Actualiza el récord solo si la partida fue ganada y mejora el anterior
         tiempo_record = CASE
-            WHEN NOT _ganada THEN flippy_points.tiempo_record
+            WHEN EXCLUDED.puntos < 0 THEN flippy_points.tiempo_record
             WHEN flippy_points.tiempo_record IS NULL THEN EXCLUDED.tiempo_record
             WHEN flippy_points.tiempo_record = 0 THEN EXCLUDED.tiempo_record
             WHEN EXCLUDED.tiempo_record < flippy_points.tiempo_record THEN EXCLUDED.tiempo_record

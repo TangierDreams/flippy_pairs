@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
@@ -91,8 +92,8 @@ class _PagLogsState extends State<PagLogs> {
   Future<List<LogEntry>> _loadAndParseLogs() async {
     try {
       //final filePaths = await _getLogFilePaths();
-      final currentFile = File(DatosGenerales.rutaArchivoLogs);
-      final oldFile = File(DatosGenerales.rutaArchivoLogsOld);
+      final currentFile = File(SrvDatosGenerales.rutaArchivoLogs);
+      final oldFile = File(SrvDatosGenerales.rutaArchivoLogsOld);
 
       final List<LogEntry> allLogs = [];
 
@@ -120,7 +121,7 @@ class _PagLogsState extends State<PagLogs> {
             module: 'INFO',
             function: 'Carga',
             message:
-                'No se encontraron registros de logs en ${DatosGenerales.rutaArchivoLogs} ni en ${DatosGenerales.rutaArchivoLogsOld}',
+                'No se encontraron registros de logs en ${SrvDatosGenerales.rutaArchivoLogs} ni en ${SrvDatosGenerales.rutaArchivoLogsOld}',
           ),
         ];
       }
@@ -160,15 +161,18 @@ class _PagLogsState extends State<PagLogs> {
 
           if (snapshot.hasError || !snapshot.hasData) {
             return Center(
-              child: Text('ERROR: ${snapshot.error}', style: const TextStyle(color: Colors.red)),
+              child: Text('ERROR: ${snapshot.error}', style: TextStyle(color: SrvColores.get(context, ColorKey.error))),
             );
           }
 
           final logs = snapshot.data!;
 
           if (logs.isEmpty) {
-            return const Center(
-              child: Text('No hay registros de logs.', style: TextStyle(color: Colors.white70)),
+            return Center(
+              child: Text(
+                'No hay registros de logs.',
+                style: TextStyle(color: SrvColores.get(context, ColorKey.texto)),
+              ),
             );
           }
 
@@ -183,7 +187,7 @@ class _PagLogsState extends State<PagLogs> {
                 // Highlight errors for quick identification
                 Color messageColor = Colors.white;
                 if (entry.message.toLowerCase().contains('error') || entry.message.toLowerCase().contains('fallo')) {
-                  messageColor = Colors.redAccent;
+                  messageColor = SrvColores.get(context, ColorKey.error);
                 }
 
                 return Padding(
@@ -196,14 +200,17 @@ class _PagLogsState extends State<PagLogs> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Time & Date
-                          Text('${entry.date} ${entry.time}', style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                          Text(
+                            '${entry.date} ${entry.time}',
+                            style: TextStyle(color: SrvColores.get(context, ColorKey.texto), fontSize: 11),
+                          ),
                           const SizedBox(width: 10),
                           // Module and Function
                           Expanded(
                             child: Text(
                               '${entry.module}.${entry.function}',
-                              style: const TextStyle(
-                                color: Colors.cyanAccent,
+                              style: TextStyle(
+                                color: SrvColores.get(context, ColorKey.principal),
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),

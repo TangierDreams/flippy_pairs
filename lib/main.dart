@@ -15,7 +15,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_tracking.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/_HOME/pag_home.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
@@ -26,7 +26,7 @@ Future<void> main() async {
   //----------------------------------------------------------------------------
 
   try {
-    await Supabase.initialize(url: DatosGenerales.supabaseUrl, anonKey: DatosGenerales.supabaseKey);
+    await Supabase.initialize(url: SrvDatosGenerales.supabaseUrl, anonKey: SrvDatosGenerales.supabaseKey);
   } catch (e) {
     SrvLogger.grabarLog('Main', 'main()', 'Error Supabase: $e');
   }
@@ -135,7 +135,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           SrvSonidos.iniciarMusicaFondo();
         }
         //SrvJuego.reanudarCronometro();
-        SrvCronometro.start();
+        if (EstadoDelJuego.juegoEnCurso) {
+          SrvCronometro.start();
+        }
         break;
       case AppLifecycleState.inactive:
         SrvSonidos.detenerMusicaFondo();
@@ -145,7 +147,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         break;
       case AppLifecycleState.paused:
         SrvSonidos.detenerMusicaFondo();
-        //SrvJuego.pausarCronometro();
         SrvCronometro.stop();
         SrvLogger.grabarLog('Main', '_MyAppState', 'La app pasa a segundo plano');
         break;
@@ -168,7 +169,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MaterialApp(
       debugShowCheckedModeBanner: true,
-      title: DatosGenerales.nombreApp,
+      title: SrvDatosGenerales.nombreApp,
       initialRoute: rutaInicial,
       routes: {
         '/': (context) => PagHome(),

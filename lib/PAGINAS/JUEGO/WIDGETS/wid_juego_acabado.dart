@@ -1,5 +1,5 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ Future<void> widJuegoAcabado(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [SrvColores.get(context, 'quinto'), SrvColores.get(context, 'primero')],
+                  colors: [SrvColores.get(context, ColorKey.apoyo), SrvColores.get(context, ColorKey.principal)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -78,9 +78,13 @@ Future<void> widJuegoAcabado(
                         : SrvTraducciones.get('empatada$msgAleatorio'),
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 36,
-                      color: SrvColores.get(context, 'onPrimero'),
+                      color: SrvColores.get(context, ColorKey.onPrincipal),
                       shadows: [
-                        Shadow(blurRadius: 6, color: SrvColores.get(context, 'fondo'), offset: const Offset(2, 2)),
+                        Shadow(
+                          blurRadius: 6,
+                          color: SrvColores.get(context, ColorKey.fondo),
+                          offset: const Offset(2, 2),
+                        ),
                       ],
                     ),
                     textAlign: TextAlign.center,
@@ -90,9 +94,13 @@ Future<void> widJuegoAcabado(
                     '${SrvTraducciones.get('nivel')}: $pNivel',
                     style: GoogleFonts.luckiestGuy(
                       fontSize: 28,
-                      color: SrvColores.get(context, 'segundo'),
+                      color: SrvColores.get(context, ColorKey.destacado),
                       shadows: [
-                        Shadow(blurRadius: 6, color: SrvColores.get(context, 'fondo'), offset: const Offset(2, 2)),
+                        Shadow(
+                          blurRadius: 6,
+                          color: SrvColores.get(context, ColorKey.fondo),
+                          offset: const Offset(2, 2),
+                        ),
                       ],
                     ),
                     textAlign: TextAlign.center,
@@ -107,7 +115,7 @@ Future<void> widJuegoAcabado(
                         : SrvTraducciones.get('has_empatado'),
                     style: GoogleFonts.baloo2(
                       fontSize: 20,
-                      color: SrvColores.get(context, 'onPrimero'),
+                      color: SrvColores.get(context, ColorKey.onPrincipal),
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
@@ -129,7 +137,7 @@ Future<void> widJuegoAcabado(
                               SrvTraducciones.get('pos_flippy'),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -142,7 +150,7 @@ Future<void> widJuegoAcabado(
                               decoration: BoxDecoration(
                                 color: SrvColores.get(
                                   context,
-                                  'segundo',
+                                  ColorKey.destacado,
                                 ), // Color de fondo del círculo (naranja oscuro)
                                 shape: BoxShape.circle, // Forma circular
                                 boxShadow: [
@@ -158,7 +166,7 @@ Future<void> widJuegoAcabado(
                                 style: GoogleFonts.baloo2(
                                   fontSize: 20,
                                   // Usamos un color que contraste bien con el naranja, como blanco o un color claro
-                                  color: SrvColores.get(context, 'onPrimero'),
+                                  color: SrvColores.get(context, ColorKey.onPrincipal),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -175,7 +183,7 @@ Future<void> widJuegoAcabado(
                               SrvTraducciones.get('partidas_jugadas'),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -185,7 +193,7 @@ Future<void> widJuegoAcabado(
                               pPartidasDelNivel.toString(),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -199,7 +207,7 @@ Future<void> widJuegoAcabado(
                               SrvTraducciones.get('puntuacion_total'),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -209,7 +217,7 @@ Future<void> widJuegoAcabado(
                               pPuntosDelNivel.toString(),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -223,7 +231,7 @@ Future<void> widJuegoAcabado(
                               SrvTraducciones.get('finalizado_en'),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -231,7 +239,10 @@ Future<void> widJuegoAcabado(
                             alignment: Alignment.centerRight,
                             child: Text(
                               pTiempoPartida,
-                              style: GoogleFonts.baloo2(fontSize: 18, color: SrvColores.get(context, 'onPrimero')),
+                              style: GoogleFonts.baloo2(
+                                fontSize: 18,
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
+                              ),
                             ),
                           ),
                         ],
@@ -244,7 +255,7 @@ Future<void> widJuegoAcabado(
                               SrvTraducciones.get('tiempo_medio'),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -252,7 +263,10 @@ Future<void> widJuegoAcabado(
                             alignment: Alignment.centerRight,
                             child: Text(
                               pTiempoMedio,
-                              style: GoogleFonts.baloo2(fontSize: 18, color: SrvColores.get(context, 'onPrimero')),
+                              style: GoogleFonts.baloo2(
+                                fontSize: 18,
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
+                              ),
                             ),
                           ),
                         ],
@@ -265,7 +279,7 @@ Future<void> widJuegoAcabado(
                               SrvTraducciones.get('tiempo_record'),
                               style: GoogleFonts.baloo2(
                                 fontSize: tamanyoTexto,
-                                color: SrvColores.get(context, 'onPrimero'),
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
                               ),
                             ),
                           ),
@@ -273,7 +287,10 @@ Future<void> widJuegoAcabado(
                             alignment: Alignment.centerRight,
                             child: Text(
                               pTiempoRecord,
-                              style: GoogleFonts.baloo2(fontSize: 18, color: SrvColores.get(context, 'onPrimero')),
+                              style: GoogleFonts.baloo2(
+                                fontSize: 18,
+                                color: SrvColores.get(context, ColorKey.onPrincipal),
+                              ),
                             ),
                           ),
                         ],
@@ -286,8 +303,8 @@ Future<void> widJuegoAcabado(
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: SrvColores.get(context, 'cuarto'),
-                          foregroundColor: SrvColores.get(context, 'onPrimero'),
+                          backgroundColor: SrvColores.get(context, ColorKey.muyResaltado),
+                          foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                         ),
                         onPressed: () {
@@ -302,18 +319,18 @@ Future<void> widJuegoAcabado(
                         },
                         child: Text(
                           SrvTraducciones.get('volver_a_jugar'),
-                          style: Textos.chewy(
+                          style: SrvFuentes.chewy(
                             context,
                             18,
-                            SrvColores.get(context, 'onPrimero'),
-                            pColorSombra: SrvColores.get(context, 'cuarto'),
+                            SrvColores.get(context, ColorKey.onPrincipal),
+                            pColorSombra: SrvColores.get(context, ColorKey.muyResaltado),
                           ),
                         ),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: SrvColores.get(context, 'segundo'),
-                          foregroundColor: SrvColores.get(context, 'onPrimero'),
+                          backgroundColor: SrvColores.get(context, ColorKey.destacado),
+                          foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                         ),
                         onPressed: () {
@@ -326,11 +343,11 @@ Future<void> widJuegoAcabado(
                         },
                         child: Text(
                           SrvTraducciones.get('salir'),
-                          style: Textos.chewy(
+                          style: SrvFuentes.chewy(
                             context,
                             18,
-                            SrvColores.get(context, 'onPrimero'),
-                            pColorSombra: SrvColores.get(context, 'segundo'),
+                            SrvColores.get(context, ColorKey.onPrincipal),
+                            pColorSombra: SrvColores.get(context, ColorKey.destacado),
                           ),
                         ),
                       ),

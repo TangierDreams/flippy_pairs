@@ -10,20 +10,20 @@ class WidFlechaAtras extends StatelessWidget {
       width: 44,
       height: 44,
       decoration: BoxDecoration(
-        color: SrvColores.get(context, 'tercero'),
+        color: SrvColores.get(context, ColorKey.resaltado),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: SrvColores.get(context, 'segundo'), width: 3),
+        border: Border.all(color: SrvColores.get(context, ColorKey.destacado), width: 3),
         boxShadow: [
           BoxShadow(
-            color: SrvColores.get(context, 'cuarto'),
+            color: SrvColores.get(context, ColorKey.muyResaltado),
             blurRadius: 10,
             offset: const Offset(4, 4),
             spreadRadius: 1,
           ),
-          BoxShadow(color: SrvColores.get(context, 'quinto'), blurRadius: 5, offset: const Offset(-3, -3)),
+          BoxShadow(color: SrvColores.get(context, ColorKey.apoyo), blurRadius: 5, offset: const Offset(-3, -3)),
         ],
         gradient: LinearGradient(
-          colors: [SrvColores.get(context, 'segundo'), SrvColores.get(context, 'tercero')],
+          colors: [SrvColores.get(context, ColorKey.destacado), SrvColores.get(context, ColorKey.resaltado)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -36,10 +36,12 @@ class WidFlechaAtras extends StatelessWidget {
           Center(
             child: Icon(
               Icons.arrow_back_rounded,
-              color: SrvColores.get(context, 'blanco'),
+              color: SrvColores.get(context, ColorKey.blanco),
               size: 30,
               weight: 1000, // Máximo grosor
-              shadows: [Shadow(color: SrvColores.get(context, 'segundo'), blurRadius: 4, offset: const Offset(2, 2))],
+              shadows: [
+                Shadow(color: SrvColores.get(context, ColorKey.destacado), blurRadius: 4, offset: const Offset(2, 2)),
+              ],
             ),
           ),
         ],

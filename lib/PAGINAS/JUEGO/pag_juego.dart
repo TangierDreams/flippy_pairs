@@ -51,6 +51,8 @@ class _PagJuegoState extends State<PagJuego> {
   void dispose() async {
     await SrvSonidos.detenerMusicaFondo();
     EstadoDelJuego.musicaActiva = false;
+    EstadoDelJuego.juegoEnCurso = false;
+    EstadoDelJuego.juegoPausado = false;
     SrvCronometro.reset();
     SrvLogger.grabarLog('pag_juego', 'dispose()', 'Salimos de la página');
     super.dispose();
@@ -248,7 +250,7 @@ class _PagJuegoState extends State<PagJuego> {
     }
 
     return Scaffold(
-      backgroundColor: SrvColores.get(context, 'fondo'),
+      backgroundColor: SrvColores.get(context, ColorKey.fondo),
       appBar: WidToolbar(
         showMenuButton: false,
         showBackButton: true,

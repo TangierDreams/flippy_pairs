@@ -54,8 +54,8 @@ class WidIdiomasState extends State<WidIdiomas> {
 
   @override
   Widget build(BuildContext context) {
-    final Color colorLabel = widget.pColorLabel ?? SrvColores.get(context, 'primero');
-    final Color colorLetra = widget.pColorLetra ?? SrvColores.get(context, 'textos');
+    final Color colorLabel = widget.pColorLabel ?? SrvColores.get(context, ColorKey.principal);
+    final Color colorLetra = widget.pColorLetra ?? SrvColores.get(context, ColorKey.texto);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -75,7 +75,7 @@ class WidIdiomasState extends State<WidIdiomas> {
           value: _idiomaActual,
 
           // Color de Fondo del menú desplegable (popup)
-          dropdownColor: SrvColores.get(context, 'fondo'),
+          dropdownColor: SrvColores.get(context, ColorKey.fondo),
 
           icon: const Icon(Icons.language),
           iconEnabledColor: colorLetra,

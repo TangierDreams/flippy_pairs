@@ -51,9 +51,9 @@ class WidBotonStandard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color colorDeFondo = pColorDeFondo ?? SrvColores.get(context, 'primero');
-    final Color colorLetra = pColorLetra ?? SrvColores.get(context, 'onPrimero');
-    final Color colorIcono = pColorIcono ?? SrvColores.get(context, 'onPrimero');
+    final Color colorDeFondo = pColorDeFondo ?? SrvColores.get(context, ColorKey.principal);
+    final Color colorLetra = pColorLetra ?? SrvColores.get(context, ColorKey.onPrincipal);
+    final Color colorIcono = pColorIcono ?? SrvColores.get(context, ColorKey.onPrincipal);
     return ElevatedButton(
       onPressed: () async {
         if (pEmitirSonido) {

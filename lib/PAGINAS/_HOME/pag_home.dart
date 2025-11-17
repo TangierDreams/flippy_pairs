@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_generales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_funciones_genericas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
@@ -46,7 +46,7 @@ class _PagHomeState extends State<PagHome> {
       valueListenable: SrvIdiomas.idiomaSeleccionado,
       builder: (context, idiomaActual, _) {
         return Scaffold(
-          backgroundColor: SrvColores.get(context, 'fondo'),
+          backgroundColor: SrvColores.get(context, ColorKey.fondo),
           //Toolbar:
           appBar: WidToolbar(
             showMenuButton: false,
@@ -63,16 +63,16 @@ class _PagHomeState extends State<PagHome> {
                 Text(
                   SrvTraducciones.get('temas'),
                   textAlign: TextAlign.center,
-                  style: Textos.chewy(
+                  style: SrvFuentes.chewy(
                     context,
                     30,
-                    SrvColores.get(context, 'segundo'),
-                    pColorSombra: SrvColores.get(context, 'negro'),
+                    SrvColores.get(context, ColorKey.destacado),
+                    pColorSombra: SrvColores.get(context, ColorKey.negro),
                   ),
                 ),
 
                 //const SizedBox(height: 10),
-                SrvGenerales.espacioVertical(context, 1),
+                SrvFuncionesGenericas.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Primera línea de imagenes
@@ -126,7 +126,7 @@ class _PagHomeState extends State<PagHome> {
                 ),
 
                 //const SizedBox(height: 10),
-                SrvGenerales.espacioVertical(context, 1),
+                SrvFuncionesGenericas.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Segunda línea de imagenes
@@ -180,7 +180,7 @@ class _PagHomeState extends State<PagHome> {
                 ),
 
                 //const SizedBox(height: 25),
-                SrvGenerales.espacioVertical(context, 2),
+                SrvFuncionesGenericas.espacioVertical(context, 2),
 
                 //------------------------------------------------------------------
                 // Botones de dificultad
@@ -188,16 +188,16 @@ class _PagHomeState extends State<PagHome> {
                 Text(
                   SrvTraducciones.get('dificultad'),
                   textAlign: TextAlign.center,
-                  style: Textos.chewy(
+                  style: SrvFuentes.chewy(
                     context,
                     30,
-                    SrvColores.get(context, 'segundo'),
-                    pColorSombra: SrvColores.get(context, 'negro'),
+                    SrvColores.get(context, ColorKey.destacado),
+                    pColorSombra: SrvColores.get(context, ColorKey.negro),
                   ),
                 ),
 
                 //const SizedBox(height: 10),
-                SrvGenerales.espacioVertical(context, 1),
+                SrvFuncionesGenericas.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Primera fila de niveles de juego:
@@ -266,7 +266,7 @@ class _PagHomeState extends State<PagHome> {
                 ),
 
                 //const SizedBox(height: 10),
-                SrvGenerales.espacioVertical(context, 1),
+                SrvFuncionesGenericas.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Segunda fila de niveles de juego:
@@ -335,7 +335,7 @@ class _PagHomeState extends State<PagHome> {
                 ),
 
                 //const SizedBox(height: 25),
-                SrvGenerales.espacioVertical(context, 2),
+                SrvFuncionesGenericas.espacioVertical(context, 2),
 
                 //--------------------------------------------------------------
                 // Aquí seleccionamos la velocidad del juego.
@@ -343,16 +343,16 @@ class _PagHomeState extends State<PagHome> {
                 Text(
                   SrvTraducciones.get('velocidad_juego'),
                   textAlign: TextAlign.center,
-                  style: Textos.chewy(
+                  style: SrvFuentes.chewy(
                     context,
                     30,
-                    SrvColores.get(context, 'segundo'),
-                    pColorSombra: SrvColores.get(context, 'negro'),
+                    SrvColores.get(context, ColorKey.destacado),
+                    pColorSombra: SrvColores.get(context, ColorKey.negro),
                   ),
                 ),
 
                 //const SizedBox(height: 10),
-                SrvGenerales.espacioVertical(context, 1),
+                SrvFuncionesGenericas.espacioVertical(context, 1),
 
                 LayoutBuilder(
                   builder: (context, constraints) {
@@ -376,11 +376,11 @@ class _PagHomeState extends State<PagHome> {
                       isSelected: _isSelected,
 
                       // 4. Custom Styling (Matching your previous colors):
-                      borderColor: SrvColores.get(context, 'primero'),
-                      selectedBorderColor: SrvColores.get(context, 'primero'),
-                      fillColor: SrvColores.get(context, 'segundo'),
-                      color: SrvColores.get(context, 'primero'),
-                      selectedColor: SrvColores.get(context, 'negro'),
+                      borderColor: SrvColores.get(context, ColorKey.principal),
+                      selectedBorderColor: SrvColores.get(context, ColorKey.principal),
+                      fillColor: SrvColores.get(context, ColorKey.destacado),
+                      color: SrvColores.get(context, ColorKey.principal),
+                      selectedColor: SrvColores.get(context, ColorKey.negro),
                       borderRadius: BorderRadius.circular(10.0),
 
                       // 1. The Children: Your three styled Text widgets
@@ -424,7 +424,7 @@ class _PagHomeState extends State<PagHome> {
                 ),
 
                 //const SizedBox(height: 25),
-                SrvGenerales.espacioVertical(context, 2),
+                SrvFuncionesGenericas.espacioVertical(context, 2),
 
                 //------------------------------------------------------------------
                 // Botón para comenzar a jugar
@@ -435,7 +435,7 @@ class _PagHomeState extends State<PagHome> {
                     pTexto: SrvTraducciones.get('comenzar_juego'),
                     pTipoDeLetra: 'Luckiest Guy',
                     pTamanyoLetra: 28,
-                    pColorLetra: SrvColores.get(context, 'segundo'),
+                    pColorLetra: SrvColores.get(context, ColorKey.destacado),
                     pSombra: true,
                     pEsquinasRedondeadas: true,
                     pFuncionSonido: SrvSonidos.boton,
@@ -444,7 +444,7 @@ class _PagHomeState extends State<PagHome> {
                 ),
 
                 //const SizedBox(height: 10),
-                SrvGenerales.espacioVertical(context, 1),
+                SrvFuncionesGenericas.espacioVertical(context, 1),
 
                 //------------------------------------------------------------------
                 // Botón para ir al Ranking de puntos
@@ -457,7 +457,7 @@ class _PagHomeState extends State<PagHome> {
                         pTexto: '🌎 WFC',
                         pTipoDeLetra: 'Chewy',
                         pTamanyoLetra: 18,
-                        pColorLetra: SrvColores.get(context, 'tercero'), //Colores.tercero,
+                        pColorLetra: SrvColores.get(context, ColorKey.resaltado), //Colores.tercero,
                         //pIcono: Icons.settings,
                         //pColorIcono: Colores.tercero,
                         pSombra: true,
@@ -476,7 +476,7 @@ class _PagHomeState extends State<PagHome> {
                         pTexto: '🕒 TFC',
                         pTipoDeLetra: 'Chewy',
                         pTamanyoLetra: 18,
-                        pColorLetra: SrvColores.get(context, 'tercero'),
+                        pColorLetra: SrvColores.get(context, ColorKey.resaltado),
                         //pIcono: Icons.settings,
                         //pColorIcono: Colores.tercero,
                         pSombra: true,
@@ -495,7 +495,7 @@ class _PagHomeState extends State<PagHome> {
                         pTexto: '🏛️ CFC',
                         pTipoDeLetra: 'Chewy',
                         pTamanyoLetra: 18,
-                        pColorLetra: SrvColores.get(context, 'tercero'),
+                        pColorLetra: SrvColores.get(context, ColorKey.resaltado),
                         //pIcono: Icons.settings,
                         //pColorIcono: Colores.tercero,
                         pSombra: true,
@@ -539,8 +539,10 @@ class BotonTema extends StatelessWidget {
           pCallBackFunction();
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: estaSeleccionado ? SrvColores.get(context, 'segundo') : SrvColores.get(context, 'primero'),
-          foregroundColor: SrvColores.get(context, 'onPrimero'),
+          backgroundColor: estaSeleccionado
+              ? SrvColores.get(context, ColorKey.destacado)
+              : SrvColores.get(context, ColorKey.apoyo),
+          foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
           elevation: estaSeleccionado ? 15 : 10,
         ),
         child: Image.file(primeraImagenTema, width: 60, height: 50, fit: BoxFit.contain),
@@ -584,20 +586,22 @@ class BotonNivel extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 18),
-          backgroundColor: estaSeleccionado ? SrvColores.get(context, 'segundo') : SrvColores.get(context, 'primero'),
-          foregroundColor: SrvColores.get(context, 'onPrimero'),
+          backgroundColor: estaSeleccionado
+              ? SrvColores.get(context, ColorKey.destacado)
+              : SrvColores.get(context, ColorKey.principal),
+          foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: estaSeleccionado ? 15 : 10,
         ),
         child: Text(
           titulo,
           style: estaSeleccionado
-              ? Textos.chewy(context, 30, SrvColores.get(context, 'onSegundo'))
-              : Textos.chewy(
+              ? SrvFuentes.chewy(context, 30, SrvColores.get(context, ColorKey.onDestacado))
+              : SrvFuentes.chewy(
                   context,
                   30,
-                  SrvColores.get(context, 'tercero'),
-                  pColorSombra: SrvColores.get(context, 'negro'),
+                  SrvColores.get(context, ColorKey.resaltado),
+                  pColorSombra: SrvColores.get(context, ColorKey.negro),
                 ),
           textAlign: TextAlign.center,
         ),

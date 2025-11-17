@@ -96,8 +96,8 @@ class _WidCartaState extends State<WidCarta> with SingleTickerProviderStateMixin
               double angle = value * pi;
               bool mostrarCarta = value > 0.5;
               final Color colorBase = mostrarCarta
-                  ? SrvColores.get(context, 'onPrimero')
-                  : SrvColores.get(context, 'primero');
+                  ? SrvColores.get(context, ColorKey.onPrincipal)
+                  : SrvColores.get(context, ColorKey.principal);
 
               return AnimatedScale(
                 scale: widget.pDestello ? 1.15 : 1.0,
@@ -111,7 +111,7 @@ class _WidCartaState extends State<WidCarta> with SingleTickerProviderStateMixin
                     boxShadow: widget.pDestello
                         ? [
                             BoxShadow(
-                              color: SrvColores.get(context, 'cuarto').withValues(alpha: 0.80),
+                              color: SrvColores.get(context, ColorKey.muyResaltado).withValues(alpha: 0.80),
                               blurRadius: 20,
                               spreadRadius: 4,
                             ),

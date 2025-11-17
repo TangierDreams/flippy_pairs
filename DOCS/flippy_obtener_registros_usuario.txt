@@ -13,7 +13,9 @@ RETURNS TABLE (
     tiempo_total integer,
     actualizado text,
     ganadas smallint,
-    perdidas smallint
+    perdidas smallint,
+    empatadas smallint,
+    ip text,
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -34,7 +36,9 @@ BEGIN
     f.tiempo_total,
     f.actualizado,
     f.ganadas,
-    f.perdidas
+    f.perdidas,
+    f.empatadas,
+    f.ip
   FROM public.flippy_points f
   WHERE f.id = p_id
   ORDER BY f.nivel;

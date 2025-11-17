@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 // IMPORTANTE: Se necesita la librería 'synchronized' para garantizar la exclusividad.
@@ -30,7 +30,7 @@ class SrvLogger {
     // se procese a la vez. Esto resuelve el problema de la corrupción del log.
     // =========================================================================
     await _logLock.synchronized(() async {
-      if (!DatosGenerales.logsActivados) {
+      if (!SrvDatosGenerales.logsActivados) {
         return;
       }
 
@@ -80,12 +80,12 @@ class SrvLogger {
       await logDir.create(recursive: true);
     }
 
-    DatosGenerales.rutaArchivoLogs = '${logDir.path}/${DatosGenerales.nombreArchivoLogs}';
-    DatosGenerales.rutaArchivoLogsOld =
-        '${logDir.path}/${DatosGenerales.nombreArchivoLogs.split('.').first}_old.${DatosGenerales.nombreArchivoLogs.split('.').last}';
+    SrvDatosGenerales.rutaArchivoLogs = '${logDir.path}/${SrvDatosGenerales.nombreArchivoLogs}';
+    SrvDatosGenerales.rutaArchivoLogsOld =
+        '${logDir.path}/${SrvDatosGenerales.nombreArchivoLogs.split('.').first}_old.${SrvDatosGenerales.nombreArchivoLogs.split('.').last}';
 
-    _logFile = File(DatosGenerales.rutaArchivoLogs);
-    _oldLogFile = File(DatosGenerales.rutaArchivoLogsOld);
+    _logFile = File(SrvDatosGenerales.rutaArchivoLogs);
+    _oldLogFile = File(SrvDatosGenerales.rutaArchivoLogsOld);
 
     if (!(await _logFile.exists())) {
       await _logFile.create(recursive: true);

@@ -31,7 +31,7 @@ class SrvSupabase {
     required String pCiudad,
     required int pPuntos,
     required int pTiempo,
-    required bool pGanada,
+    required String pIp,
   }) async {
     // Mapeo directo de los parámetros que espera la función SQL
 
@@ -43,7 +43,7 @@ class SrvSupabase {
       '_ciudad': pCiudad,
       '_puntos': pPuntos,
       '_tiempo': pTiempo,
-      '_ganada': pGanada,
+      '_ip': pIp,
     };
 
     try {

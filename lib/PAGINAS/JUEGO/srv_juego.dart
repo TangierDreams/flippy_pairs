@@ -159,7 +159,7 @@ class SrvJuego {
       pCiudad: SrvDiskette.leerValor(DisketteKey.ciudad, defaultValue: '?'),
       pPuntos: EstadoDelJuego.puntosPartida,
       pTiempo: SrvCronometro.obtenerSegundos(),
-      pGanada: EstadoDelJuego.puntosPartida > 0,
+      pIp: SrvDiskette.leerValor(DisketteKey.ip),
     );
   }
 

@@ -1,9 +1,10 @@
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_flecha_atras.dart';
 import 'package:flutter/material.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_globales.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 
 class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   final bool showMenuButton;
@@ -29,7 +30,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     // LOGO DE LA APP:
 
-    final Widget appLogo = SizedBox(width: 50, height: 50, child: Image.asset(DatosGenerales.logoApp));
+    final Widget appLogo = SizedBox(width: 50, height: 50, child: Image.asset(SrvDatosGenerales.logoApp));
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -43,8 +44,8 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
               },
             )
           : appLogo,
-      backgroundColor: SrvColores.get(context, 'primero'),
-      foregroundColor: SrvColores.get(context, 'onPrimero'),
+      backgroundColor: SrvColores.get(context, ColorKey.principal),
+      foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
       centerTitle: true,
       toolbarHeight: 72.0, // <-- Altura del toolbar
       title: Column(
@@ -52,23 +53,23 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           const SizedBox(height: 6),
           Text(
-            DatosGenerales.nombreApp,
-            style: Textos.luckiestGuy(
+            SrvDatosGenerales.nombreApp,
+            style: SrvFuentes.luckiestGuy(
               context,
               32,
-              SrvColores.get(context, 'segundo'),
-              pColorSombra: SrvColores.get(context, 'negro'),
+              SrvColores.get(context, ColorKey.destacado),
+              pColorSombra: SrvColores.get(context, ColorKey.negro),
             ),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 1), // Pequeño espacio entre título y subtítulo
             Text(
               subtitle!,
-              style: Textos.chewy(
+              style: SrvFuentes.chewy(
                 context,
                 14,
-                SrvColores.get(context, 'tercero'),
-                pColorSombra: SrvColores.get(context, 'negro'),
+                SrvColores.get(context, ColorKey.resaltado),
+                pColorSombra: SrvColores.get(context, ColorKey.negro),
               ),
             ),
           ],
@@ -80,7 +81,7 @@ class WidToolbar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             iconSize: 38, // 👈 Tamaño del icono
-            color: SrvColores.get(context, 'tercero'), // 👈 Color del icono
+            color: SrvColores.get(context, ColorKey.resaltado), // 👈 Color del icono
             tooltip: 'Configuración',
             onPressed: () async {
               SrvLogger.grabarLog('wid_toolbar', 'AppBar()', 'Botón de configuración pulsado');
