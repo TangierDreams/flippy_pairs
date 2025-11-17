@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_confirmacion.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_funciones_genericas.dart';
@@ -9,6 +11,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_imagenes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_idiomas.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +40,21 @@ class _PagHomeState extends State<PagHome> {
   void dispose() {
     SrvLogger.grabarLog('pag_home', 'dispose()', 'Salimos de la pagina Home');
     super.dispose();
+  }
+
+  void comprobarVersion(BuildContext pContexto) async {
+    String cadena = await SrvSupabase.getParam('flippy_version', pDefaultValue: '0.0;O');
+    List<String> partes = cadena.split(';');
+    double versionNumero = double.parse(partes[0]);
+    String versionTipo = partes[1];
+    if (SrvDatosGenerales.versionLocal < versionNumero) {
+      SrvConfirmacion.confirmacion(
+        context: pContexto,
+        pTitulo: 'Nueva Versión',
+        pDescripcion:
+            'Ha salido una nueva versión de Flippy Points. Por favor, actualice la app cuando pueda. Muchas gracias.',
+      );
+    }
   }
 
   @override

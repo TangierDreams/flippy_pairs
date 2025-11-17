@@ -1,6 +1,7 @@
 class SrvDatosGenerales {
   static const String nombreApp = 'Flippy Pairs';
   static const bool logsActivados = true;
+  static const double versionLocal = 1.0;
   static const String nombreArchivoLogs = "flippypairs.csv";
   static String rutaArchivoLogs = '';
   static String rutaArchivoLogsOld = '';
