@@ -16,7 +16,9 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PagHome extends StatefulWidget {
   const PagHome({super.key});
@@ -60,30 +62,51 @@ class _PagHomeState extends State<PagHome> {
           context: context,
           pTitulo: 'Nueva Versión',
           pTituloFont: 'Luckiest Guy',
-          pDescripcion:
-              'Ha salido una nueva versión de Flippy Points. Es necesario actualizar la versión para poder seguir jugando. Disculpa las molestias.',
+          pDescripcion: SrvTraducciones.get('version_obligatoria'),
           pDescripcionFont: 'Chewy',
           pDosBotones: false,
-          pBotonOkTexto: 'Descargar',
+          pBotonOkTexto: SrvTraducciones.get('descargar'),
           pBotonOkFont: 'Chewy',
           pBotonOkColor: SrvColores.get(context, ColorKey.exito),
+          pOnConfirmar: () {
+            abrirPlayStore(context);
+          },
         );
       } else {
         SrvConfirmacion.confirmacion(
           context: context,
           pTitulo: 'Nueva Versión',
           pTituloFont: 'Luckiest Guy',
-          pDescripcion:
-              'Ha salido una nueva versión de Flippy Points. Por favor, actualiza la app cuando puedas. Muchas gracias.',
+          pDescripcion: SrvTraducciones.get('version_opcional'),
           pDescripcionFont: 'Chewy',
-          pBotonOkTexto: 'Descargar',
+          pBotonOkTexto: SrvTraducciones.get('descargar'),
           pBotonOkFont: 'Chewy',
           pBotonOkColor: SrvColores.get(context, ColorKey.exito),
-          pBotonKoTexto: 'Después',
+          pBotonKoTexto: SrvTraducciones.get('despues'),
           pBotonKoFont: 'Chewy',
           pBotonKoColor: SrvColores.get(context, ColorKey.texto),
+          pOnConfirmar: () {
+            abrirPlayStore(context);
+          },
         );
       }
+    }
+  }
+
+  void abrirPlayStore(BuildContext context) async {
+    final url = Uri.parse("https://play.google.com/store/apps/details?id=com.tangierdreams.flippy_pairs");
+
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      // por si falla
+      if (!context.mounted) return;
+      Fluttertoast.showToast(
+        msg: SrvTraducciones.get('puntuaciones_eliminadas'),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: SrvColores.get(context, ColorKey.principal),
+        textColor: SrvColores.get(context, ColorKey.onPrincipal),
+        fontSize: 16.0,
+      );
     }
   }
 

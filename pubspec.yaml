@@ -19,6 +19,7 @@ dependencies:
   path_provider: ^2.1.2
   intl: ^0.18.1
   fluttertoast: ^8.2.4
+  url_launcher: ^6.2.1  
   cupertino_icons: ^1.0.8
 
 dev_dependencies:

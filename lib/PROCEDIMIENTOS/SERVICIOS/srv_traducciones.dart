@@ -71,8 +71,14 @@ class SrvTraducciones {
     'borrar_puntuacion': 'Delete Scores',
     'seguro_eliminar_puntos': 'Are you sure you want to delete all your rankings? This action cannot be undone.',
     'borrar': 'Delete',
+    'aceptar': 'OK',
     'cancelar': 'Cancel',
     'puntuaciones_eliminadas': '🗑️ Scores deleted!',
+    'version_obligatoria':
+        "There's a new version of Flippy Points! Please update to keep playing. Sorry for the trouble!",
+    'version_opcional': 'A new version of Flippy Points is out! Update when you get a chance. Thanks a lot!',
+    'descargar': 'Download',
+    'despues': 'Later',
   };
 
   static final Map<String, String> spanish = {
@@ -147,8 +153,14 @@ class SrvTraducciones {
     'seguro_eliminar_puntos':
         '¿Estás seguro de que quieres eliminar todas tus puntuaciones? Esta acción no se puede deshacer.',
     'borrar': 'Borrar',
+    'aceptar': 'Aceptar',
     'cancelar': 'Cancelar',
     'puntuaciones_eliminadas': '🗑️ Puntuaciones eliminadas!',
+    'version_obligatoria':
+        "¡Hay una nueva versión de Flippy Points! Tienes que actualizar para poder seguir jugando. ¡Perdona las molestias!",
+    'version_opcional': '¡Ya hay una nueva versión de Flippy Points! Actualiza cuando puedas 😊 ¡Muchas gracias!',
+    'descargar': 'Descargar',
+    'despues': 'Después',
   };
 
   static final Map<String, String> catalan = {
@@ -222,8 +234,14 @@ class SrvTraducciones {
     'seguro_eliminar_puntos':
         'Estàs segur de que vols eliminar totes les teves puntuacións? Aquesta acció no es pot desfer.',
     'borrar': 'Esborrar',
+    'aceptar': 'Acceptar',
     'cancelar': 'Cancel·lar',
     'puntuaciones_eliminadas': '🗑️ Puntuacions esborrades!',
+    'version_obligatoria':
+        "Hi ha una nova versió de Flippy Points! Has d’actualitzar per poder continuar jugant. Perdona les molèsties!",
+    'version_opcional': 'Ja hi ha una nova versió de Flippy Points! Actualitza quan puguis 😊 Moltes gràcies!',
+    'descargar': 'Descarregar',
+    'despues': 'Desprès',
   };
 
   //----------------------------------------------------------------------------

@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------------
 // PAGINA DONDE MOSTRAMOS EL RANKING POR PAISES DE LA COMPETICION MUNDIAL FLIPPY.
+// (VERSIÓN CON ESTILO DE TARJETAS Y GRUPOS)
 //------------------------------------------------------------------------------
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/MODELOS/player_group.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
@@ -23,27 +23,7 @@ class PagRankingPaises extends StatefulWidget {
 class _PagRankingPaisesState extends State<PagRankingPaises> {
   // Aquí almacenamos la lista completa de paises:
   late Future<List<Map<String, dynamic>>> listaRanking;
-
-  // Mi id:
-
-  //String miId = SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '');
-
-  // Posición en la lista:
-
-  int posicion = 0;
-
-  //----------------------------------------------------------------------------
-  // Buscamos la posición del usuario en la lista
-  //----------------------------------------------------------------------------
-
-  // int _encontrarMiPosicion(List<Map<String, dynamic>> jugadores) {
-  //   for (int i = 0; i < jugadores.length; i++) {
-  //     if (jugadores[i]['id'] == miId) {
-  //       return i + 1; // +1 porque las posiciones empiezan en 1
-  //     }
-  //   }
-  //   return 0; // Si no se encuentra
-  // }
+  int posicion = 0; // Posición en la lista:
 
   @override
   void initState() {
@@ -59,74 +39,54 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   }
 
   //----------------------------------------------------------------------------
-  // Creamos una lista con los distintos grupos de jugadores:
-  // 10% - Top players
-  // 10% - Best players
-  // 70% - Normal players
-  // 10% - Bad players
+  // Creamos una lista con los distintos grupos de jugadores: (Lógica sin cambios)
   //----------------------------------------------------------------------------
   List<PlayerGroup> _crearGruposDePaises(List<Map<String, dynamic>> pJugadores) {
+    // ... (Tu lógica original de creación de grupos queda aquí, sin cambios)
     final gruposDePaises = <PlayerGroup>[];
     final totalPaises = pJugadores.length;
 
     if (totalPaises == 0) return gruposDePaises;
 
-    // Calculamos el numero de jugadores de cada grupo:
-
     final topPaisesCount = (totalPaises * 0.1).ceil();
     final badPaisesCount = (totalPaises * 0.1).ceil();
     final normalPaisesCount = totalPaises - topPaisesCount - badPaisesCount;
 
-    // Nos aseguramos de que los "normal players" no queden en negativo:
-
     final adjustedNormalPaisesCount = normalPaisesCount >= 0 ? normalPaisesCount : 0;
     final adjustedBadPaisesCount = normalPaisesCount >= 0 ? badPaisesCount : totalPaises - topPaisesCount;
 
-    //-------------------------
-    // Top Paises (first 10%)
-    //-------------------------
-
+    // Top Paises (con nuevos nombres y glifos sugeridos)
     if (topPaisesCount > 0) {
       gruposDePaises.add(
         PlayerGroup(
-          title: SrvTraducciones.get('primerosp'),
+          title: SrvTraducciones.get('Ases Ascendentes'), // Usando tus keys de traducción
           players: pJugadores.sublist(0, topPaisesCount),
-          giphy: '👑',
+          giphy: '🏆', // Glifo Trofeo para el TOP
         ),
       );
     }
 
-    //---------------------------
-    // Normal Paises (next 80%)
-    //---------------------------
-
+    // Normal Paises
     if (adjustedNormalPaisesCount > 0 && topPaisesCount + adjustedNormalPaisesCount <= totalPaises) {
       gruposDePaises.add(
         PlayerGroup(
-          title: SrvTraducciones.get('segundosp'),
+          title: SrvTraducciones.get('Guardianes del Equilibrio'),
           players: pJugadores.sublist(topPaisesCount, topPaisesCount + adjustedNormalPaisesCount),
-          giphy: '⚖️',
+          giphy: '⚖️', // Glifo Balanza
         ),
       );
     }
 
-    //------------------------
-    // Bad Players (last 10%)
-    //------------------------
-
+    // Bad Players
     if (adjustedBadPaisesCount > 0) {
       gruposDePaises.add(
         PlayerGroup(
-          title: SrvTraducciones.get('tercerosp'),
+          title: SrvTraducciones.get('Club de la Redención'),
           players: pJugadores.sublist(totalPaises - adjustedBadPaisesCount),
-          giphy: '🐢',
+          giphy: '🐢', // Glifo Tortuga
         ),
       );
     }
-
-    //----------------------------------------------------
-    // Si hay muy pocos jugadores, montamos un solo grupo.
-    //----------------------------------------------------
 
     if (gruposDePaises.isEmpty) {
       gruposDePaises.add(PlayerGroup(title: SrvTraducciones.get('todos'), players: pJugadores, giphy: '🚀'));
@@ -136,114 +96,30 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   }
 
   //----------------------------------------------------------------------------
-  // Widget para mostrar el registro de un jugador
+  // NUEVO WIDGET AUXILIAR: Encabezado del Grupo (Título y Glifo)
   //----------------------------------------------------------------------------
 
-  Widget _mostrarJugador(Map<String, dynamic> player) {
-    posicion += 1;
+  Widget _buildGroupHeader(PlayerGroup group, {required Color groupTextColor}) {
     return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        //border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
-      ),
+      width: double.infinity,
+      padding: const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // Columna de posición
-          Expanded(
-            flex: 1,
-            child: Container(
-              alignment: Alignment.center,
-              child: Text(
-                posicion.toString(),
-                style: SrvFuentes.chewy(
-                  context,
-                  16,
-                  SrvColores.get(context, ColorKey.texto),
-                  pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                ),
-              ),
-            ),
-          ),
+          // 1. Icono del Grupo
+          Text(group.giphy, style: const TextStyle(fontSize: 28)),
+          const SizedBox(width: 10),
 
-          // Columna de nombre y ubicación (ahora en dos líneas)
+          // 2. Texto del Título del Grupo
           Expanded(
-            flex: 4, // Aumentamos el flex ya que ahora contendrá más información
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Country flag
-                Image.network(
-                  'https://flagcdn.com/16x12/${player['pais']?.toLowerCase()}.png',
-                  width: 16,
-                  height: 12,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 16,
-                      height: 12,
-                      color: Colors.grey[300],
-                      child: Icon(Icons.error_outline, size: 10, color: Colors.grey),
-                    );
-                  },
-                ),
-                SizedBox(width: 4), // Espacio reducido
-                Text(
-                  player['nombre']?.toString() ?? '',
-                  style: SrvFuentes.chewy(
-                    context,
-                    14,
-                    SrvColores.get(context, ColorKey.texto),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-            ),
-          ),
-
-          // Columna de puntos
-          Expanded(
-            flex: 2,
             child: Text(
-              player['puntos']?.toString() ?? '',
-              style: SrvFuentes.chewy(
-                context,
-                16,
-                SrvColores.get(context, ColorKey.texto),
-                pColorSombra: SrvColores.get(context, ColorKey.fondo),
+              group.title,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                color: groupTextColor, // Color definido por el grupo (Blanco o Negro)
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // Columna de tiempo récord
-          Expanded(
-            flex: 1,
-            child: Text(
-              SrvFechas.segundosAMinutosYSegundos(player['tiempo'] ?? 0),
-              style: SrvFuentes.chewy(
-                context,
-                12,
-                SrvColores.get(context, ColorKey.texto),
-                pColorSombra: SrvColores.get(context, ColorKey.fondo),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // Columna de partidas
-          Expanded(
-            flex: 1,
-            child: Text(
-              player['partidas']?.toString() ?? '',
-              style: SrvFuentes.chewy(
-                context,
-                12,
-                SrvColores.get(context, ColorKey.texto),
-                pColorSombra: SrvColores.get(context, ColorKey.fondo),
-              ),
-              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -251,169 +127,177 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
     );
   }
 
-  // Widget to build a group section
+  //----------------------------------------------------------------------------
+  // Widget para mostrar la fila de un jugador (MODIFICADO para estilo tarjeta)
+  //----------------------------------------------------------------------------
+
+  Widget _mostrarJugador(Map<String, dynamic> player, {required bool isTopGroup, required Color groupTextColor}) {
+    posicion += 1;
+
+    // Define el color del texto y acento basado en el grupo
+    final textColor = groupTextColor;
+    final accentColor = isTopGroup ? Colors.white70 : SrvColores.get(context, ColorKey.texto);
+    final textShadowColor = isTopGroup ? Colors.transparent : SrvColores.get(context, ColorKey.fondo);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          // 1. Columna de posición
+          Container(
+            alignment: Alignment.centerLeft,
+            width: 30, // Ancho fijo para la posición
+            child: Text(
+              posicion.toString(),
+              style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: textShadowColor),
+            ),
+          ),
+
+          // 2. Bandera y Nombre del País (Simplificado y estilizado)
+          Expanded(
+            flex: 4,
+            child: Row(
+              children: [
+                // Country flag
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(2.0),
+                  child: Image.network(
+                    'https://flagcdn.com/16x12/${player['pais']?.toLowerCase()}.png',
+                    width: 24, // Bandera más grande
+                    height: 18,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: 24, // Ajustamos el tamaño del fallback
+                        height: 18,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.error_outline, size: 12, color: Colors.grey),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(width: 10),
+
+                // Nombre del País
+                Flexible(
+                  child: Text(
+                    player['nombre']?.toString() ?? '',
+                    style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: textShadowColor),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const Spacer(), // Empuja los puntos a la derecha
+          // 3. Puntuación (Texto de acento)
+          Text(
+            '${player['puntos']?.toString() ?? ''} Pts',
+            style: TextStyle(color: accentColor, fontSize: 16, fontWeight: FontWeight.w600),
+            textAlign: TextAlign.right,
+          ),
+
+          // 4. Glifo extra (Trofeo, Balanza o Tortuga)
+          // El grupo TOP usa '✨', los otros usan su propio glifo de grupo.
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(
+              isTopGroup && posicion <= 3 ? '✨' : '', // Si es TOP 3, usa '✨', sino vacío
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  // Widget para construir la sección de un grupo (MODIFICADO para tarjetas)
+  //----------------------------------------------------------------------------
+
   Widget _buildGroupSection(PlayerGroup group) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(height: 10, thickness: 2, color: SrvColores.get(context, ColorKey.destacado), indent: 8, endIndent: 8),
-        // Group Header
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(12),
-          color: SrvColores.get(context, ColorKey.fondo),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Icono del Grupo:
-              Text(
-                group.giphy,
-                style: SrvFuentes.luckiestGuy(
-                  context,
-                  32,
-                  SrvColores.get(context, ColorKey.principal),
-                  pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                ),
-              ),
+    // 1. Definición de estilos por grupo
+    BoxDecoration decoration;
+    Color groupTextColor;
 
-              // Texto Central
-              Expanded(
-                child: Text(
-                  '${group.title} • ${group.players.length}',
-                  textAlign: TextAlign.center,
-                  style: SrvFuentes.luckiestGuy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.principal),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                ),
-              ),
-
-              // Icono del grupo
-              Text(
-                group.giphy,
-                style: SrvFuentes.luckiestGuy(
-                  context,
-                  32,
-                  SrvColores.get(context, ColorKey.principal),
-                  pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                ),
-              ),
-            ],
-          ),
+    if (group.giphy == '🏆') {
+      // ASES ASCENDENTES (TOP) - Degradado Morado/Azul
+      decoration = BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF6B4EEA), Color(0xFF5560E5)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-
-        //------------------------------------------------
-        // Cabeceras de las columnas de cada grupo
-        //------------------------------------------------
-        Container(
-          padding: EdgeInsets.all(8),
-          color: SrvColores.get(context, ColorKey.fondo),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 1, // Posición
-                child: Text(
-                  '📍',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Expanded(
-                flex: 4, // Jugador (ahora incluye nombre y ubicación)
-                child: Text(
-                  '🎌',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                ),
-              ),
-
-              Expanded(
-                flex: 2, // Puntos
-                child: Text(
-                  '🏅',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              Expanded(
-                flex: 1, // Tiempo
-                child: Text(
-                  '⌚',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
-              Expanded(
-                flex: 1, // Partidas
-                child: Text(
-                  '🕹️',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
           ),
+        ],
+      );
+      groupTextColor = Colors.white;
+    } else if (group.giphy == '⚖️') {
+      // GUARDIANES DEL EQUILIBRIO (NORMALES) - Color sólido Verde
+      decoration = BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        color: const Color(0xFF58B65A).withValues(alpha: 0.8),
+      );
+      groupTextColor = Colors.black87;
+    } else {
+      // '🐢' o cualquier otro
+      // CLUB DE LA REDENCIÓN (MALOS) - Color sólido Naranja
+      decoration = BoxDecoration(
+        borderRadius: BorderRadius.circular(16.0),
+        color: const Color(0xFFE9934B).withValues(alpha: 0.8),
+      );
+      groupTextColor = Colors.black87;
+    }
+
+    // 2. Estructura de la tarjeta
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: decoration,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Encabezado del Grupo
+            _buildGroupHeader(group, groupTextColor: groupTextColor),
+
+            // Listado de Jugadores
+            ...group.players.map(
+              (player) => _mostrarJugador(player, isTopGroup: group.giphy == '🏆', groupTextColor: groupTextColor),
+            ),
+
+            const SizedBox(height: 16),
+          ],
         ),
-
-        Divider(height: 10, thickness: 2, color: SrvColores.get(context, ColorKey.destacado), indent: 8, endIndent: 8),
-
-        //-----------------------------------------
-        // Mostramos los jugadores del grupo actual
-        //-----------------------------------------
-        ...group.players.map((player) => _mostrarJugador(player)),
-        SizedBox(height: 16), // Space between sections
-      ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // **IMPORTANTE: REINICIAMOS LA POSICIÓN AQUÍ**
     posicion = 0;
+
     return Scaffold(
       backgroundColor: SrvColores.get(context, ColorKey.fondo),
-      //Toolbar:
       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
 
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: listaRanking,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
-
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text(SrvTraducciones.get('sin_datos')));
           }
@@ -421,16 +305,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           final allPlayers = snapshot.data!;
           final groups = _crearGruposDePaises(allPlayers);
 
-          // Encontrar mi posición
-          //final miPosicion = _encontrarMiPosicion(allPlayers);
-
           return Column(
             children: [
-              // Mensaje de posición del jugador - SIEMPRE VISIBLE
-              //if (miPosicion > 0)
+              // Mensaje de posición del jugador (tu widget superior original)
               Container(
                 width: double.infinity,
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 color: SrvColores.get(context, ColorKey.fondo),
                 child: Column(
                   children: [
@@ -445,7 +325,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                               24,
                               SrvColores.get(context, ColorKey.destacado),
                               pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                            ), // Tamaño y color diferente
+                            ),
                           ),
                           TextSpan(
                             text: "Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
@@ -463,7 +343,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 ),
               ),
 
-              // Lista de grupos
+              // Lista de grupos con las tarjetas bonitas
               Expanded(child: ListView(children: groups.map((group) => _buildGroupSection(group)).toList())),
             ],
           );
