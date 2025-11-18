@@ -16,6 +16,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_boton_standard.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -60,6 +61,7 @@ class _PagHomeState extends State<PagHome> {
       if (versionTipo == 'M') {
         SrvConfirmacion.confirmacion(
           context: context,
+          pModal: true,
           pTitulo: 'Nueva Versión',
           pTituloFont: 'Luckiest Guy',
           pDescripcion: SrvTraducciones.get('version_obligatoria'),
@@ -70,6 +72,7 @@ class _PagHomeState extends State<PagHome> {
           pBotonOkColor: SrvColores.get(context, ColorKey.exito),
           pOnConfirmar: () {
             abrirPlayStore(context);
+            SystemNavigator.pop();
           },
         );
       } else {
@@ -94,7 +97,7 @@ class _PagHomeState extends State<PagHome> {
   }
 
   void abrirPlayStore(BuildContext context) async {
-    final url = Uri.parse("https://play.google.com/store/apps/details?id=com.tangierdreams.flippy_pairs");
+    final url = Uri.parse(SrvDatosGenerales.urlGooglePlay);
 
     if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
       // por si falla

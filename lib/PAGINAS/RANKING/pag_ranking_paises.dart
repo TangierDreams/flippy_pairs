@@ -99,10 +99,9 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   // NUEVO WIDGET AUXILIAR: Encabezado del Grupo (Título y Glifo)
   //----------------------------------------------------------------------------
 
-  Widget _buildGroupHeader(PlayerGroup group, {required Color groupTextColor}) {
+  Widget _buildGroupHeader(PlayerGroup group, {required Color groupTextColor, required Color headerBackgroundColor}) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.only(top: 16, bottom: 8, left: 16, right: 16),
+      padding: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -110,15 +109,34 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           Text(group.giphy, style: const TextStyle(fontSize: 28)),
           const SizedBox(width: 10),
 
-          // 2. Texto del Título del Grupo
           Expanded(
-            child: Text(
-              group.title,
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                color: groupTextColor, // Color definido por el grupo (Blanco o Negro)
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+
+              // --- DECORACIÓN DE LA BANDEJA ---
+              decoration: BoxDecoration(
+                color: headerBackgroundColor, // Usamos el color oscuro secundario
+                borderRadius: const BorderRadius.only(
+                  // Izquierda: esquina suave para la "media luna"
+                  topLeft: Radius.circular(8.0),
+                  bottomLeft: Radius.circular(8.0),
+                  // Derecha: esquina bien redondeada
+                  topRight: Radius.circular(25.0),
+                  bottomRight: Radius.circular(25.0),
+                ),
+              ),
+
+              // --- FIN DECORACIÓN ---
+
+              // 2. Texto del Título del Grupo
+              child: Text(
+                group.title,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  color: groupTextColor, // Color definido por el grupo (Blanco o Negro)
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -128,7 +146,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   }
 
   //----------------------------------------------------------------------------
-  // Widget para mostrar la fila de un jugador (MODIFICADO para estilo tarjeta)
+  // Widget para mostrar la fila de un jugador
   //----------------------------------------------------------------------------
 
   Widget _mostrarJugador(Map<String, dynamic> player, {required bool isTopGroup, required Color groupTextColor}) {
@@ -149,7 +167,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             width: 30, // Ancho fijo para la posición
             child: Text(
               posicion.toString(),
-              style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: textShadowColor),
+              style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: Colors.transparent),
             ),
           ),
 
@@ -182,7 +200,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 Flexible(
                   child: Text(
                     player['nombre']?.toString() ?? '',
-                    style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: textShadowColor),
+                    style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: Colors.transparent),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -194,7 +212,8 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           // 3. Puntuación (Texto de acento)
           Text(
             '${player['puntos']?.toString() ?? ''} Pts',
-            style: TextStyle(color: accentColor, fontSize: 16, fontWeight: FontWeight.w600),
+            //style: TextStyle(color: accentColor, fontSize: 16, fontWeight: FontWeight.w600),
+            style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: Colors.transparent),
             textAlign: TextAlign.right,
           ),
 
@@ -213,13 +232,15 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   }
 
   //----------------------------------------------------------------------------
-  // Widget para construir la sección de un grupo (MODIFICADO para tarjetas)
+  // Widget para construir el título y contenido de un grupo.
   //----------------------------------------------------------------------------
 
   Widget _buildGroupSection(PlayerGroup group) {
     // 1. Definición de estilos por grupo
     BoxDecoration decoration;
     Color groupTextColor;
+    Color secondaryBackgroundColor;
+    Color headerBackgroundColor;
 
     if (group.giphy == '🏆') {
       // ASES ASCENDENTES (TOP) - Degradado Morado/Azul
@@ -240,6 +261,8 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
         ],
       );
       groupTextColor = Colors.white;
+      secondaryBackgroundColor = Colors.black.withValues(alpha: 0.2);
+      headerBackgroundColor = const Color(0xFF4C3AA8);
     } else if (group.giphy == '⚖️') {
       // GUARDIANES DEL EQUILIBRIO (NORMALES) - Color sólido Verde
       decoration = BoxDecoration(
@@ -247,6 +270,8 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
         color: const Color(0xFF58B65A).withValues(alpha: 0.8),
       );
       groupTextColor = Colors.black87;
+      secondaryBackgroundColor = const Color(0xFF4CA04C).withValues(alpha: 0.8);
+      headerBackgroundColor = const Color(0xFF3B8E3D);
     } else {
       // '🐢' o cualquier otro
       // CLUB DE LA REDENCIÓN (MALOS) - Color sólido Naranja
@@ -255,6 +280,8 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
         color: const Color(0xFFE9934B).withValues(alpha: 0.8),
       );
       groupTextColor = Colors.black87;
+      secondaryBackgroundColor = const Color(0xFFD88540).withValues(alpha: 0.8);
+      headerBackgroundColor = const Color(0xFFA8632C);
     }
 
     // 2. Estructura de la tarjeta
@@ -266,14 +293,32 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Encabezado del Grupo
-            _buildGroupHeader(group, groupTextColor: groupTextColor),
+            const SizedBox(height: 10),
+            _buildGroupHeader(group, groupTextColor: groupTextColor, headerBackgroundColor: headerBackgroundColor),
 
-            // Listado de Jugadores
-            ...group.players.map(
-              (player) => _mostrarJugador(player, isTopGroup: group.giphy == '🏆', groupTextColor: groupTextColor),
+            const SizedBox(height: 10),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: secondaryBackgroundColor, // Fondo interior
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+
+                child: Column(
+                  children: [
+                    ...group.players.map(
+                      (player) =>
+                          _mostrarJugador(player, isTopGroup: group.giphy == '🏆', groupTextColor: groupTextColor),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
             ),
 
-            const SizedBox(height: 16),
+            // Listado de Jugadores
           ],
         ),
       ),
