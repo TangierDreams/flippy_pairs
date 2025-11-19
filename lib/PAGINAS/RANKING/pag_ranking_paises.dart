@@ -39,10 +39,10 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   }
 
   //----------------------------------------------------------------------------
-  // Creamos una lista con los distintos grupos de jugadores: (Lógica sin cambios)
+  // Creamos una lista con los distintos grupos de paises: buenos, normales y
+  // malos
   //----------------------------------------------------------------------------
   List<PlayerGroup> _crearGruposDePaises(List<Map<String, dynamic>> pJugadores) {
-    // ... (Tu lógica original de creación de grupos queda aquí, sin cambios)
     final gruposDePaises = <PlayerGroup>[];
     final totalPaises = pJugadores.length;
 
@@ -55,107 +55,58 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
     final adjustedNormalPaisesCount = normalPaisesCount >= 0 ? normalPaisesCount : 0;
     final adjustedBadPaisesCount = normalPaisesCount >= 0 ? badPaisesCount : totalPaises - topPaisesCount;
 
-    // Top Paises (con nuevos nombres y glifos sugeridos)
+    // Sublista de los mejores paises, titulo e icono:
     if (topPaisesCount > 0) {
       gruposDePaises.add(
         PlayerGroup(
-          title: SrvTraducciones.get('Ases Ascendentes'), // Usando tus keys de traducción
+          posicion: 1,
+          title: SrvTraducciones.get('primerosp'),
           players: pJugadores.sublist(0, topPaisesCount),
-          giphy: '🏆', // Glifo Trofeo para el TOP
+          giphy: '🏆',
         ),
       );
     }
 
-    // Normal Paises
+    // Sublista de paises normales, titulo e icono:
     if (adjustedNormalPaisesCount > 0 && topPaisesCount + adjustedNormalPaisesCount <= totalPaises) {
       gruposDePaises.add(
         PlayerGroup(
-          title: SrvTraducciones.get('Guardianes del Equilibrio'),
+          posicion: 2,
+          title: SrvTraducciones.get('segundosp'),
           players: pJugadores.sublist(topPaisesCount, topPaisesCount + adjustedNormalPaisesCount),
-          giphy: '⚖️', // Glifo Balanza
+          giphy: '⚖️',
         ),
       );
     }
 
-    // Bad Players
+    // Sublista de paises petardos, titulo e icono:
     if (adjustedBadPaisesCount > 0) {
       gruposDePaises.add(
         PlayerGroup(
-          title: SrvTraducciones.get('Club de la Redención'),
+          posicion: 3,
+          title: SrvTraducciones.get('tercerosp'),
           players: pJugadores.sublist(totalPaises - adjustedBadPaisesCount),
-          giphy: '🐢', // Glifo Tortuga
+          giphy: '🐢',
         ),
       );
     }
 
+    // Si no hay suficientes paises como para hacer grupos, los colocamos todos en una lista:
     if (gruposDePaises.isEmpty) {
-      gruposDePaises.add(PlayerGroup(title: SrvTraducciones.get('todos'), players: pJugadores, giphy: '🚀'));
+      gruposDePaises.add(
+        PlayerGroup(posicion: 1, title: SrvTraducciones.get('todos'), players: pJugadores, giphy: '🚀'),
+      );
     }
 
     return gruposDePaises;
   }
 
   //----------------------------------------------------------------------------
-  // NUEVO WIDGET AUXILIAR: Encabezado del Grupo (Título y Glifo)
+  // Widget para mostrar la fila de un pais.
   //----------------------------------------------------------------------------
 
-  Widget _buildGroupHeader(PlayerGroup group, {required Color groupTextColor, required Color headerBackgroundColor}) {
-    return Container(
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          // 1. Icono del Grupo
-          Text(group.giphy, style: const TextStyle(fontSize: 28)),
-          const SizedBox(width: 10),
-
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-
-              // --- DECORACIÓN DE LA BANDEJA ---
-              decoration: BoxDecoration(
-                color: headerBackgroundColor, // Usamos el color oscuro secundario
-                borderRadius: const BorderRadius.only(
-                  // Izquierda: esquina suave para la "media luna"
-                  topLeft: Radius.circular(8.0),
-                  bottomLeft: Radius.circular(8.0),
-                  // Derecha: esquina bien redondeada
-                  topRight: Radius.circular(25.0),
-                  bottomRight: Radius.circular(25.0),
-                ),
-              ),
-
-              // --- FIN DECORACIÓN ---
-
-              // 2. Texto del Título del Grupo
-              child: Text(
-                group.title,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: groupTextColor, // Color definido por el grupo (Blanco o Negro)
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  //----------------------------------------------------------------------------
-  // Widget para mostrar la fila de un jugador
-  //----------------------------------------------------------------------------
-
-  Widget _mostrarJugador(Map<String, dynamic> player, {required bool isTopGroup, required Color groupTextColor}) {
+  Widget _montarRegistroPais(Map<String, dynamic> pPais, {required bool pIsTopGroup, required Color pColorDeTexto}) {
     posicion += 1;
-
-    // Define el color del texto y acento basado en el grupo
-    final textColor = groupTextColor;
-    final accentColor = isTopGroup ? Colors.white70 : SrvColores.get(context, ColorKey.texto);
-    final textShadowColor = isTopGroup ? Colors.transparent : SrvColores.get(context, ColorKey.fondo);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -167,7 +118,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             width: 30, // Ancho fijo para la posición
             child: Text(
               posicion.toString(),
-              style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: Colors.transparent),
+              style: SrvFuentes.chewy(context, 16, pColorDeTexto, pColorSombra: Colors.transparent),
             ),
           ),
 
@@ -180,13 +131,13 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(2.0),
                   child: Image.network(
-                    'https://flagcdn.com/16x12/${player['pais']?.toLowerCase()}.png',
+                    'https://flagcdn.com/16x12/${pPais['pais']?.toLowerCase()}.png',
                     width: 24, // Bandera más grande
                     height: 18,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        width: 24, // Ajustamos el tamaño del fallback
+                        width: 24,
                         height: 18,
                         color: Colors.grey[300],
                         child: const Icon(Icons.error_outline, size: 12, color: Colors.grey),
@@ -199,8 +150,8 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 // Nombre del País
                 Flexible(
                   child: Text(
-                    player['nombre']?.toString() ?? '',
-                    style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: Colors.transparent),
+                    pPais['nombre']?.toString() ?? '',
+                    style: SrvFuentes.chewy(context, 16, pColorDeTexto, pColorSombra: Colors.transparent),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -211,9 +162,8 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           const Spacer(), // Empuja los puntos a la derecha
           // 3. Puntuación (Texto de acento)
           Text(
-            '${player['puntos']?.toString() ?? ''} Pts',
-            //style: TextStyle(color: accentColor, fontSize: 16, fontWeight: FontWeight.w600),
-            style: SrvFuentes.chewy(context, 16, textColor, pColorSombra: Colors.transparent),
+            '${pPais['puntos']?.toString() ?? ''} Pts',
+            style: SrvFuentes.chewy(context, 16, pColorDeTexto, pColorSombra: Colors.transparent),
             textAlign: TextAlign.right,
           ),
 
@@ -222,7 +172,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
-              isTopGroup && posicion <= 3 ? '✨' : '', // Si es TOP 3, usa '✨', sino vacío
+              pIsTopGroup && posicion <= 3 ? '✨' : '', // Si es TOP 3, usa '✨', sino vacío
               style: const TextStyle(fontSize: 18),
             ),
           ),
@@ -232,56 +182,106 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   }
 
   //----------------------------------------------------------------------------
-  // Widget para construir el título y contenido de un grupo.
+  // Widget para montar el título de cada grupo.
   //----------------------------------------------------------------------------
 
-  Widget _buildGroupSection(PlayerGroup group) {
-    // 1. Definición de estilos por grupo
-    BoxDecoration decoration;
-    Color groupTextColor;
-    Color secondaryBackgroundColor;
-    Color headerBackgroundColor;
+  Widget _montarTituloDelGrupo(
+    PlayerGroup pGrupo, {
+    required Color pColorDeTexto,
+    required Color pColorDeFondo,
+    required Color pColorPrincipal,
+  }) {
+    const double iconSize = 48.0;
+    const double paddingTitulo = iconSize / 2;
 
-    if (group.giphy == '🏆') {
-      // ASES ASCENDENTES (TOP) - Degradado Morado/Azul
-      decoration = BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF6B4EEA), Color(0xFF5560E5)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+    return Container(
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: Stack(
+        alignment: Alignment.centerLeft,
+        children: [
+          //----------------------
+          // Contenedor del Título
+          //----------------------
+          Padding(
+            padding: const EdgeInsets.only(left: paddingTitulo),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              decoration: BoxDecoration(
+                color: pColorDeFondo,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(25.0),
+                  bottomRight: Radius.circular(25.0),
+                ),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(width: 20),
+                  Text(
+                    pGrupo.title,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: pColorDeTexto, fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          //----------------------------------------
+          // Icono del Grupo (circulito superpuesto)
+          //----------------------------------------
+          Positioned(
+            left: 0,
+            child: Container(
+              width: iconSize,
+              height: iconSize,
+              decoration: BoxDecoration(color: pColorPrincipal, shape: BoxShape.circle),
+              alignment: Alignment.center,
+              child: Text(pGrupo.giphy, style: const TextStyle(fontSize: 20)),
+            ),
           ),
         ],
-      );
-      groupTextColor = Colors.white;
-      secondaryBackgroundColor = Colors.black.withValues(alpha: 0.2);
-      headerBackgroundColor = const Color(0xFF4C3AA8);
-    } else if (group.giphy == '⚖️') {
-      // GUARDIANES DEL EQUILIBRIO (NORMALES) - Color sólido Verde
-      decoration = BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
-        color: const Color(0xFF58B65A).withValues(alpha: 0.8),
-      );
-      groupTextColor = Colors.black87;
-      secondaryBackgroundColor = const Color(0xFF4CA04C).withValues(alpha: 0.8);
-      headerBackgroundColor = const Color(0xFF3B8E3D);
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  // Widget para montar los elementos del container del grupo
+  //----------------------------------------------------------------------------
+
+  Widget _montarGrupos(PlayerGroup pGrupo) {
+    BoxDecoration decoration;
+    Color grupoColorPrincipal;
+    Color grupoColorDeTexto;
+    Color grupoSegundoContenedor;
+    Color grupoColorCabecera;
+
+    if (pGrupo.posicion == 1) {
+      //--------------------------
+      // El primer grupo de paises
+      //--------------------------
+      grupoColorDeTexto = Colors.white;
+      grupoSegundoContenedor = Colors.black.withValues(alpha: 0.2);
+      grupoColorCabecera = const Color(0xFF4C3AA8);
+      grupoColorPrincipal = const Color(0xFF6B4EEA);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: grupoColorPrincipal);
+    } else if (pGrupo.posicion == 2) {
+      //---------------------------
+      // El sengudo grupo de paises
+      //---------------------------
+      grupoColorDeTexto = Colors.black87;
+      grupoSegundoContenedor = const Color(0xFF4CA04C);
+      grupoColorCabecera = const Color.fromARGB(255, 51, 122, 52);
+      grupoColorPrincipal = const Color.fromARGB(255, 103, 212, 105);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: grupoColorPrincipal);
     } else {
-      // '🐢' o cualquier otro
-      // CLUB DE LA REDENCIÓN (MALOS) - Color sólido Naranja
-      decoration = BoxDecoration(
-        borderRadius: BorderRadius.circular(16.0),
-        color: const Color(0xFFE9934B).withValues(alpha: 0.8),
-      );
-      groupTextColor = Colors.black87;
-      secondaryBackgroundColor = const Color(0xFFD88540).withValues(alpha: 0.8);
-      headerBackgroundColor = const Color(0xFFA8632C);
+      //--------------------------
+      // El tercer grupo de paises
+      //--------------------------
+      grupoColorDeTexto = Colors.black87;
+      grupoSegundoContenedor = const Color(0xFFD88540);
+      grupoColorCabecera = const Color(0xFFA8632C);
+      grupoColorPrincipal = const Color.fromARGB(255, 249, 160, 88);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: grupoColorPrincipal);
     }
 
     // 2. Estructura de la tarjeta
@@ -294,23 +294,28 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           children: [
             // Encabezado del Grupo
             const SizedBox(height: 10),
-            _buildGroupHeader(group, groupTextColor: groupTextColor, headerBackgroundColor: headerBackgroundColor),
+            _montarTituloDelGrupo(
+              pGrupo,
+              pColorDeTexto: grupoColorDeTexto,
+              pColorDeFondo: grupoColorCabecera,
+              pColorPrincipal: grupoColorPrincipal,
+            ),
 
             const SizedBox(height: 10),
 
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Container(
-                decoration: BoxDecoration(
-                  color: secondaryBackgroundColor, // Fondo interior
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+                decoration: BoxDecoration(color: grupoSegundoContenedor, borderRadius: BorderRadius.circular(10.0)),
 
                 child: Column(
                   children: [
-                    ...group.players.map(
-                      (player) =>
-                          _mostrarJugador(player, isTopGroup: group.giphy == '🏆', groupTextColor: groupTextColor),
+                    ...pGrupo.players.map(
+                      (player) => _montarRegistroPais(
+                        player,
+                        pIsTopGroup: pGrupo.posicion == 1,
+                        pColorDeTexto: grupoColorDeTexto,
+                      ),
                     ),
                     const SizedBox(height: 16),
                   ],
@@ -327,7 +332,6 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
 
   @override
   Widget build(BuildContext context) {
-    // **IMPORTANTE: REINICIAMOS LA POSICIÓN AQUÍ**
     posicion = 0;
 
     return Scaffold(
@@ -389,7 +393,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
               ),
 
               // Lista de grupos con las tarjetas bonitas
-              Expanded(child: ListView(children: groups.map((group) => _buildGroupSection(group)).toList())),
+              Expanded(child: ListView(children: groups.map((group) => _montarGrupos(group)).toList())),
             ],
           );
         },
