@@ -131,7 +131,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(2.0),
                   child: Image.network(
-                    'https://flagcdn.com/16x12/${pPais['pais']?.toLowerCase()}.png',
+                    'https://flagcdn.com/64x48/${pPais['pais']?.toLowerCase()}.png',
                     width: 24, // Bandera más grande
                     height: 18,
                     fit: BoxFit.cover,
@@ -182,11 +182,110 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   }
 
   //----------------------------------------------------------------------------
+  // Widget para montar el título principal del listado.
+  //----------------------------------------------------------------------------
+
+  Widget _montarTituloPrincipal(BuildContext context) {
+    // Colores del título principal
+    final Color toolbarColor = SrvColores.get(context, ColorKey.principal);
+
+    const double iconSize = 60.0;
+    //const double iconPadding = 15.0;
+    //const double totalIconArea = iconSize / 2;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: toolbarColor,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.5),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            // 2. Icono Principal (Circulito superpuesto)
+            Positioned(
+              left: 0,
+              child: Container(
+                width: iconSize,
+                height: iconSize,
+                decoration: BoxDecoration(
+                  color: toolbarColor,
+                  shape: BoxShape.circle,
+                  // ¡CORREGIDO! Eliminamos el borde blanco
+                  // border: Border.all(color: Colors.white.withValues(alpha: 0.8), width: 2.0,),
+                ),
+                alignment: Alignment.center,
+                child: const Text('🌎', style: TextStyle(fontSize: 32)),
+              ),
+            ),
+
+            // 1. Contenedor del Título
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: toolbarColor.withValues(alpha: 0.0),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(12.0),
+                  bottomRight: Radius.circular(12.0),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Countries Competition",
+                      style: SrvFuentes.luckiestGuy(
+                        context,
+                        22,
+                        SrvColores.get(context, ColorKey.destacado),
+                        pColorSombra: SrvColores.get(context, ColorKey.negro),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  // LÍNEA 2: "Nivel 3x2" (Centrado en la línea)
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "Nivel ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
+                      style: SrvFuentes.luckiestGuy(context, 20, Colors.white, pColorSombra: null),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center, // Aseguramos que el texto esté centrado
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  //----------------------------------------------------------------------------
   // Widget para montar el título de cada grupo.
   //----------------------------------------------------------------------------
 
   Widget _montarTituloDelGrupo(
     PlayerGroup pGrupo, {
+    required Color pColorDelTitulo,
     required Color pColorDeTexto,
     required Color pColorDeFondo,
     required Color pColorPrincipal,
@@ -219,7 +318,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                   Text(
                     pGrupo.title,
                     textAlign: TextAlign.left,
-                    style: TextStyle(color: pColorDeTexto, fontSize: 20, fontWeight: FontWeight.bold),
+                    style: SrvFuentes.chewy(context, 25, pColorDelTitulo, pColorSombra: null),
                   ),
                 ],
               ),
@@ -250,6 +349,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
 
   Widget _montarGrupos(PlayerGroup pGrupo) {
     BoxDecoration decoration;
+    Color grupoColorDelTitulo;
     Color grupoColorPrincipal;
     Color grupoColorDeTexto;
     Color grupoSegundoContenedor;
@@ -259,6 +359,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
       //--------------------------
       // El primer grupo de paises
       //--------------------------
+      grupoColorDelTitulo = Color.fromARGB(255, 247, 186, 45);
       grupoColorDeTexto = Colors.white;
       grupoSegundoContenedor = Colors.black.withValues(alpha: 0.2);
       grupoColorCabecera = const Color(0xFF4C3AA8);
@@ -268,6 +369,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
       //---------------------------
       // El sengudo grupo de paises
       //---------------------------
+      grupoColorDelTitulo = Color(0xFFbae589);
       grupoColorDeTexto = Colors.black87;
       grupoSegundoContenedor = const Color(0xFF4CA04C);
       grupoColorCabecera = const Color.fromARGB(255, 51, 122, 52);
@@ -277,6 +379,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
       //--------------------------
       // El tercer grupo de paises
       //--------------------------
+      grupoColorDelTitulo = Color.fromARGB(255, 255, 184, 3);
       grupoColorDeTexto = Colors.black87;
       grupoSegundoContenedor = const Color(0xFFD88540);
       grupoColorCabecera = const Color(0xFFA8632C);
@@ -296,6 +399,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             const SizedBox(height: 10),
             _montarTituloDelGrupo(
               pGrupo,
+              pColorDelTitulo: grupoColorDelTitulo,
               pColorDeTexto: grupoColorDeTexto,
               pColorDeFondo: grupoColorCabecera,
               pColorPrincipal: grupoColorPrincipal,
@@ -335,7 +439,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
     posicion = 0;
 
     return Scaffold(
-      backgroundColor: SrvColores.get(context, ColorKey.fondo),
+      backgroundColor: Colors.transparent,
       appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
 
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -354,47 +458,31 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           final allPlayers = snapshot.data!;
           final groups = _crearGruposDePaises(allPlayers);
 
-          return Column(
-            children: [
-              // Mensaje de posición del jugador (tu widget superior original)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                color: SrvColores.get(context, ColorKey.fondo),
-                child: Column(
-                  children: [
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Countries ",
-                            style: SrvFuentes.luckiestGuy(
-                              context,
-                              24,
-                              SrvColores.get(context, ColorKey.destacado),
-                              pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                            ),
-                          ),
-                          TextSpan(
-                            text: "Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
-                            style: SrvFuentes.luckiestGuy(
-                              context,
-                              22,
-                              SrvColores.get(context, ColorKey.principal),
-                              pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+          return Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 24, 19, 97), // 1. Azul muy oscuro (Casi negro)
+                  Color(0xFF4CA04C), // 2. Verde (o Menta oscura, punto medio)
+                  Color(0xFFE9934B), // 3. Naranja (Parte inferior)
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                // Puedes añadir 'stops' si quieres controlar dónde cambia cada color:
+                stops: [0.0, 0.7, 0.9],
               ),
+              // Si añades un patrón de estrellas (tile) como imagen:
+              // image: DecorationImage(image: AssetImage('assets/star_pattern.png'), repeat: ImageRepeat.repeat),
+            ),
+            child: Column(
+              children: [
+                // Título del listado:
+                _montarTituloPrincipal(context),
 
-              // Lista de grupos con las tarjetas bonitas
-              Expanded(child: ListView(children: groups.map((group) => _montarGrupos(group)).toList())),
-            ],
+                // Lista de grupos con las tarjetas bonitas
+                Expanded(child: ListView(children: groups.map((group) => _montarGrupos(group)).toList())),
+              ],
+            ),
           );
         },
       ),

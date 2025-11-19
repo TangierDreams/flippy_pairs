@@ -94,6 +94,7 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     if (topPlayersCount > 0) {
       gruposDeJugadores.add(
         PlayerGroup(
+          posicion: 1,
           title: SrvTraducciones.get('primerost'),
           players: pJugadores.sublist(0, topPlayersCount),
           giphy: '🚀',
@@ -108,6 +109,7 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     if (goodPlayersCount > 0 && topPlayersCount + goodPlayersCount <= totalPlayers) {
       gruposDeJugadores.add(
         PlayerGroup(
+          posicion: 2,
           title: SrvTraducciones.get('segundost'),
           players: pJugadores.sublist(topPlayersCount, topPlayersCount + goodPlayersCount),
           giphy: '🏎️💨',
@@ -123,6 +125,7 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
         topPlayersCount + goodPlayersCount + adjustedNormalPlayersCount <= totalPlayers) {
       gruposDeJugadores.add(
         PlayerGroup(
+          posicion: 3,
           title: SrvTraducciones.get('tercerost'),
           players: pJugadores.sublist(
             topPlayersCount + goodPlayersCount,
@@ -140,6 +143,7 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     if (adjustedBadPlayersCount > 0) {
       gruposDeJugadores.add(
         PlayerGroup(
+          posicion: 4,
           title: SrvTraducciones.get('cuartost'),
           players: pJugadores.sublist(totalPlayers - adjustedBadPlayersCount),
           giphy: '🛴',
@@ -152,7 +156,9 @@ class _PagRankingTiemposState extends State<PagRankingTiempos> {
     //----------------------------------------------------
 
     if (gruposDeJugadores.isEmpty) {
-      gruposDeJugadores.add(PlayerGroup(title: SrvTraducciones.get('todos'), players: pJugadores, giphy: '🚀'));
+      gruposDeJugadores.add(
+        PlayerGroup(posicion: 1, title: SrvTraducciones.get('todos'), players: pJugadores, giphy: '🚀'),
+      );
     }
 
     return gruposDeJugadores;
