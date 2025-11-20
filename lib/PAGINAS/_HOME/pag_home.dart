@@ -130,128 +130,130 @@ class _PagHomeState extends State<PagHome> {
           ),
 
           body: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  SrvTraducciones.get('temas'),
-                  textAlign: TextAlign.center,
-                  style: SrvFuentes.chewy(
-                    context,
-                    30,
-                    SrvColores.get(context, ColorKey.destacado),
-                    pColorSombra: SrvColores.get(context, ColorKey.negro),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: SrvColores.get(context, ColorKey.destacado),
+                  ),
+
+                  child: Row(
+                    children: [
+                      Image.asset('assets/imagenes/general/home.png', height: 100, fit: BoxFit.contain),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              SrvTraducciones.get('temas'),
+                              textAlign: TextAlign.center,
+                              style: SrvFuentes.chewy(
+                                context,
+                                30,
+                                SrvColores.get(context, ColorKey.resaltado),
+                                pColorSombra: SrvColores.get(context, ColorKey.negro),
+                              ),
+                            ),
+
+                            SrvFuncionesGenericas.espacioVertical(context, 1),
+
+                            //------------------------------------------------------------------
+                            // Primera línea de imagenes
+                            //------------------------------------------------------------------
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                BotonTema(
+                                  pListaImagenes: 'retratos',
+                                  pNumBoton: 0,
+                                  pCallBackFunction: () {
+                                    setState(() {
+                                      EstadoDelJuego.nomTema = 'retratos';
+                                      EstadoDelJuego.tema = 0;
+                                    });
+                                  },
+                                ),
+
+                                BotonTema(
+                                  pListaImagenes: 'iconos',
+                                  pNumBoton: 1,
+                                  pCallBackFunction: () {
+                                    setState(() {
+                                      EstadoDelJuego.nomTema = 'iconos';
+                                      EstadoDelJuego.tema = 1;
+                                    });
+                                  },
+                                ),
+
+                                BotonTema(
+                                  pListaImagenes: 'logos',
+                                  pNumBoton: 2,
+                                  pCallBackFunction: () {
+                                    setState(() {
+                                      EstadoDelJuego.nomTema = 'logos';
+                                      EstadoDelJuego.tema = 2;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+
+                            //const SizedBox(height: 10),
+                            SrvFuncionesGenericas.espacioVertical(context, 1),
+
+                            //------------------------------------------------------------------
+                            // Segunda línea de imagenes
+                            //------------------------------------------------------------------
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                BotonTema(
+                                  pListaImagenes: 'coches',
+                                  pNumBoton: 3,
+                                  pCallBackFunction: () {
+                                    setState(() {
+                                      EstadoDelJuego.nomTema = 'coches';
+                                      EstadoDelJuego.tema = 3;
+                                    });
+                                  },
+                                ),
+
+                                BotonTema(
+                                  pListaImagenes: 'herramientas',
+                                  pNumBoton: 4,
+                                  pCallBackFunction: () {
+                                    setState(() {
+                                      EstadoDelJuego.nomTema = 'herramientas';
+                                      EstadoDelJuego.tema = 4;
+                                    });
+                                  },
+                                ),
+
+                                BotonTema(
+                                  pListaImagenes: 'animales',
+                                  pNumBoton: 5,
+                                  pCallBackFunction: () {
+                                    setState(() {
+                                      EstadoDelJuego.nomTema = 'animales';
+                                      EstadoDelJuego.tema = 5;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
                 //const SizedBox(height: 10),
                 SrvFuncionesGenericas.espacioVertical(context, 1),
-
-                //------------------------------------------------------------------
-                // Primera línea de imagenes
-                //------------------------------------------------------------------
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: BotonTema(
-                        pListaImagenes: 'retratos',
-                        pNumBoton: 0,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nomTema = 'retratos';
-                            EstadoDelJuego.tema = 0;
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 40),
-
-                    Expanded(
-                      child: BotonTema(
-                        pListaImagenes: 'iconos',
-                        pNumBoton: 1,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nomTema = 'iconos';
-                            EstadoDelJuego.tema = 1;
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 40),
-
-                    Expanded(
-                      child: BotonTema(
-                        pListaImagenes: 'logos',
-                        pNumBoton: 2,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nomTema = 'logos';
-                            EstadoDelJuego.tema = 2;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-                //const SizedBox(height: 10),
-                SrvFuncionesGenericas.espacioVertical(context, 1),
-
-                //------------------------------------------------------------------
-                // Segunda línea de imagenes
-                //------------------------------------------------------------------
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: BotonTema(
-                        pListaImagenes: 'coches',
-                        pNumBoton: 3,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nomTema = 'coches';
-                            EstadoDelJuego.tema = 3;
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 40),
-
-                    Expanded(
-                      child: BotonTema(
-                        pListaImagenes: 'herramientas',
-                        pNumBoton: 4,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nomTema = 'herramientas';
-                            EstadoDelJuego.tema = 4;
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 40),
-
-                    Expanded(
-                      child: BotonTema(
-                        pListaImagenes: 'animales',
-                        pNumBoton: 5,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nomTema = 'animales';
-                            EstadoDelJuego.tema = 5;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
 
                 //const SizedBox(height: 25),
                 SrvFuncionesGenericas.espacioVertical(context, 2),
@@ -613,13 +615,16 @@ class BotonTema extends StatelessWidget {
           pCallBackFunction();
         },
         style: ElevatedButton.styleFrom(
+          shape: CircleBorder(),
+          padding: EdgeInsets.all(10),
           backgroundColor: estaSeleccionado
-              ? SrvColores.get(context, ColorKey.destacado)
+              ? SrvColores.get(context, ColorKey.resaltado)
               : SrvColores.get(context, ColorKey.apoyo),
           foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
           elevation: estaSeleccionado ? 15 : 10,
+          shadowColor: Colors.black,
         ),
-        child: Image.file(primeraImagenTema, width: 60, height: 50, fit: BoxFit.contain),
+        child: Image.file(primeraImagenTema, height: 40, fit: BoxFit.contain),
       ),
     );
   }
