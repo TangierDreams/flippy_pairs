@@ -1,0 +1,46 @@
+CREATE OR REPLACE FUNCTION public.flippy_obtener_registros_usuario(
+    p_id text
+)
+RETURNS TABLE (
+    id text,
+    nivel smallint,
+    nombre text,
+    pais text,
+    ciudad text,
+    puntos smallint,
+    partidas smallint,
+    tiempo_record smallint,
+    tiempo_total integer,
+    actualizado text,
+    ganadas smallint,
+    perdidas smallint,
+    empatadas smallint,
+    ip text,
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+ 
+  RETURN QUERY
+  SELECT 
+    f.id,
+    f.nivel,
+    f.nombre,
+    f.pais,
+    f.ciudad,
+    f.puntos,
+    f.partidas,
+    f.tiempo_record,
+    f.tiempo_total,
+    f.actualizado,
+    f.ganadas,
+    f.perdidas,
+    f.empatadas,
+    f.ip
+  FROM public.flippy_points f
+  WHERE f.id = p_id
+  ORDER BY f.nivel;
+END;
+$$;

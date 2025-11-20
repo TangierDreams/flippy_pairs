@@ -472,7 +472,10 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 stops: [0.0, 0.7, 0.9],
               ),
               // Si añades un patrón de estrellas (tile) como imagen:
-              // image: DecorationImage(image: AssetImage('assets/star_pattern.png'), repeat: ImageRepeat.repeat),
+              image: DecorationImage(
+                image: AssetImage('assets/imagenes/general/stars.png'),
+                repeat: ImageRepeat.repeat,
+              ),
             ),
             child: Column(
               children: [

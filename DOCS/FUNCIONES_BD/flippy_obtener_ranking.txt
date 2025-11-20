@@ -1,0 +1,27 @@
+CREATE OR REPLACE FUNCTION public.flippy_obtener_ranking(
+    p_id text,
+    p_level integer
+)
+RETURNS integer
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+    WITH ranking_flippy AS (
+        SELECT 
+            id, 
+            puntos, 
+            ROW_NUMBER() OVER (ORDER BY puntos DESC) AS pos 
+        FROM 
+            flippy_points
+        WHERE 
+            nivel = p_level
+    )
+    SELECT 
+        pos 
+    FROM 
+        ranking_flippy 
+    WHERE 
+        id = p_id;
+$$;
