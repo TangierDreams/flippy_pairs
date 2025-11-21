@@ -23,13 +23,20 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PagHome extends StatefulWidget {
   const PagHome({super.key});
-
   @override
   State<PagHome> createState() => _PagHomeState();
 }
 
+//==============================================================================
+// CLASE PRINCIPAL.
+//==============================================================================
+
 class _PagHomeState extends State<PagHome> {
   final List<bool> _isSelected = [false, false, false];
+
+  //----------------------------------------------------------------------------
+  // Tareas al iniciar la página.
+  //----------------------------------------------------------------------------
 
   @override
   void initState() {
@@ -38,9 +45,13 @@ class _PagHomeState extends State<PagHome> {
     int velocidadJuego = SrvDiskette.leerValor(DisketteKey.velocidadJuego, defaultValue: 1);
     _isSelected[velocidadJuego] = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      comprobarVersion(context);
+      _SupportFunctions().comprobarVersion(context);
     });
   }
+
+  //----------------------------------------------------------------------------
+  // Tareas antes de abandonar la página.
+  //----------------------------------------------------------------------------
 
   @override
   void dispose() {
@@ -49,69 +60,8 @@ class _PagHomeState extends State<PagHome> {
   }
 
   //----------------------------------------------------------------------------
-  // Comprobamos si ha salido una nueva versión.
+  // WIDGET PRINCIPAL.
   //----------------------------------------------------------------------------
-  void comprobarVersion(BuildContext context) async {
-    String cadena = await SrvSupabase.getParam('flippy_version', pDefaultValue: '0.0;O');
-    if (!context.mounted) return;
-    List<String> partes = cadena.split(';');
-    double versionNumero = double.parse(partes[0]);
-    String versionTipo = partes[1];
-    if (SrvDatosGenerales.versionLocal < versionNumero) {
-      if (versionTipo == 'M') {
-        SrvConfirmacion.confirmacion(
-          context: context,
-          pModal: true,
-          pTitulo: 'Nueva Versión',
-          pTituloFont: 'Luckiest Guy',
-          pDescripcion: SrvTraducciones.get('version_obligatoria'),
-          pDescripcionFont: 'Chewy',
-          pDosBotones: false,
-          pBotonOkTexto: SrvTraducciones.get('descargar'),
-          pBotonOkFont: 'Chewy',
-          pBotonOkColor: SrvColores.get(context, ColorKey.exito),
-          pOnConfirmar: () {
-            abrirPlayStore(context);
-            SystemNavigator.pop();
-          },
-        );
-      } else {
-        SrvConfirmacion.confirmacion(
-          context: context,
-          pTitulo: 'Nueva Versión',
-          pTituloFont: 'Luckiest Guy',
-          pDescripcion: SrvTraducciones.get('version_opcional'),
-          pDescripcionFont: 'Chewy',
-          pBotonOkTexto: SrvTraducciones.get('descargar'),
-          pBotonOkFont: 'Chewy',
-          pBotonOkColor: SrvColores.get(context, ColorKey.exito),
-          pBotonKoTexto: SrvTraducciones.get('despues'),
-          pBotonKoFont: 'Chewy',
-          pBotonKoColor: SrvColores.get(context, ColorKey.texto),
-          pOnConfirmar: () {
-            abrirPlayStore(context);
-          },
-        );
-      }
-    }
-  }
-
-  void abrirPlayStore(BuildContext context) async {
-    final url = Uri.parse(SrvDatosGenerales.urlGooglePlay);
-
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-      // por si falla
-      if (!context.mounted) return;
-      Fluttertoast.showToast(
-        msg: SrvTraducciones.get('puntuaciones_eliminadas'),
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: SrvColores.get(context, ColorKey.principal),
-        textColor: SrvColores.get(context, ColorKey.onPrincipal),
-        fontSize: 16.0,
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,11 +79,36 @@ class _PagHomeState extends State<PagHome> {
             subtitle: SrvTraducciones.get('subtitulo_app'),
           ),
 
-          body: Padding(
+          //----------------------------------
+          // Contenedor principal de la página
+          //----------------------------------
+          body: Container(
             padding: const EdgeInsets.all(10.0),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 24, 19, 97), // 1. Azul muy oscuro (Casi negro)
+                  Color(0xFF4CA04C), // 2. Verde (o Menta oscura, punto medio)
+                  Color(0xFFE9934B), // 3. Naranja (Parte inferior)
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                // Puedes añadir 'stops' si quieres controlar dónde cambia cada color:
+                stops: [0.0, 0.7, 0.9],
+              ),
+              // Si añades un patrón de estrellas (tile) como imagen:
+              image: DecorationImage(
+                image: AssetImage('assets/imagenes/general/stars.png'),
+                repeat: ImageRepeat.repeat,
+              ),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
+
               children: [
+                //-------------------------
+                // Contenedor de los temas.
+                //-------------------------
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(10),
@@ -144,105 +119,71 @@ class _PagHomeState extends State<PagHome> {
 
                   child: Row(
                     children: [
-                      Image.asset('assets/imagenes/general/home.png', height: 100, fit: BoxFit.contain),
+                      Column(
+                        children: [
+                          //----------------
+                          // Título del tema
+                          //----------------
+                          Text(
+                            SrvTraducciones.get('temas'),
+                            textAlign: TextAlign.center,
+                            style: SrvFuentes.chewy(
+                              context,
+                              30,
+                              SrvColores.get(context, ColorKey.resaltado),
+                              pColorSombra: SrvColores.get(context, ColorKey.negro),
+                            ),
+                          ),
+                          SrvFuncionesGenericas.espacioVertical(context, 1),
+                          //--------------------------
+                          // Imagen principal del tema
+                          //--------------------------
+                          Image.asset('assets/imagenes/general/home.png', height: 100, fit: BoxFit.contain),
+                        ],
+                      ),
                       Expanded(
                         child: Column(
                           children: [
-                            Text(
-                              SrvTraducciones.get('temas'),
-                              textAlign: TextAlign.center,
-                              style: SrvFuentes.chewy(
-                                context,
-                                30,
-                                SrvColores.get(context, ColorKey.resaltado),
-                                pColorSombra: SrvColores.get(context, ColorKey.negro),
-                              ),
-                            ),
+                            //SrvFuncionesGenericas.espacioVertical(context, 1),
 
-                            SrvFuncionesGenericas.espacioVertical(context, 1),
-
-                            //------------------------------------------------------------------
-                            // Primera línea de imagenes
-                            //------------------------------------------------------------------
+                            //-----------------------
+                            // Primera fila de temas
+                            //-----------------------
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                BotonTema(
-                                  pListaImagenes: 'retratos',
-                                  pNumBoton: 0,
-                                  pCallBackFunction: () {
-                                    setState(() {
-                                      EstadoDelJuego.nomTema = 'retratos';
-                                      EstadoDelJuego.tema = 0;
-                                    });
-                                  },
-                                ),
-
-                                BotonTema(
-                                  pListaImagenes: 'iconos',
-                                  pNumBoton: 1,
-                                  pCallBackFunction: () {
-                                    setState(() {
-                                      EstadoDelJuego.nomTema = 'iconos';
-                                      EstadoDelJuego.tema = 1;
-                                    });
-                                  },
-                                ),
-
-                                BotonTema(
-                                  pListaImagenes: 'logos',
-                                  pNumBoton: 2,
-                                  pCallBackFunction: () {
-                                    setState(() {
-                                      EstadoDelJuego.nomTema = 'logos';
-                                      EstadoDelJuego.tema = 2;
-                                    });
-                                  },
-                                ),
+                                for (int i = 0; i <= 2; i++)
+                                  BotonTema(
+                                    pListaImagenes: InfoTemas.tema[i]['listaImagenes'] as String,
+                                    pNumBoton: i,
+                                    pCallBackFunction: () {
+                                      setState(() {
+                                        EstadoDelJuego.nomTema = InfoTemas.tema[i]['nombre'] as String;
+                                        EstadoDelJuego.tema = InfoTemas.tema[i]['id'] as int;
+                                      });
+                                    },
+                                  ),
                               ],
                             ),
-
-                            //const SizedBox(height: 10),
                             SrvFuncionesGenericas.espacioVertical(context, 1),
 
-                            //------------------------------------------------------------------
-                            // Segunda línea de imagenes
-                            //------------------------------------------------------------------
+                            //----------------------
+                            // Segunda fila de temas
+                            //----------------------
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                BotonTema(
-                                  pListaImagenes: 'coches',
-                                  pNumBoton: 3,
-                                  pCallBackFunction: () {
-                                    setState(() {
-                                      EstadoDelJuego.nomTema = 'coches';
-                                      EstadoDelJuego.tema = 3;
-                                    });
-                                  },
-                                ),
-
-                                BotonTema(
-                                  pListaImagenes: 'herramientas',
-                                  pNumBoton: 4,
-                                  pCallBackFunction: () {
-                                    setState(() {
-                                      EstadoDelJuego.nomTema = 'herramientas';
-                                      EstadoDelJuego.tema = 4;
-                                    });
-                                  },
-                                ),
-
-                                BotonTema(
-                                  pListaImagenes: 'animales',
-                                  pNumBoton: 5,
-                                  pCallBackFunction: () {
-                                    setState(() {
-                                      EstadoDelJuego.nomTema = 'animales';
-                                      EstadoDelJuego.tema = 5;
-                                    });
-                                  },
-                                ),
+                                for (int i = 3; i <= 5; i++)
+                                  BotonTema(
+                                    pListaImagenes: InfoTemas.tema[i]['listaImagenes'] as String,
+                                    pNumBoton: i,
+                                    pCallBackFunction: () {
+                                      setState(() {
+                                        EstadoDelJuego.nomTema = InfoTemas.tema[i]['nombre'] as String;
+                                        EstadoDelJuego.tema = InfoTemas.tema[i]['id'] as int;
+                                      });
+                                    },
+                                  ),
                               ],
                             ),
                           ],
@@ -253,271 +194,212 @@ class _PagHomeState extends State<PagHome> {
                 ),
 
                 //const SizedBox(height: 10),
-                SrvFuncionesGenericas.espacioVertical(context, 1),
+                //SrvFuncionesGenericas.espacioVertical(context, 1),
 
                 //const SizedBox(height: 25),
                 SrvFuncionesGenericas.espacioVertical(context, 2),
 
-                //------------------------------------------------------------------
-                // Botones de dificultad
-                //------------------------------------------------------------------
-                Text(
-                  SrvTraducciones.get('dificultad'),
-                  textAlign: TextAlign.center,
-                  style: SrvFuentes.chewy(
-                    context,
-                    30,
-                    SrvColores.get(context, ColorKey.destacado),
-                    pColorSombra: SrvColores.get(context, ColorKey.negro),
+                //----------------------
+                // Contenedor de niveles
+                //----------------------
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: SrvColores.get(context, ColorKey.principal),
                   ),
-                ),
 
-                //const SizedBox(height: 10),
-                SrvFuncionesGenericas.espacioVertical(context, 1),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Text(
+                                SrvTraducciones.get('dificultad'),
+                                textAlign: TextAlign.center,
+                                style: SrvFuentes.chewy(
+                                  context,
+                                  30,
+                                  SrvColores.get(context, ColorKey.resaltado),
+                                  pColorSombra: SrvColores.get(context, ColorKey.negro),
+                                ),
+                              ),
+                            ),
 
-                //------------------------------------------------------------------
-                // Primera fila de niveles de juego:
-                //------------------------------------------------------------------
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    //-----------
-                    // Nivel 3x2:
-                    //-----------
-                    Expanded(
-                      child: BotonNivel(
-                        pFilas: 3,
-                        pColumnas: 2,
-                        pNivel: 0,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nivel = 0;
-                            EstadoDelJuego.filas = 3;
-                            EstadoDelJuego.columnas = 2;
-                          });
-                        },
+                            Positioned(
+                              left: 0,
+                              top: 0,
+                              bottom: 0,
+                              child: Icon(Icons.emoji_events, color: const Color.fromARGB(255, 255, 102, 0), size: 40),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                      SrvFuncionesGenericas.espacioVertical(context, 2),
 
-                    const SizedBox(width: 40),
-
-                    //-----------
-                    // Nivel 4x3:
-                    //-----------
-                    Expanded(
-                      child: BotonNivel(
-                        pFilas: 4,
-                        pColumnas: 3,
-                        pNivel: 1,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nivel = 1;
-                            EstadoDelJuego.filas = 4;
-                            EstadoDelJuego.columnas = 3;
-                          });
-                        },
+                      //---------------------------------
+                      // Primera fila de niveles de juego
+                      //---------------------------------
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          for (int i = 0; i <= 2; i++)
+                            BotonNivel(
+                              pFilas: InfoNiveles.nivel[i]['filas'] as int,
+                              pColumnas: InfoNiveles.nivel[i]['columnas'] as int,
+                              pNivel: i,
+                              pCallBackFunction: () {
+                                setState(() {
+                                  EstadoDelJuego.nivel = i;
+                                  EstadoDelJuego.filas = InfoNiveles.nivel[i]['filas'] as int;
+                                  EstadoDelJuego.columnas = InfoNiveles.nivel[i]['columnas'] as int;
+                                });
+                              },
+                            ),
+                        ],
                       ),
-                    ),
+                      SrvFuncionesGenericas.espacioVertical(context, 1),
 
-                    const SizedBox(width: 40),
-
-                    //-----------
-                    // Nivel 5x4:
-                    //-----------
-                    Expanded(
-                      child: BotonNivel(
-                        pFilas: 5,
-                        pColumnas: 4,
-                        pNivel: 2,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nivel = 2;
-                            EstadoDelJuego.filas = 5;
-                            EstadoDelJuego.columnas = 4;
-                          });
-                        },
+                      //---------------------------------
+                      // Segunda fila de niveles de juego
+                      //---------------------------------
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          for (int i = 3; i <= 5; i++)
+                            BotonNivel(
+                              pFilas: InfoNiveles.nivel[i]['filas'] as int,
+                              pColumnas: InfoNiveles.nivel[i]['columnas'] as int,
+                              pNivel: i,
+                              pCallBackFunction: () {
+                                setState(() {
+                                  EstadoDelJuego.nivel = i;
+                                  EstadoDelJuego.filas = InfoNiveles.nivel[i]['filas'] as int;
+                                  EstadoDelJuego.columnas = InfoNiveles.nivel[i]['columnas'] as int;
+                                });
+                              },
+                            ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-
-                //const SizedBox(height: 10),
-                SrvFuncionesGenericas.espacioVertical(context, 1),
-
-                //------------------------------------------------------------------
-                // Segunda fila de niveles de juego:
-                //------------------------------------------------------------------
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    //-----------
-                    // Nivel 6x5:
-                    //-----------
-                    Expanded(
-                      child: BotonNivel(
-                        pFilas: 6,
-                        pColumnas: 5,
-                        pNivel: 3,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nivel = 3;
-                            EstadoDelJuego.filas = 6;
-                            EstadoDelJuego.columnas = 5;
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 40),
-
-                    //-----------
-                    // Nivel 8x7:
-                    //-----------
-                    Expanded(
-                      child: BotonNivel(
-                        pFilas: 8,
-                        pColumnas: 7,
-                        pNivel: 4,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nivel = 4;
-                            EstadoDelJuego.filas = 8;
-                            EstadoDelJuego.columnas = 7;
-                          });
-                        },
-                      ),
-                    ),
-
-                    const SizedBox(width: 40),
-
-                    //-----------
-                    // Nivel 9x8:
-                    //-----------
-                    Expanded(
-                      child: BotonNivel(
-                        pFilas: 9,
-                        pColumnas: 8,
-                        pNivel: 5,
-                        pCallBackFunction: () {
-                          setState(() {
-                            EstadoDelJuego.nivel = 5;
-                            EstadoDelJuego.filas = 9;
-                            EstadoDelJuego.columnas = 8;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
                 //const SizedBox(height: 25),
                 SrvFuncionesGenericas.espacioVertical(context, 2),
 
-                //--------------------------------------------------------------
-                // Aquí seleccionamos la velocidad del juego.
-                //--------------------------------------------------------------
-                Text(
-                  SrvTraducciones.get('velocidad_juego'),
-                  textAlign: TextAlign.center,
-                  style: SrvFuentes.chewy(
-                    context,
-                    30,
-                    SrvColores.get(context, ColorKey.destacado),
-                    pColorSombra: SrvColores.get(context, ColorKey.negro),
-                  ),
-                ),
-
-                //const SizedBox(height: 10),
-                SrvFuncionesGenericas.espacioVertical(context, 1),
-
-                LayoutBuilder(
-                  builder: (context, constraints) {
-                    final double buttonWidth = (constraints.maxWidth - 8) / 3;
-                    return ToggleButtons(
-                      // 2. The Logic: Handle the selection change
-                      onPressed: (int index) {
-                        SrvSonidos.boton();
-                        setState(() {
-                          //Reset all to false, then set the tapped index to true
-                          for (int i = 0; i < _isSelected.length; i++) {
-                            _isSelected[i] = (i == index);
-                          }
-                          // Update your GameSpeed variable and save to SrvDiskette
-                          //_selectedSpeed = _velocidadJuego;
-                          SrvDiskette.guardarValor(DisketteKey.velocidadJuego, index);
-                        });
-                      },
-
-                      // 3. The State: Which button is currently selected
-                      isSelected: _isSelected,
-
-                      // 4. Custom Styling (Matching your previous colors):
-                      borderColor: SrvColores.get(context, ColorKey.principal),
-                      selectedBorderColor: SrvColores.get(context, ColorKey.principal),
-                      fillColor: SrvColores.get(context, ColorKey.destacado),
-                      color: SrvColores.get(context, ColorKey.principal),
-                      selectedColor: SrvColores.get(context, ColorKey.negro),
-                      borderRadius: BorderRadius.circular(10.0),
-
-                      // 1. The Children: Your three styled Text widgets
-                      children: <Widget>[
-                        SizedBox(
-                          width: buttonWidth,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                            child: Text(
-                              SrvTraducciones.get('lento'),
-                              style: GoogleFonts.luckiestGuy(fontSize: 14),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: buttonWidth,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                            child: Text(
-                              SrvTraducciones.get('normal'),
-                              style: GoogleFonts.luckiestGuy(fontSize: 14),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: buttonWidth,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                            child: Text(
-                              SrvTraducciones.get('rapido'),
-                              style: GoogleFonts.luckiestGuy(fontSize: 14),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
+                //-----------------------------------------
+                // Contenedor de velocidad y botón de jugar
+                //-----------------------------------------
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.green.shade900, // Verde oscuro
+                        Colors.green.shade600, // Verde mediano
                       ],
-                    );
-                  },
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+
+                  child: Column(
+                    children: [
+                      //-----------------------
+                      // Título de la velocidad
+                      //-----------------------
+                      Text(
+                        SrvTraducciones.get('velocidad_juego'),
+                        textAlign: TextAlign.center,
+                        style: SrvFuentes.chewy(
+                          context,
+                          30,
+                          SrvColores.get(context, ColorKey.resaltado),
+                          pColorSombra: SrvColores.get(context, ColorKey.negro),
+                        ),
+                      ),
+                      SrvFuncionesGenericas.espacioVertical(context, 2),
+
+                      //--------------------------
+                      // Selección de la velocidad
+                      //--------------------------
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double buttonWidth = (constraints.maxWidth - 8) / 3;
+                          final List<String> velocidades = ['lento', 'normal', 'rapido'];
+
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              for (int i = 0; i < 3; i++)
+                                GestureDetector(
+                                  onTap: () {
+                                    SrvSonidos.boton();
+                                    setState(() {
+                                      for (int j = 0; j < _isSelected.length; j++) {
+                                        _isSelected[j] = (j == i);
+                                      }
+                                      SrvDiskette.guardarValor(DisketteKey.velocidadJuego, i);
+                                    });
+                                  },
+                                  child: Container(
+                                    width: buttonWidth,
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                                    decoration: BoxDecoration(
+                                      color: _isSelected[i]
+                                          ? SrvColores.get(context, ColorKey.destacado)
+                                          : SrvColores.get(context, ColorKey.principal), // Color para no seleccionados
+                                      //border: Border.all(color: SrvColores.get(context, ColorKey.apoyo), width: 1),
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    child: Text(
+                                      SrvTraducciones.get(velocidades[i]),
+                                      style: GoogleFonts.luckiestGuy(
+                                        fontSize: 14,
+                                        color: _isSelected[i]
+                                            ? SrvColores.get(context, ColorKey.blanco)
+                                            : SrvColores.get(context, ColorKey.resaltado),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                      SrvFuncionesGenericas.espacioVertical(context, 1),
+
+                      //------------------------------------------------------------------
+                      // Botón START PLAYING
+                      //------------------------------------------------------------------
+                      SizedBox(
+                        width: double.infinity,
+                        height: 60,
+                        child: WidBotonStandard(
+                          pTexto: SrvTraducciones.get('comenzar_juego'),
+                          pTipoDeLetra: 'Luckiest Guy',
+                          pTamanyoLetra: 26,
+                          pColorDeFondo: SrvColores.get(context, ColorKey.resaltado),
+                          pColorLetra: SrvColores.get(context, ColorKey.principal),
+                          pSombra: true,
+                          pEsquinasRedondeadas: true,
+                          pFuncionSonido: SrvSonidos.boton,
+                          pNavegarA: '/game',
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 //const SizedBox(height: 25),
-                SrvFuncionesGenericas.espacioVertical(context, 2),
-
-                //------------------------------------------------------------------
-                // Botón para comenzar a jugar
-                //------------------------------------------------------------------
-                SizedBox(
-                  height: 80,
-                  child: WidBotonStandard(
-                    pTexto: SrvTraducciones.get('comenzar_juego'),
-                    pTipoDeLetra: 'Luckiest Guy',
-                    pTamanyoLetra: 28,
-                    pColorLetra: SrvColores.get(context, ColorKey.destacado),
-                    pSombra: true,
-                    pEsquinasRedondeadas: true,
-                    pFuncionSonido: SrvSonidos.boton,
-                    pNavegarA: '/game',
-                  ),
-                ),
+                //SrvFuncionesGenericas.espacioVertical(context, 2),
 
                 //const SizedBox(height: 10),
                 SrvFuncionesGenericas.espacioVertical(context, 1),
@@ -591,7 +473,7 @@ class _PagHomeState extends State<PagHome> {
 }
 
 //------------------------------------------------------------------------------
-// Botón Tema
+// Widget para montar los botones de los temas.
 //------------------------------------------------------------------------------
 class BotonTema extends StatelessWidget {
   final String pListaImagenes;
@@ -619,7 +501,7 @@ class BotonTema extends StatelessWidget {
           padding: EdgeInsets.all(10),
           backgroundColor: estaSeleccionado
               ? SrvColores.get(context, ColorKey.resaltado)
-              : SrvColores.get(context, ColorKey.apoyo),
+              : SrvColores.get(context, ColorKey.principal),
           foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
           elevation: estaSeleccionado ? 15 : 10,
           shadowColor: Colors.black,
@@ -631,7 +513,7 @@ class BotonTema extends StatelessWidget {
 }
 
 //------------------------------------------------------------------------------
-// Boton de nivel.
+// Widget para montar los botones de los niveles.
 //------------------------------------------------------------------------------
 class BotonNivel extends StatelessWidget {
   //final String pTitulo;
@@ -642,7 +524,6 @@ class BotonNivel extends StatelessWidget {
 
   const BotonNivel({
     super.key,
-    //required this.pTitulo,
     required this.pFilas,
     required this.pColumnas,
     required this.pNivel,
@@ -664,13 +545,14 @@ class BotonNivel extends StatelessWidget {
           pCallBackFunction();
         },
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 18),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
           backgroundColor: estaSeleccionado
               ? SrvColores.get(context, ColorKey.destacado)
-              : SrvColores.get(context, ColorKey.principal),
+              : SrvColores.get(context, ColorKey.apoyo),
           foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: estaSeleccionado ? 15 : 10,
+          shadowColor: Colors.black,
         ),
         child: Text(
           titulo,
@@ -686,5 +568,76 @@ class BotonNivel extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+//==============================================================================
+// FUNCIONES DE SOPORTE
+//==============================================================================
+
+class _SupportFunctions {
+  //----------------------------------------------------------------------------
+  // Comprobamos si ha salido una nueva versión.
+  //----------------------------------------------------------------------------
+  void comprobarVersion(BuildContext context) async {
+    String cadena = await SrvSupabase.getParam('flippy_version', pDefaultValue: '0.0;O');
+    if (!context.mounted) return;
+    List<String> partes = cadena.split(';');
+    double versionNumero = double.parse(partes[0]);
+    String versionTipo = partes[1];
+    if (SrvDatosGenerales.versionLocal < versionNumero) {
+      if (versionTipo == 'M') {
+        SrvConfirmacion.confirmacion(
+          context: context,
+          pModal: true,
+          pTitulo: 'Nueva Versión',
+          pTituloFont: 'Luckiest Guy',
+          pDescripcion: SrvTraducciones.get('version_obligatoria'),
+          pDescripcionFont: 'Chewy',
+          pDosBotones: false,
+          pBotonOkTexto: SrvTraducciones.get('descargar'),
+          pBotonOkFont: 'Chewy',
+          pBotonOkColor: SrvColores.get(context, ColorKey.exito),
+          pOnConfirmar: () {
+            abrirPlayStore(context);
+            SystemNavigator.pop();
+          },
+        );
+      } else {
+        SrvConfirmacion.confirmacion(
+          context: context,
+          pTitulo: 'Nueva Versión',
+          pTituloFont: 'Luckiest Guy',
+          pDescripcion: SrvTraducciones.get('version_opcional'),
+          pDescripcionFont: 'Chewy',
+          pBotonOkTexto: SrvTraducciones.get('descargar'),
+          pBotonOkFont: 'Chewy',
+          pBotonOkColor: SrvColores.get(context, ColorKey.exito),
+          pBotonKoTexto: SrvTraducciones.get('despues'),
+          pBotonKoFont: 'Chewy',
+          pBotonKoColor: SrvColores.get(context, ColorKey.texto),
+          pOnConfirmar: () {
+            abrirPlayStore(context);
+          },
+        );
+      }
+    }
+  }
+
+  void abrirPlayStore(BuildContext context) async {
+    final url = Uri.parse(SrvDatosGenerales.urlGooglePlay);
+
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      // por si falla
+      if (!context.mounted) return;
+      Fluttertoast.showToast(
+        msg: SrvTraducciones.get('puntuaciones_eliminadas'),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: SrvColores.get(context, ColorKey.principal),
+        textColor: SrvColores.get(context, ColorKey.onPrincipal),
+        fontSize: 16.0,
+      );
+    }
   }
 }

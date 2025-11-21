@@ -27,7 +27,7 @@ class SrvColores {
     ColorKey.destacado: Colors.orange,
     ColorKey.resaltado: Colors.yellow,
     ColorKey.muyResaltado: Colors.red,
-    ColorKey.apoyo: Colors.cyan,
+    ColorKey.apoyo: Colors.blueAccent,
     ColorKey.onPrincipal: Colors.white,
     ColorKey.onDestacado: Colors.white,
     ColorKey.onResaltado: Colors.white,

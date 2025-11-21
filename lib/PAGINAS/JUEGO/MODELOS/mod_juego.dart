@@ -5,6 +5,17 @@
 
 import 'dart:io';
 
+class InfoTemas {
+  static const tema = [
+    {'id': 0, 'nombre': 'retratos', 'listaImagenes': 'retratos'},
+    {'id': 1, 'nombre': 'iconos', 'listaImagenes': 'iconos'},
+    {'id': 2, 'nombre': 'logos', 'listaImagenes': 'logos'},
+    {'id': 3, 'nombre': 'coches', 'listaImagenes': 'coches'},
+    {'id': 4, 'nombre': 'herramientas', 'listaImagenes': 'herramientas'},
+    {'id': 5, 'nombre': 'animales', 'listaImagenes': 'animales'},
+  ];
+}
+
 //------------------------------------------------------------------------------
 // Almacenamos información de los niveles de juego.
 //------------------------------------------------------------------------------
