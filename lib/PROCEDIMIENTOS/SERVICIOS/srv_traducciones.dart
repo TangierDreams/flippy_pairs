@@ -52,7 +52,7 @@ class SrvTraducciones {
     'rapido': '🚀 Fast',
     'velocidad_juego': 'Game Speed',
     'ranking': 'Ranking',
-    'primeros': 'The Protagonists',
+    'primeros': 'The Stars',
     'segundos': 'The Guest Stars',
     'terceros': 'The Extras',
     'cuartos': 'The Bad Guys',
@@ -79,6 +79,8 @@ class SrvTraducciones {
     'version_opcional': 'A new version of Flippy Points is out! Update when you get a chance. Thanks a lot!',
     'descargar': 'Download',
     'despues': 'Later',
+    'abrev_puntos': 'pts',
+    'abrev_minutos': 'min',
   };
 
   static final Map<String, String> spanish = {
@@ -133,8 +135,8 @@ class SrvTraducciones {
     'rapido': '🚀 Rápido',
     'velocidad_juego': 'Velocidad',
     'ranking': 'Ranking',
-    'primeros': 'Los Protagonistas',
-    'segundos': 'Los Invitados',
+    'primeros': 'Las Estrellas',
+    'segundos': 'Los Artistas Invitados',
     'terceros': 'Los Extras',
     'cuartos': 'Los Chicos Malos',
     'primerost': 'Los Astronautas',
@@ -161,6 +163,8 @@ class SrvTraducciones {
     'version_opcional': '¡Ya hay una nueva versión de Flippy Points! Actualiza cuando puedas 😊 ¡Muchas gracias!',
     'descargar': 'Descargar',
     'despues': 'Después',
+    'abrev_puntos': 'pts',
+    'abrev_minutos': 'min',
   };
 
   static final Map<String, String> catalan = {
@@ -214,8 +218,8 @@ class SrvTraducciones {
     'rapido': '🚀 Ràpid',
     'velocidad_juego': 'Velocitat',
     'ranking': 'Ranking',
-    'primeros': 'Els Protagonistes',
-    'segundos': 'Els Convidats',
+    'primeros': 'Les Estrelles',
+    'segundos': 'Els Artistes Convidats',
     'terceros': 'Els Extres',
     'cuartos': 'Els Nois Dolents',
     'primerost': 'Els Astronautes',
@@ -242,6 +246,8 @@ class SrvTraducciones {
     'version_opcional': 'Ja hi ha una nova versió de Flippy Points! Actualitza quan puguis 😊 Moltes gràcies!',
     'descargar': 'Descarregar',
     'despues': 'Desprès',
+    'abrev_puntos': 'pts',
+    'abrev_minutos': 'min',
   };
 
   //----------------------------------------------------------------------------

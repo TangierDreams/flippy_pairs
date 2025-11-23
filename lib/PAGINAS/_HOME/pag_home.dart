@@ -83,13 +83,13 @@ class _PagHomeState extends State<PagHome> {
           // Contenedor principal de la página
           //----------------------------------
           body: Container(
-            padding: const EdgeInsets.all(10.0),
-            decoration: const BoxDecoration(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromARGB(255, 24, 19, 97), // 1. Azul muy oscuro (Casi negro)
-                  Color(0xFF4CA04C), // 2. Verde (o Menta oscura, punto medio)
-                  Color(0xFFE9934B), // 3. Naranja (Parte inferior)
+                  SrvColores.get(context, ColorKey.degradadoPantalla1),
+                  SrvColores.get(context, ColorKey.degradadoPantalla2),
+                  SrvColores.get(context, ColorKey.degradadoPantalla3),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -97,10 +97,7 @@ class _PagHomeState extends State<PagHome> {
                 stops: [0.0, 0.7, 0.9],
               ),
               // Si añades un patrón de estrellas (tile) como imagen:
-              image: DecorationImage(
-                image: AssetImage('assets/imagenes/general/stars.png'),
-                repeat: ImageRepeat.repeat,
-              ),
+              image: DecorationImage(image: AssetImage(SrvDatosGenerales.fondoPantalla), repeat: ImageRepeat.repeat),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -138,7 +135,7 @@ class _PagHomeState extends State<PagHome> {
                           //--------------------------
                           // Imagen principal del tema
                           //--------------------------
-                          Image.asset('assets/imagenes/general/home.png', height: 100, fit: BoxFit.contain),
+                          Image.asset('assets/imagenes/home.png', height: 100, fit: BoxFit.contain),
                         ],
                       ),
                       Expanded(
@@ -216,24 +213,18 @@ class _PagHomeState extends State<PagHome> {
                         width: double.infinity,
                         child: Stack(
                           children: [
+                            Positioned(left: 0, top: 0, bottom: 0, child: Text('🤯', style: TextStyle(fontSize: 18))),
                             Center(
                               child: Text(
                                 SrvTraducciones.get('dificultad'),
                                 textAlign: TextAlign.center,
                                 style: SrvFuentes.chewy(
                                   context,
-                                  30,
+                                  32,
                                   SrvColores.get(context, ColorKey.resaltado),
                                   pColorSombra: SrvColores.get(context, ColorKey.negro),
                                 ),
                               ),
-                            ),
-
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              bottom: 0,
-                              child: Icon(Icons.emoji_events, color: const Color.fromARGB(255, 255, 102, 0), size: 40),
                             ),
                           ],
                         ),
@@ -301,8 +292,8 @@ class _PagHomeState extends State<PagHome> {
                     borderRadius: BorderRadius.circular(12),
                     gradient: LinearGradient(
                       colors: [
-                        Colors.green.shade900, // Verde oscuro
-                        Colors.green.shade600, // Verde mediano
+                        SrvColores.get(context, ColorKey.degradadoContainer1),
+                        SrvColores.get(context, ColorKey.degradadoContainer2),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
@@ -311,18 +302,22 @@ class _PagHomeState extends State<PagHome> {
 
                   child: Column(
                     children: [
-                      //-----------------------
-                      // Título de la velocidad
-                      //-----------------------
-                      Text(
-                        SrvTraducciones.get('velocidad_juego'),
-                        textAlign: TextAlign.center,
-                        style: SrvFuentes.chewy(
-                          context,
-                          30,
-                          SrvColores.get(context, ColorKey.resaltado),
-                          pColorSombra: SrvColores.get(context, ColorKey.negro),
-                        ),
+                      Stack(
+                        children: [
+                          Positioned(left: 0, top: 0, bottom: 0, child: Text('🏎️💨', style: TextStyle(fontSize: 18))),
+                          Center(
+                            child: Text(
+                              SrvTraducciones.get('velocidad_juego'),
+                              textAlign: TextAlign.center,
+                              style: SrvFuentes.chewy(
+                                context,
+                                32,
+                                SrvColores.get(context, ColorKey.resaltado),
+                                pColorSombra: SrvColores.get(context, ColorKey.negro),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       SrvFuncionesGenericas.espacioVertical(context, 2),
 
@@ -504,7 +499,7 @@ class BotonTema extends StatelessWidget {
               : SrvColores.get(context, ColorKey.principal),
           foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
           elevation: estaSeleccionado ? 15 : 10,
-          shadowColor: Colors.black,
+          shadowColor: SrvColores.get(context, ColorKey.negro),
         ),
         child: Image.file(primeraImagenTema, height: 40, fit: BoxFit.contain),
       ),
@@ -552,7 +547,7 @@ class BotonNivel extends StatelessWidget {
           foregroundColor: SrvColores.get(context, ColorKey.onPrincipal),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: estaSeleccionado ? 15 : 10,
-          shadowColor: Colors.black,
+          shadowColor: SrvColores.get(context, ColorKey.negro),
         ),
         child: Text(
           titulo,

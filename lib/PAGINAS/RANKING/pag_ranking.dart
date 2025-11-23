@@ -1,12 +1,12 @@
 //------------------------------------------------------------------------------
-// PAGINA DONDE MOSTRAMOS EL RANKING DE LA COMPETICION MUNDIAL FLIPPY.
+// PAGINA DONDE MOSTRAMOS EL RANKING POR PUNTOS DE LA COMPETICION MUNDIAL FLIPPY.
 //------------------------------------------------------------------------------
 
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/MODELOS/player_group.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fechas.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
@@ -16,42 +16,36 @@ import 'package:flutter/material.dart';
 
 class PagRanking extends StatefulWidget {
   const PagRanking({super.key});
-
   @override
   State<PagRanking> createState() => _PagRankingState();
 }
 
+//==============================================================================
+// CLASE PRINCIPAL
+//==============================================================================
+
 class _PagRankingState extends State<PagRanking> {
-  // Aquí almacenamos la lista completa de jugadores:
+  // Aquí almacenamos la lista completa de paises:
   late Future<List<Map<String, dynamic>>> listaRanking;
-
-  // Mi id:
-
-  String miId = SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '');
-
-  // Posición en la lista:
-
   int posicion = 0;
+  String miId = '';
+  List<Map<String, dynamic>> allPlayers = [];
 
   //----------------------------------------------------------------------------
-  // Buscamos la posición del usuario en la lista
+  // Tareas al iniciar la página.
   //----------------------------------------------------------------------------
-
-  int _encontrarMiPosicion(List<Map<String, dynamic>> jugadores) {
-    for (int i = 0; i < jugadores.length; i++) {
-      if (jugadores[i]['id'] == miId) {
-        return i + 1; // +1 porque las posiciones empiezan en 1
-      }
-    }
-    return 0; // Si no se encuentra
-  }
 
   @override
   void initState() {
     super.initState();
     SrvLogger.grabarLog('pag_ranking', 'initState()', 'Entramos en la pagina de ranking');
     listaRanking = SrvSupabase.obtenerTablaFlippy();
+    miId = SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '');
   }
+
+  //----------------------------------------------------------------------------
+  // Tareas antes de abandonar la página.
+  //----------------------------------------------------------------------------
 
   @override
   void dispose() {
@@ -60,92 +54,590 @@ class _PagRankingState extends State<PagRanking> {
   }
 
   //----------------------------------------------------------------------------
-  // Creamos una lista con los distintos grupos de jugadores:
-  // 10% - Top players
-  // 10% - Best players
-  // 70% - Normal players
-  // 10% - Bad players
+  // WIDGET PRINCIPAL
+  //----------------------------------------------------------------------------
+
+  @override
+  Widget build(BuildContext context) {
+    posicion = 0;
+
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
+
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: listaRanking,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text(SrvTraducciones.get('sin_datos')));
+          }
+
+          allPlayers = snapshot.data!;
+          final groups = _SupportFunctions()._crearGruposDeJugadores(allPlayers);
+
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  SrvColores.get(context, ColorKey.degradadoPantalla1),
+                  SrvColores.get(context, ColorKey.degradadoPantalla2),
+                  SrvColores.get(context, ColorKey.degradadoPantalla3),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                // Dónde cambia cada color:
+                stops: [0.0, 0.7, 0.9],
+              ),
+              image: DecorationImage(image: AssetImage(SrvDatosGenerales.fondoPantalla), repeat: ImageRepeat.repeat),
+            ),
+            child: Column(
+              children: [
+                _montarTituloPrincipal(context),
+
+                // Lista de grupos
+                //Expanded(child: ListView(children: groups.map((group) => _montarGrupos(group)).toList())),
+                Expanded(
+                  child: ListView(
+                    children: () {
+                      List<Widget> listaWidgets = [];
+                      for (int i = 0; i < groups.length; i++) {
+                        listaWidgets.add(_montarGrupos(groups[i]));
+                      }
+                      return listaWidgets;
+                    }(),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  // Widget para montar el título principal del listado.
+  //----------------------------------------------------------------------------
+
+  Widget _montarTituloPrincipal(BuildContext context) {
+    final Color colorDelTitulo = SrvColores.get(context, ColorKey.principal);
+    final miPosicion = _SupportFunctions().encontrarMiPosicion(allPlayers);
+
+    const double iconSize = 60.0;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: colorDelTitulo,
+          borderRadius: BorderRadius.circular(16.0),
+          boxShadow: [
+            BoxShadow(
+              color: SrvColores.get(context, ColorKey.negro),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            //----------------------------------------
+            // Icono Principal (Circulito superpuesto)
+            //----------------------------------------
+            Positioned(
+              left: 0,
+              child: Container(
+                width: iconSize,
+                height: iconSize,
+                decoration: BoxDecoration(color: colorDelTitulo, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: const Text('🌎', style: TextStyle(fontSize: 32)),
+              ),
+            ),
+
+            //----------------------
+            // Contenedor del Título
+            //----------------------
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: colorDelTitulo.withValues(alpha: 0.0),
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0),
+                  topRight: Radius.circular(12.0),
+                  bottomRight: Radius.circular(12.0),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "World Flippy Competition",
+                      style: SrvFuentes.luckiestGuy(
+                        context,
+                        22,
+                        SrvColores.get(context, ColorKey.destacado),
+                        pColorSombra: SrvColores.get(context, ColorKey.negro),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  //-----------------------
+                  // Línea con el nivel nxn
+                  //-----------------------
+                  SizedBox(
+                    width: double.infinity,
+                    child: Text(
+                      "${SrvTraducciones.get('nivel')} ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
+                      style: SrvFuentes.luckiestGuy(
+                        context,
+                        20,
+                        SrvColores.get(context, ColorKey.onPrincipal),
+                        pColorSombra: null,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+
+                  //----------------------------------
+                  // Línea con la posición del usuario
+                  //----------------------------------
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.place, color: SrvColores.get(context, ColorKey.muyResaltado), size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        miPosicion > 0
+                            ? '${SrvTraducciones.get('estas_en_posicion')} $miPosicion'
+                            : SrvTraducciones.get('no_has_jugado'),
+                        style: SrvFuentes.chewy(context, 18, SrvColores.get(context, ColorKey.onPrincipal)),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  // Widget para montar los elementos del contenedor de cada grupo
+  //----------------------------------------------------------------------------
+
+  Widget _montarGrupos(PlayerGroup pGrupo) {
+    BoxDecoration decoration;
+    Color gColorContPrincipal;
+    Color gColorContInterior;
+    Color gColorContCabecera;
+    Color gColorDelTitulo;
+    Color gColorDelTexto;
+    Color gColorNeutro;
+
+    if (pGrupo.posicion == 1) {
+      //--------------------------
+      // El primer grupo de jugadores
+      //--------------------------
+      gColorContPrincipal = SrvColores.get(context, ColorKey.ranking1Contenedor);
+      gColorContInterior = SrvColores.get(context, ColorKey.ranking1ContenedorInterior);
+      gColorContCabecera = SrvColores.get(context, ColorKey.ranking1ContenedorInterior);
+      gColorDelTitulo = SrvColores.get(context, ColorKey.ranking1Titulo);
+      gColorDelTexto = SrvColores.get(context, ColorKey.ranking1Texto);
+      gColorNeutro = SrvColores.get(context, ColorKey.ranking1Neutro);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: gColorContPrincipal);
+    } else if (pGrupo.posicion == 2) {
+      //---------------------------
+      // El segundo grupo de jugadores
+      //---------------------------
+      gColorContPrincipal = SrvColores.get(context, ColorKey.ranking2Contenedor);
+      gColorContInterior = SrvColores.get(context, ColorKey.ranking2ContenedorInterior);
+      gColorContCabecera = SrvColores.get(context, ColorKey.ranking2ContenedorInterior);
+      gColorDelTitulo = SrvColores.get(context, ColorKey.ranking2Titulo);
+      gColorDelTexto = SrvColores.get(context, ColorKey.ranking2Texto);
+      gColorNeutro = SrvColores.get(context, ColorKey.ranking2Neutro);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: gColorContPrincipal);
+    } else if (pGrupo.posicion == 3) {
+      //---------------------------
+      // El tercer grupo de jugadores
+      //---------------------------
+      gColorContPrincipal = SrvColores.get(context, ColorKey.ranking3Contenedor);
+      gColorContInterior = SrvColores.get(context, ColorKey.ranking3ContenedorInterior);
+      gColorContCabecera = SrvColores.get(context, ColorKey.ranking3ContenedorInterior);
+      gColorDelTitulo = SrvColores.get(context, ColorKey.ranking3Titulo);
+      gColorDelTexto = SrvColores.get(context, ColorKey.ranking3Texto);
+      gColorNeutro = SrvColores.get(context, ColorKey.ranking3Neutro);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: gColorContPrincipal);
+    } else {
+      //--------------------------
+      // El cuarto grupo de jugadores
+      //--------------------------
+      gColorContPrincipal = SrvColores.get(context, ColorKey.ranking4Contenedor);
+      gColorContInterior = SrvColores.get(context, ColorKey.ranking4ContenedorInterior);
+      gColorContCabecera = SrvColores.get(context, ColorKey.ranking4ContenedorInterior);
+      gColorDelTitulo = SrvColores.get(context, ColorKey.ranking4Titulo);
+      gColorDelTexto = SrvColores.get(context, ColorKey.ranking4Texto);
+      gColorNeutro = SrvColores.get(context, ColorKey.ranking4Neutro);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: gColorContPrincipal);
+    }
+
+    //---------------------------------------
+    // Estructura del contgenedor de un grupo
+    //---------------------------------------
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Container(
+        decoration: decoration,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Encabezado del Grupo
+            const SizedBox(height: 10),
+            _montarTituloDelGrupo(
+              pGrupo,
+              pColorDelTitulo: gColorDelTitulo,
+              pColorDeTexto: gColorDelTexto,
+              pColorDeFondo: gColorContCabecera,
+              pColorPrincipal: gColorContPrincipal,
+            ),
+
+            const SizedBox(height: 10),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+              child: Container(
+                decoration: BoxDecoration(color: gColorContInterior, borderRadius: BorderRadius.circular(10.0)),
+
+                child: Column(
+                  children: [
+                    for (int i = 0; i < pGrupo.players.length; i++)
+                      _mostrarRegistroJugador(pGrupo.players[i], i, gColorDelTexto, gColorNeutro),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  // Widget para montar el título de cada grupo.
+  //----------------------------------------------------------------------------
+
+  Widget _montarTituloDelGrupo(
+    PlayerGroup pGrupo, {
+    required Color pColorDelTitulo,
+    required Color pColorDeTexto,
+    required Color pColorDeFondo,
+    required Color pColorPrincipal,
+  }) {
+    const double iconSize = 48.0;
+    const double paddingTitulo = iconSize / 2;
+
+    return Container(
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: Stack(
+        alignment: Alignment.centerLeft,
+        children: [
+          //----------------------
+          // Contenedor del Título
+          //----------------------
+          Padding(
+            padding: const EdgeInsets.only(left: paddingTitulo),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              decoration: BoxDecoration(
+                color: pColorDeFondo,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(25.0),
+                  bottomRight: Radius.circular(25.0),
+                ),
+              ),
+              child: Row(
+                children: [
+                  SizedBox(width: 20),
+                  Text(
+                    pGrupo.title,
+                    textAlign: TextAlign.left,
+                    style: SrvFuentes.chewy(context, 25, pColorDelTitulo, pColorSombra: null),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          //----------------------------------------
+          // Icono del Grupo (circulito superpuesto)
+          //----------------------------------------
+          Positioned(
+            left: 0,
+            child: Container(
+              width: iconSize,
+              height: iconSize,
+              decoration: BoxDecoration(color: pColorPrincipal, shape: BoxShape.circle),
+              alignment: Alignment.center,
+              child: Text(pGrupo.giphy, style: const TextStyle(fontSize: 20)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //----------------------------------------------------------------------------
+  // Widget para mostrar el registro de un jugador
+  //----------------------------------------------------------------------------
+
+  Widget _mostrarRegistroJugador(
+    Map<String, dynamic> player,
+    int pPosRelativa,
+    Color pColorDeTexto,
+    Color pColorDiscreto,
+  ) {
+    posicion += 1;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          //-----------------------
+          // Posición en el ranking
+          //-----------------------
+          Expanded(
+            flex: 2,
+            child: Container(
+              alignment: Alignment.center,
+              child: player['id'] == miId
+                  ? Container(
+                      padding: const EdgeInsets.all(12),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: SrvColores.get(context, ColorKey.principal),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        posicion.toString(),
+                        style: SrvFuentes.chewy(context, 16, SrvColores.get(context, ColorKey.onPrincipal)),
+                      ),
+                    )
+                  : Text(
+                      posicion.toString(),
+                      style: SrvFuentes.chewy(context, 16, pColorDeTexto, pColorSombra: Colors.transparent),
+                    ),
+            ),
+          ),
+
+          //----------------------------------
+          // Columna del nombre y la ubicación
+          //----------------------------------
+          Expanded(
+            flex: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                //-------------------
+                // Nombre del jugador
+                //-------------------
+                Text(
+                  player['nombre']?.toString() ?? '',
+                  style: player['id'] == miId
+                      ? SrvFuentes.chewy(context, 20, pColorDeTexto)
+                      : SrvFuentes.chewy(context, 16, pColorDeTexto),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 10),
+                // Línea 2: Ciudad y bandera
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    //-----------------
+                    // Bandera del país
+                    //-----------------
+                    Image.network(
+                      '${SrvDatosGenerales.urlBanderas}${player['pais']?.toLowerCase()}.png',
+                      width: 24,
+                      height: 18,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        //-----------------------------
+                        // Si no encontramos la bandera
+                        //-----------------------------
+                        return Container(
+                          width: 24,
+                          height: 18,
+                          color: SrvColores.get(context, ColorKey.destacado),
+                          child: Icon(Icons.error_outline, size: 10, color: SrvColores.get(context, ColorKey.apoyo)),
+                        );
+                      },
+                    ),
+                    SizedBox(width: 4),
+
+                    //--------------------
+                    // Nombre de la ciudad
+                    //--------------------
+                    Text(
+                      player['ciudad']?.toString() ?? '',
+                      style: player['id'] == miId
+                          ? SrvFuentes.chewy(context, 16, pColorDiscreto)
+                          : SrvFuentes.chewy(context, 12, pColorDiscreto),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          //------------------
+          // Columna de puntos
+          //------------------
+          Expanded(
+            flex: 2,
+            child: Text(
+              "${player['puntos']} ${SrvTraducciones.get('abrev_puntos')}",
+              style: player['id'] == miId
+                  ? SrvFuentes.chewy(context, 18, pColorDeTexto)
+                  : SrvFuentes.chewy(context, 16, pColorDeTexto),
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          //--------------------------
+          // Destacamos los 3 primeros
+          //--------------------------
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: pPosRelativa < 3
+                ? Text('✨', style: const TextStyle(fontSize: 18))
+                : Text('✨', style: const TextStyle(fontSize: 18, color: Colors.transparent)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+//==============================================================================
+// FUNCIONES DE SOPORTE
+//==============================================================================
+
+class _SupportFunctions {
+  //----------------------------------------------------------------------------
+  // Buscamos la posición del usuario en la lista
+  //----------------------------------------------------------------------------
+  int encontrarMiPosicion(List<Map<String, dynamic>> pJugadores) {
+    String miId = SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: '');
+    for (int i = 0; i < pJugadores.length; i++) {
+      if (pJugadores[i]['id'] == miId) {
+        return i + 1;
+      }
+    }
+    return 0;
+  }
+
+  //----------------------------------------------------------------------------
+  // Creamos una lista con los distintos grupos de jugadores: Top, Buenos,
+  // normales y malos
   //----------------------------------------------------------------------------
   List<PlayerGroup> _crearGruposDeJugadores(List<Map<String, dynamic>> pJugadores) {
     final gruposDeJugadores = <PlayerGroup>[];
-    final totalPlayers = pJugadores.length;
+    final totalJugadores = pJugadores.length;
+    const int porcentajeTop = 5;
+    const int porcentajeBuenos = 5;
+    const int porcentajeMalos = 10;
 
-    if (totalPlayers == 0) return gruposDeJugadores;
+    if (totalJugadores == 0) return gruposDeJugadores;
 
-    // Calculamos el numero de jugadores de cada grupo:
+    final numJugadoresTop = (totalJugadores * porcentajeTop / 100).ceil();
+    final numJugadoresBuenos = (totalJugadores * porcentajeBuenos / 100).ceil();
+    int numJugadoresMalos = (totalJugadores * porcentajeMalos / 100).ceil();
+    int numJugadoresNormales = totalJugadores - numJugadoresTop - numJugadoresBuenos - numJugadoresMalos;
 
-    final topPlayersCount = (totalPlayers * 0.1).ceil(); // 10% - Top Players
-    final goodPlayersCount = (totalPlayers * 0.1).ceil(); // 10% - Good Players
-    final badPlayersCount = (totalPlayers * 0.1).ceil(); // 10% - Bad Players
-    final normalPlayersCount =
-        totalPlayers - topPlayersCount - goodPlayersCount - badPlayersCount; // 70% - Normal Players
+    // Nos aseguramos de que los "jugadores normales" no queden en negativo:
 
-    // Nos aseguramos de que los "normal players" no queden en negativo:
+    numJugadoresNormales = numJugadoresNormales >= 0 ? numJugadoresNormales : 0;
+    numJugadoresMalos = numJugadoresNormales >= 0
+        ? numJugadoresMalos
+        : totalJugadores - numJugadoresTop - numJugadoresBuenos;
 
-    final adjustedNormalPlayersCount = normalPlayersCount >= 0 ? normalPlayersCount : 0;
-    final adjustedBadPlayersCount = normalPlayersCount >= 0
-        ? badPlayersCount
-        : totalPlayers - topPlayersCount - goodPlayersCount;
-
-    //-------------------------
-    // Top Players (first 10%)
-    //-------------------------
-
-    if (topPlayersCount > 0) {
+    if (numJugadoresTop > 0) {
       gruposDeJugadores.add(
         PlayerGroup(
           posicion: 1,
           title: SrvTraducciones.get('primeros'),
-          players: pJugadores.sublist(0, topPlayersCount),
-          giphy: '🏆',
+          players: pJugadores.sublist(0, numJugadoresTop),
+          giphy: '🌟',
         ),
       );
     }
 
     //------------------------
-    // Good Players (next 10%)
+    // Good Jugadores (next 10%)
     //------------------------
 
-    if (goodPlayersCount > 0 && topPlayersCount + goodPlayersCount <= totalPlayers) {
+    if (numJugadoresBuenos > 0 && numJugadoresTop + numJugadoresBuenos <= totalJugadores) {
       gruposDeJugadores.add(
         PlayerGroup(
           posicion: 2,
           title: SrvTraducciones.get('segundos'),
-          players: pJugadores.sublist(topPlayersCount, topPlayersCount + goodPlayersCount),
+          players: pJugadores.sublist(numJugadoresTop, numJugadoresTop + numJugadoresBuenos),
           giphy: '✨',
         ),
       );
     }
 
     //---------------------------
-    // Normal Players (next 70%)
+    // Normal Jugadores (next 70%)
     //---------------------------
 
-    if (adjustedNormalPlayersCount > 0 &&
-        topPlayersCount + goodPlayersCount + adjustedNormalPlayersCount <= totalPlayers) {
+    if (numJugadoresNormales > 0 && numJugadoresTop + numJugadoresBuenos + numJugadoresNormales <= totalJugadores) {
       gruposDeJugadores.add(
         PlayerGroup(
           posicion: 3,
           title: SrvTraducciones.get('terceros'),
           players: pJugadores.sublist(
-            topPlayersCount + goodPlayersCount,
-            topPlayersCount + goodPlayersCount + adjustedNormalPlayersCount,
+            numJugadoresTop + numJugadoresBuenos,
+            numJugadoresTop + numJugadoresBuenos + numJugadoresNormales,
           ),
-          giphy: '🚶',
+          giphy: '🎭',
         ),
       );
     }
 
     //------------------------
-    // Bad Players (last 10%)
+    // Bad Jugadores (last 10%)
     //------------------------
 
-    if (adjustedBadPlayersCount > 0) {
+    if (numJugadoresMalos > 0) {
       gruposDeJugadores.add(
         PlayerGroup(
           posicion: 4,
           title: SrvTraducciones.get('cuartos'),
-          players: pJugadores.sublist(totalPlayers - adjustedBadPlayersCount),
+          players: pJugadores.sublist(totalJugadores - numJugadoresMalos),
           giphy: '😈',
         ),
       );
@@ -162,431 +654,5 @@ class _PagRankingState extends State<PagRanking> {
     }
 
     return gruposDeJugadores;
-  }
-
-  //----------------------------------------------------------------------------
-  // Widget para mostrar el registro de un jugador
-  //----------------------------------------------------------------------------
-
-  Widget _mostrarJugador(Map<String, dynamic> player) {
-    posicion += 1;
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        //border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Columna de posición
-          Expanded(
-            flex: 1,
-            child: Container(
-              alignment: Alignment.center,
-              child: player['id'] == miId
-                  ? Container(
-                      padding: const EdgeInsets.all(8),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: SrvColores.get(context, ColorKey.principal),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        posicion.toString(),
-                        style: SrvFuentes.chewy(
-                          context,
-                          16,
-                          SrvColores.get(context, ColorKey.blanco),
-                          pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                        ),
-                      ),
-                    )
-                  : Text(
-                      posicion.toString(),
-                      style: SrvFuentes.chewy(
-                        context,
-                        16,
-                        SrvColores.get(context, ColorKey.texto),
-                        pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                      ),
-                    ),
-            ),
-          ),
-
-          // Columna de nombre y ubicación (ahora en dos líneas)
-          Expanded(
-            flex: 4, // Aumentamos el flex ya que ahora contendrá más información
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Línea 1: Nombre del jugador
-                Text(
-                  player['nombre']?.toString() ?? '',
-                  style: player['id'] == miId
-                      ? SrvFuentes.chewy(
-                          context,
-                          16,
-                          SrvColores.get(context, ColorKey.principal),
-                          pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                        )
-                      : SrvFuentes.chewy(
-                          context,
-                          16,
-                          SrvColores.get(context, ColorKey.texto),
-                          pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                        ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 10),
-                // Línea 2: Ciudad y bandera
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Country flag
-                    Image.network(
-                      'https://flagcdn.com/16x12/${player['pais']?.toLowerCase()}.png',
-                      width: 16,
-                      height: 12,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          width: 16,
-                          height: 12,
-                          color: SrvColores.get(context, ColorKey.destacado),
-                          child: Icon(Icons.error_outline, size: 10, color: SrvColores.get(context, ColorKey.apoyo)),
-                        );
-                      },
-                    ),
-                    SizedBox(width: 4), // Espacio reducido
-                    // City name
-                    Text(
-                      player['ciudad']?.toString() ?? '',
-                      style: player['id'] == miId
-                          ? SrvFuentes.chewy(
-                              context,
-                              12,
-                              SrvColores.get(context, ColorKey.principal),
-                              pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                            )
-                          : SrvFuentes.chewy(
-                              context,
-                              12,
-                              SrvColores.get(context, ColorKey.texto),
-                              pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                            ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // Columna de puntos
-          Expanded(
-            flex: 2,
-            child: Text(
-              player['puntos']?.toString() ?? '',
-              style: player['id'] == miId
-                  ? SrvFuentes.chewy(
-                      context,
-                      16,
-                      SrvColores.get(context, ColorKey.principal),
-                      pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                    )
-                  : SrvFuentes.chewy(
-                      context,
-                      16,
-                      SrvColores.get(context, ColorKey.texto),
-                      pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                    ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // Columna de partidas
-          Expanded(
-            flex: 1,
-            child: Text(
-              player['partidas']?.toString() ?? '',
-              style: player['id'] == miId
-                  ? SrvFuentes.chewy(
-                      context,
-                      12,
-                      SrvColores.get(context, ColorKey.principal),
-                      pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                    )
-                  : SrvFuentes.chewy(
-                      context,
-                      12,
-                      SrvColores.get(context, ColorKey.texto),
-                      pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                    ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // Columna de tiempo récord
-          Expanded(
-            flex: 1,
-            child: Text(
-              SrvFechas.segundosAMinutosYSegundos(player['tiempo_record'] ?? 0),
-              style: player['id'] == miId
-                  ? SrvFuentes.chewy(
-                      context,
-                      12,
-                      SrvColores.get(context, ColorKey.principal),
-                      pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                    )
-                  : SrvFuentes.chewy(
-                      context,
-                      12,
-                      SrvColores.get(context, ColorKey.texto),
-                      pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                    ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Widget to build a group section
-  Widget _buildGroupSection(PlayerGroup group) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Divider(height: 10, thickness: 2, color: SrvColores.get(context, ColorKey.destacado), indent: 8, endIndent: 8),
-        // Group Header
-        Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(12),
-          color: SrvColores.get(context, ColorKey.fondo),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Icono del Grupo:
-              Text(
-                group.giphy,
-                style: SrvFuentes.luckiestGuy(
-                  context,
-                  32,
-                  SrvColores.get(context, ColorKey.principal),
-                  pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                ),
-              ),
-
-              // Texto Central
-              Expanded(
-                child: Text(
-                  '${group.title} • ${group.players.length}',
-                  textAlign: TextAlign.center,
-                  style: SrvFuentes.luckiestGuy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.principal),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                ),
-              ),
-
-              // Icono del grupo
-              Text(
-                group.giphy,
-                style: SrvFuentes.luckiestGuy(
-                  context,
-                  32,
-                  SrvColores.get(context, ColorKey.principal),
-                  pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        //------------------------------------------------
-        // Cabeceras de las columnas de cada grupo
-        //------------------------------------------------
-        Container(
-          padding: EdgeInsets.all(8),
-          color: SrvColores.get(context, ColorKey.fondo),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                flex: 1, // Posición
-                child: Text(
-                  '📍',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Expanded(
-                flex: 4, // Jugador (ahora incluye nombre y ubicación)
-                child: Text(
-                  '👤',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 2, // Puntos
-                child: Text(
-                  '🏅',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Expanded(
-                flex: 1, // Partidas
-                child: Text(
-                  '🕹️',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Expanded(
-                flex: 1, // Tiempo
-                child: Text(
-                  '⌚',
-                  style: SrvFuentes.chewy(
-                    context,
-                    18,
-                    SrvColores.get(context, ColorKey.negro),
-                    pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        Divider(height: 10, thickness: 2, color: SrvColores.get(context, ColorKey.destacado), indent: 8, endIndent: 8),
-
-        //-----------------------------------------
-        // Mostramos los jugadores del grupo actual
-        //-----------------------------------------
-        ...group.players.map((player) => _mostrarJugador(player)),
-        SizedBox(height: 16), // Space between sections
-      ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    posicion = 0;
-    return Scaffold(
-      backgroundColor: SrvColores.get(context, ColorKey.fondo),
-      //Toolbar:
-      appBar: WidToolbar(showMenuButton: false, showBackButton: true, subtitle: SrvTraducciones.get('subtitulo_app')),
-
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: listaRanking,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text(SrvTraducciones.get('sin_datos')));
-          }
-
-          final allPlayers = snapshot.data!;
-          final groups = _crearGruposDeJugadores(allPlayers);
-
-          // Encontrar mi posición
-          final miPosicion = _encontrarMiPosicion(allPlayers);
-
-          return Column(
-            children: [
-              // Mensaje de posición del jugador - SIEMPRE VISIBLE
-              //if (miPosicion > 0)
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(12),
-                color: SrvColores.get(context, ColorKey.fondo),
-                child: Column(
-                  children: [
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "World ",
-                            style: SrvFuentes.luckiestGuy(
-                              context,
-                              24,
-                              SrvColores.get(context, ColorKey.destacado),
-                              pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                            ), // Tamaño y color diferente
-                          ),
-                          TextSpan(
-                            text: "Flippy Competition ${InfoNiveles.nivel[EstadoDelJuego.nivel]['titulo']}",
-                            style: SrvFuentes.luckiestGuy(
-                              context,
-                              22,
-                              SrvColores.get(context, ColorKey.principal),
-                              pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.place, color: SrvColores.get(context, ColorKey.muyResaltado), size: 20),
-                        SizedBox(width: 8),
-                        Text(
-                          miPosicion > 0
-                              ? '${SrvTraducciones.get('estas_en_posicion')} $miPosicion'
-                              : SrvTraducciones.get('no_has_jugado'),
-                          style: SrvFuentes.chewy(
-                            context,
-                            18,
-                            SrvColores.get(context, ColorKey.principal),
-                            pColorSombra: SrvColores.get(context, ColorKey.fondo),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
-              // Lista de grupos
-              Expanded(child: ListView(children: groups.map((group) => _buildGroupSection(group)).toList())),
-            ],
-          );
-        },
-      ),
-    );
   }
 }

@@ -15,10 +15,36 @@ enum ColorKey {
   error,
   exito,
   fondo,
+  neutro,
   contrasteFondo,
   texto,
   blanco,
   negro,
+  degradadoPantalla1,
+  degradadoPantalla2,
+  degradadoPantalla3,
+  degradadoContainer1,
+  degradadoContainer2,
+  ranking1Contenedor,
+  ranking1ContenedorInterior,
+  ranking1Titulo,
+  ranking1Texto,
+  ranking1Neutro,
+  ranking2Contenedor,
+  ranking2ContenedorInterior,
+  ranking2Titulo,
+  ranking2Texto,
+  ranking2Neutro,
+  ranking3Contenedor,
+  ranking3ContenedorInterior,
+  ranking3Titulo,
+  ranking3Texto,
+  ranking3Neutro,
+  ranking4Contenedor,
+  ranking4ContenedorInterior,
+  ranking4Titulo,
+  ranking4Texto,
+  ranking4Neutro,
 }
 
 class SrvColores {
@@ -36,11 +62,41 @@ class SrvColores {
     ColorKey.aviso: const Color.fromARGB(255, 247, 120, 2),
     ColorKey.error: Colors.red,
     ColorKey.exito: const Color.fromARGB(255, 2, 139, 43),
+    ColorKey.neutro: Color.fromARGB(255, 194, 193, 193),
     ColorKey.fondo: Color(0xFFE0E0E0),
     ColorKey.contrasteFondo: Color.fromARGB(255, 255, 255, 255),
     ColorKey.texto: Colors.black87,
     ColorKey.blanco: Colors.white,
     ColorKey.negro: Colors.black,
+    ColorKey.degradadoPantalla1: Color.fromARGB(255, 24, 19, 97),
+    ColorKey.degradadoPantalla2: Color(0xFF4CA04C),
+    ColorKey.degradadoPantalla3: Color(0xFFE9934B),
+    ColorKey.degradadoContainer1: Colors.green.shade900,
+    ColorKey.degradadoContainer2: Color.fromARGB(255, 54, 129, 58),
+    //Ranking-1:
+    ColorKey.ranking1Contenedor: Color(0xFF6B4EEA),
+    ColorKey.ranking1ContenedorInterior: Color.fromARGB(255, 70, 54, 155),
+    ColorKey.ranking1Titulo: Colors.orange,
+    ColorKey.ranking1Texto: Colors.white,
+    ColorKey.ranking1Neutro: Color.fromARGB(255, 194, 193, 193),
+    //Ranking-2:
+    ColorKey.ranking2Contenedor: Color.fromARGB(255, 103, 212, 105),
+    ColorKey.ranking2ContenedorInterior: Color(0xFF4CA04C),
+    ColorKey.ranking2Titulo: Color.fromARGB(255, 103, 212, 105),
+    ColorKey.ranking2Texto: Colors.black87,
+    ColorKey.ranking2Neutro: Color.fromARGB(255, 99, 99, 99),
+    //Ranking-3:
+    ColorKey.ranking3Contenedor: Color.fromARGB(255, 205, 212, 103),
+    ColorKey.ranking3ContenedorInterior: Color.fromARGB(255, 158, 160, 76),
+    ColorKey.ranking3Titulo: Color.fromARGB(255, 205, 212, 103),
+    ColorKey.ranking3Texto: Color.fromARGB(221, 0, 0, 0),
+    ColorKey.ranking3Neutro: Color.fromARGB(255, 99, 99, 99),
+    //Ranking-4:
+    ColorKey.ranking4Contenedor: Color.fromARGB(255, 249, 160, 88),
+    ColorKey.ranking4ContenedorInterior: Color(0xFFD88540),
+    ColorKey.ranking4Titulo: Color.fromARGB(255, 201, 56, 201),
+    ColorKey.ranking4Texto: Colors.black87,
+    ColorKey.ranking4Neutro: Color.fromARGB(255, 99, 99, 99),
   };
 
   static final Map<ColorKey, Color> _temaOscuro = {
@@ -57,11 +113,41 @@ class SrvColores {
     ColorKey.aviso: const Color.fromARGB(255, 247, 120, 2),
     ColorKey.error: const Color.fromARGB(255, 158, 43, 35),
     ColorKey.exito: const Color.fromARGB(255, 1, 97, 30),
+    ColorKey.neutro: Color.fromARGB(255, 194, 193, 193),
     ColorKey.fondo: Color.fromARGB(255, 30, 30, 30),
     ColorKey.contrasteFondo: Color.fromARGB(255, 139, 139, 139),
     ColorKey.texto: Colors.white70,
     ColorKey.blanco: Colors.white,
     ColorKey.negro: Colors.black,
+    ColorKey.degradadoPantalla1: Color.fromARGB(255, 24, 19, 97),
+    ColorKey.degradadoPantalla2: Color(0xFF4CA04C),
+    ColorKey.degradadoPantalla3: Color(0xFFE9934B),
+    ColorKey.degradadoContainer1: Colors.green.shade900,
+    ColorKey.degradadoContainer2: Color.fromARGB(255, 54, 129, 58),
+    //Ranking-1:
+    ColorKey.ranking1Contenedor: Color(0xFF6B4EEA),
+    ColorKey.ranking1ContenedorInterior: Color.fromARGB(255, 70, 54, 155),
+    ColorKey.ranking1Titulo: Colors.orange,
+    ColorKey.ranking1Texto: Colors.white,
+    ColorKey.ranking1Neutro: Color.fromARGB(255, 194, 193, 193),
+    //Ranking-2:
+    ColorKey.ranking2Contenedor: Color.fromARGB(255, 103, 212, 105),
+    ColorKey.ranking2ContenedorInterior: Color(0xFF4CA04C),
+    ColorKey.ranking2Titulo: Color.fromARGB(255, 103, 212, 105),
+    ColorKey.ranking2Texto: Colors.black87,
+    ColorKey.ranking2Neutro: Color.fromARGB(255, 99, 99, 99),
+    //Ranking-3:
+    ColorKey.ranking3Contenedor: Color.fromARGB(255, 205, 212, 103),
+    ColorKey.ranking3ContenedorInterior: Color.fromARGB(255, 158, 160, 76),
+    ColorKey.ranking3Titulo: Color.fromARGB(255, 205, 212, 103),
+    ColorKey.ranking3Texto: Color.fromARGB(221, 0, 0, 0),
+    ColorKey.ranking3Neutro: Color.fromARGB(255, 99, 99, 99),
+    //Ranking-4:
+    ColorKey.ranking4Contenedor: Color.fromARGB(255, 249, 160, 88),
+    ColorKey.ranking4ContenedorInterior: Color(0xFFD88540),
+    ColorKey.ranking4Titulo: Color.fromARGB(255, 201, 56, 201),
+    ColorKey.ranking4Texto: Colors.black87,
+    ColorKey.ranking4Neutro: Color.fromARGB(255, 99, 99, 99),
   };
 
   static bool _estamosEnModoOscuro(BuildContext context) {
@@ -70,7 +156,8 @@ class SrvColores {
   }
 
   static Color get(BuildContext context, ColorKey pColor) {
-    final tema = _estamosEnModoOscuro(context) ? _temaOscuro : _temaClaro;
+    //OJO: Estamos devolviendo siempre el tema claro:
+    final tema = _estamosEnModoOscuro(context) ? _temaClaro : _temaClaro;
     return tema[pColor]!;
   }
 }

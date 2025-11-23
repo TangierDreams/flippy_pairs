@@ -7,13 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class WidResumen extends StatefulWidget {
-  //final int pNivel;
-
   const WidResumen({super.key});
-
   @override
   State<WidResumen> createState() => WidResumenState();
 }
+
+//==============================================================================
+// CLASE PRINCIPAL
+//==============================================================================
 
 class WidResumenState extends State<WidResumen> {
   int partidas = 0;
@@ -23,37 +24,18 @@ class WidResumenState extends State<WidResumen> {
   // Control de carga de datos
   bool datosListos = false;
 
+  //----------------------------------------------------------------------------
+  // Tareas al iniciar la página.
+  //----------------------------------------------------------------------------
+
   @override
   void initState() {
     super.initState();
-    // Al iniciar el widget, cargamos los datos
-    //refrescarDatos();
   }
 
-  // Función pública para que la página pueda llamar y refrescar los datos al empezar un nuevo juego
-
-  Future<void> refrescarDatos() async {
-    SrvLogger.grabarLog("wid_resumen", "refrescarDatos()", "Refrescar los datos del resumen");
-    // Aquí llamas a Supabase
-    final datos = await SrvSupabase.obtenerRegFlippy(
-      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-    );
-
-    final nivel = datos.firstWhere((reg) => reg['nivel'] == EstadoDelJuego.nivel, orElse: () => <String, dynamic>{});
-
-    final pos = await SrvSupabase.obtenerRankingFlippy(
-      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
-      pLevel: EstadoDelJuego.nivel,
-    );
-
-    if (mounted) {
-      setState(() {
-        partidas = nivel['partidas'] ?? 0;
-        puntos = nivel['puntos'] ?? 0;
-        posicion = pos;
-      });
-    }
-  }
+  //----------------------------------------------------------------------------
+  // WIDGET PRINCIPAL
+  //----------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +43,7 @@ class WidResumenState extends State<WidResumen> {
 
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      //margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -130,5 +112,32 @@ class WidResumenState extends State<WidResumen> {
         ],
       ),
     );
+  }
+
+  //---------------------------------------------
+  // Función para refrescar los datos del resumen
+  //---------------------------------------------
+
+  Future<void> refrescarDatos() async {
+    SrvLogger.grabarLog("wid_resumen", "refrescarDatos()", "Refrescar los datos del resumen");
+    // Aquí llamas a Supabase
+    final datos = await SrvSupabase.obtenerRegFlippy(
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
+    );
+
+    final nivel = datos.firstWhere((reg) => reg['nivel'] == EstadoDelJuego.nivel, orElse: () => <String, dynamic>{});
+
+    final pos = await SrvSupabase.obtenerRankingFlippy(
+      pId: SrvDiskette.leerValor(DisketteKey.deviceId, defaultValue: ''),
+      pLevel: EstadoDelJuego.nivel,
+    );
+
+    if (mounted) {
+      setState(() {
+        partidas = nivel['partidas'] ?? 0;
+        puntos = nivel['puntos'] ?? 0;
+        posicion = pos;
+      });
+    }
   }
 }

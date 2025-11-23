@@ -12,7 +12,7 @@ import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flutter/material.dart';
 
 class WidCarta extends StatefulWidget {
-  final int pIndex; // ← ÍNDICE AÑADIDO
+  final int pIndex;
   final bool pEstaBocaArriba;
   final File pImagenCarta;
   final bool pDestello;
@@ -20,7 +20,7 @@ class WidCarta extends StatefulWidget {
 
   const WidCarta({
     super.key,
-    required this.pIndex, // ← ÍNDICE AÑADIDO
+    required this.pIndex,
     required this.pEstaBocaArriba,
     required this.pImagenCarta,
     required this.pDestello,
@@ -138,7 +138,7 @@ class _WidCartaState extends State<WidCarta> with SingleTickerProviderStateMixin
                                 fit: BoxFit.contain,
                                 child: mostrarCarta
                                     ? Image.file(widget.pImagenCarta)
-                                    : Image.asset('assets/imagenes/general/interrogacion.png'),
+                                    : Image.asset('assets/imagenes/interrogacion.png'),
                               ),
                             ),
                           );

@@ -19,7 +19,7 @@ dependencies:
   path_provider: ^2.1.2
   intl: ^0.18.1
   fluttertoast: ^8.2.4
-  url_launcher: ^6.2.1  
+  url_launcher: ^6.2.1
   cupertino_icons: ^1.0.8
 
 dev_dependencies:
@@ -32,20 +32,20 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: false
-  image_path: assets/imagenes/general/app_logo.png
+  image_path: assets/imagenes/app_logo.png
 
 flutter_native_splash:
   color: "#3A4BA7"
-  image: assets/imagenes/general/app_splash.png
+  image: assets/imagenes/app_splash.png
   android: true
   ios: false
   android_12:
     color: "#3A4BA7"
-    image: assets/imagenes/general/app_splash.png
+    image: assets/imagenes/app_splash.png
     icon_background_color: "#FFFFFF"
 
 flutter:
   uses-material-design: true
   assets:
-    - assets/imagenes/general/
+    - assets/imagenes/
     - assets/sonidos/

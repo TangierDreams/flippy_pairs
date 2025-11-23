@@ -6,6 +6,7 @@
 import 'package:flippy_pairs/PAGINAS/JUEGO/MODELOS/mod_juego.dart';
 import 'package:flippy_pairs/PAGINAS/RANKING/MODELOS/player_group.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_fuentes.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_supabase.dart';
@@ -20,7 +21,7 @@ class PagRankingPaises extends StatefulWidget {
 }
 
 //==============================================================================
-// CLASE PRINCIPAL.
+// CLASE PRINCIPAL
 //==============================================================================
 
 class _PagRankingPaisesState extends State<PagRankingPaises> {
@@ -78,12 +79,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
           final groups = _SupportFunctions()._crearGruposDePaises(allPlayers);
 
           return Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromARGB(255, 24, 19, 97), // 1. Azul muy oscuro (Casi negro)
-                  Color(0xFF4CA04C), // 2. Verde (o Menta oscura, punto medio)
-                  Color(0xFFE9934B), // 3. Naranja (Parte inferior)
+                  SrvColores.get(context, ColorKey.degradadoPantalla1),
+                  SrvColores.get(context, ColorKey.degradadoPantalla2),
+                  SrvColores.get(context, ColorKey.degradadoPantalla3),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -91,10 +92,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 stops: [0.0, 0.7, 0.9],
               ),
               // Si añades un patrón de estrellas (tile) como imagen:
-              image: DecorationImage(
-                image: AssetImage('assets/imagenes/general/stars.png'),
-                repeat: ImageRepeat.repeat,
-              ),
+              image: DecorationImage(image: AssetImage(SrvDatosGenerales.fondoPantalla), repeat: ImageRepeat.repeat),
             ),
             child: Column(
               children: [
@@ -102,7 +100,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 _montarTituloPrincipal(context),
 
                 // Lista de grupos con las tarjetas bonitas
-                Expanded(child: ListView(children: groups.map((group) => _montarGrupos(group)).toList())),
+                Expanded(child: ListView(children: [for (int i = 0; i < groups.length; i++) _montarGrupos(groups[i])])),
               ],
             ),
           );
@@ -117,42 +115,42 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
 
   Widget _montarGrupos(PlayerGroup pGrupo) {
     BoxDecoration decoration;
-    Color grupoColorDelTitulo;
-    Color grupoColorPrincipal;
-    Color grupoColorDeTexto;
-    Color grupoSegundoContenedor;
-    Color grupoColorCabecera;
+    Color gColorContPrincipal;
+    Color gColorContInterior;
+    Color gColorContCabecera;
+    Color gColorDelTitulo;
+    Color gColorDelTexto;
 
     if (pGrupo.posicion == 1) {
       //--------------------------
       // El primer grupo de paises
       //--------------------------
-      grupoColorDelTitulo = Color.fromARGB(255, 247, 186, 45);
-      grupoColorDeTexto = Colors.white;
-      grupoSegundoContenedor = Colors.black.withValues(alpha: 0.2);
-      grupoColorCabecera = const Color(0xFF4C3AA8);
-      grupoColorPrincipal = const Color(0xFF6B4EEA);
-      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: grupoColorPrincipal);
+      gColorContPrincipal = SrvColores.get(context, ColorKey.ranking1Contenedor);
+      gColorContInterior = SrvColores.get(context, ColorKey.ranking1ContenedorInterior);
+      gColorContCabecera = SrvColores.get(context, ColorKey.ranking1ContenedorInterior);
+      gColorDelTitulo = SrvColores.get(context, ColorKey.ranking1Titulo);
+      gColorDelTexto = SrvColores.get(context, ColorKey.ranking1Texto);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: gColorContPrincipal);
     } else if (pGrupo.posicion == 2) {
       //---------------------------
-      // El sengudo grupo de paises
+      // El segundo grupo de paises
       //---------------------------
-      grupoColorDelTitulo = Color(0xFFbae589);
-      grupoColorDeTexto = Colors.black87;
-      grupoSegundoContenedor = const Color(0xFF4CA04C);
-      grupoColorCabecera = const Color.fromARGB(255, 51, 122, 52);
-      grupoColorPrincipal = const Color.fromARGB(255, 103, 212, 105);
-      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: grupoColorPrincipal);
+      gColorContPrincipal = SrvColores.get(context, ColorKey.ranking2Contenedor);
+      gColorContInterior = SrvColores.get(context, ColorKey.ranking2ContenedorInterior);
+      gColorContCabecera = SrvColores.get(context, ColorKey.ranking2ContenedorInterior);
+      gColorDelTitulo = SrvColores.get(context, ColorKey.ranking2Titulo);
+      gColorDelTexto = SrvColores.get(context, ColorKey.ranking2Texto);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: gColorContPrincipal);
     } else {
       //--------------------------
       // El tercer grupo de paises
       //--------------------------
-      grupoColorDelTitulo = Color.fromARGB(255, 255, 184, 3);
-      grupoColorDeTexto = Colors.black87;
-      grupoSegundoContenedor = const Color(0xFFD88540);
-      grupoColorCabecera = const Color(0xFFA8632C);
-      grupoColorPrincipal = const Color.fromARGB(255, 249, 160, 88);
-      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: grupoColorPrincipal);
+      gColorContPrincipal = SrvColores.get(context, ColorKey.ranking4Contenedor);
+      gColorContInterior = SrvColores.get(context, ColorKey.ranking4ContenedorInterior);
+      gColorContCabecera = SrvColores.get(context, ColorKey.ranking4ContenedorInterior);
+      gColorDelTitulo = SrvColores.get(context, ColorKey.ranking4Titulo);
+      gColorDelTexto = SrvColores.get(context, ColorKey.ranking4Texto);
+      decoration = BoxDecoration(borderRadius: BorderRadius.circular(16.0), color: gColorContPrincipal);
     }
 
     // 2. Estructura de la tarjeta
@@ -167,10 +165,10 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             const SizedBox(height: 10),
             _montarTituloDelGrupo(
               pGrupo,
-              pColorDelTitulo: grupoColorDelTitulo,
-              pColorDeTexto: grupoColorDeTexto,
-              pColorDeFondo: grupoColorCabecera,
-              pColorPrincipal: grupoColorPrincipal,
+              pColorDelTitulo: gColorDelTitulo,
+              pColorDeTexto: gColorDelTexto,
+              pColorDeFondo: gColorContCabecera,
+              pColorPrincipal: gColorContPrincipal,
             ),
 
             const SizedBox(height: 10),
@@ -178,17 +176,12 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
               child: Container(
-                decoration: BoxDecoration(color: grupoSegundoContenedor, borderRadius: BorderRadius.circular(10.0)),
+                decoration: BoxDecoration(color: gColorContInterior, borderRadius: BorderRadius.circular(10.0)),
 
                 child: Column(
                   children: [
-                    ...pGrupo.players.map(
-                      (player) => _montarRegistroPais(
-                        player,
-                        pIsTopGroup: pGrupo.posicion == 1,
-                        pColorDeTexto: grupoColorDeTexto,
-                      ),
-                    ),
+                    for (int i = 0; i < pGrupo.players.length; i++)
+                      _montarRegistroPais(pGrupo.players[i], i, pColorDeTexto: gColorDelTexto),
                     const SizedBox(height: 16),
                   ],
                 ),
@@ -207,22 +200,17 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   //----------------------------------------------------------------------------
 
   Widget _montarTituloPrincipal(BuildContext context) {
-    // Colores del título principal
-    final Color toolbarColor = SrvColores.get(context, ColorKey.principal);
-
     const double iconSize = 60.0;
-    //const double iconPadding = 15.0;
-    //const double totalIconArea = iconSize / 2;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       child: Container(
         decoration: BoxDecoration(
-          color: toolbarColor,
+          color: SrvColores.get(context, ColorKey.principal),
           borderRadius: BorderRadius.circular(16.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.5),
+              color: SrvColores.get(context, ColorKey.negro),
               spreadRadius: 1,
               blurRadius: 5,
               offset: const Offset(0, 3),
@@ -238,7 +226,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
               child: Container(
                 width: iconSize,
                 height: iconSize,
-                decoration: BoxDecoration(color: toolbarColor, shape: BoxShape.circle),
+                decoration: BoxDecoration(color: SrvColores.get(context, ColorKey.principal), shape: BoxShape.circle),
                 alignment: Alignment.center,
                 child: const Text('🌎', style: TextStyle(fontSize: 32)),
               ),
@@ -249,7 +237,7 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               decoration: BoxDecoration(
-                color: toolbarColor.withValues(alpha: 0.0),
+                color: SrvColores.get(context, ColorKey.principal).withValues(alpha: 0.0),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(10.0),
                   bottomLeft: Radius.circular(10.0),
@@ -364,14 +352,16 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
   // Widget para mostrar la fila de un pais.
   //----------------------------------------------------------------------------
 
-  Widget _montarRegistroPais(Map<String, dynamic> pPais, {required bool pIsTopGroup, required Color pColorDeTexto}) {
+  Widget _montarRegistroPais(Map<String, dynamic> pPais, int pPosRelativa, {required Color pColorDeTexto}) {
     posicion += 1;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
-          // 1. Columna de posición
+          //-----------------------
+          // Posicion en el ranking
+          //-----------------------
           Container(
             alignment: Alignment.centerLeft,
             width: 30, // Ancho fijo para la posición
@@ -381,20 +371,27 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
             ),
           ),
 
-          // 2. Bandera y Nombre del País (Simplificado y estilizado)
+          //--------------------------
+          // Bandera y Nombre del País
+          //--------------------------
           Expanded(
             flex: 4,
             child: Row(
               children: [
-                // Country flag
+                //--------
+                // Bandera
+                //--------
                 ClipRRect(
                   borderRadius: BorderRadius.circular(2.0),
                   child: Image.network(
-                    'https://flagcdn.com/64x48/${pPais['pais']?.toLowerCase()}.png',
-                    width: 24, // Bandera más grande
+                    '${SrvDatosGenerales.urlBanderas}${pPais['pais']?.toLowerCase()}.png',
+                    width: 24,
                     height: 18,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
+                      //------------------
+                      // Si no hay bandera
+                      //------------------
                       return Container(
                         width: 24,
                         height: 18,
@@ -406,34 +403,37 @@ class _PagRankingPaisesState extends State<PagRankingPaises> {
                 ),
                 const SizedBox(width: 10),
 
+                //----------------
                 // Nombre del País
+                //----------------
                 Flexible(
                   child: Text(
                     pPais['nombre']?.toString() ?? '',
-                    style: SrvFuentes.chewy(context, 16, pColorDeTexto, pColorSombra: Colors.transparent),
+                    style: SrvFuentes.chewy(context, 16, pColorDeTexto),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
             ),
           ),
-
           const Spacer(), // Empuja los puntos a la derecha
-          // 3. Puntuación (Texto de acento)
+          //-----------
+          // Puntuación
+          //-----------
           Text(
             '${pPais['puntos']?.toString() ?? ''} Pts',
-            style: SrvFuentes.chewy(context, 16, pColorDeTexto, pColorSombra: Colors.transparent),
+            style: SrvFuentes.chewy(context, 16, pColorDeTexto),
             textAlign: TextAlign.right,
           ),
 
-          // 4. Glifo extra (Trofeo, Balanza o Tortuga)
-          // El grupo TOP usa '✨', los otros usan su propio glifo de grupo.
+          //--------------------------
+          // Destacamos los 3 primeros
+          //--------------------------
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
-            child: Text(
-              pIsTopGroup && posicion <= 3 ? '✨' : '', // Si es TOP 3, usa '✨', sino vacío
-              style: const TextStyle(fontSize: 18),
-            ),
+            child: pPosRelativa < 3
+                ? Text('✨', style: const TextStyle(fontSize: 18))
+                : Text('✨', style: const TextStyle(fontSize: 18, color: Colors.transparent)),
           ),
         ],
       ),

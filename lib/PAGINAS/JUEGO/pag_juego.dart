@@ -10,12 +10,13 @@ import 'package:flippy_pairs/PAGINAS/JUEGO/srv_juego.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_juego_acabado.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_colores.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/srv_cronometro.dart';
+import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_datos_generales.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_diskette.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_logger.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_sonidos.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/SERVICIOS/srv_traducciones.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_contador.dart';
-import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_resumen.dart';
+import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_resumen.dart';
 import 'package:flutter/material.dart';
 import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_carta.dart';
 import 'package:flippy_pairs/PROCEDIMIENTOS/WIDGETS/wid_toolbar.dart';
@@ -23,10 +24,13 @@ import 'package:flippy_pairs/PAGINAS/JUEGO/WIDGETS/wid_cronometro.dart';
 
 class PagJuego extends StatefulWidget {
   const PagJuego({super.key});
-
   @override
   State<PagJuego> createState() => _PagJuegoState();
 }
+
+//==============================================================================
+// CLASE PRINCIPAL.
+//==============================================================================
 
 class _PagJuegoState extends State<PagJuego> {
   bool _juegoListo = false;
@@ -57,6 +61,176 @@ class _PagJuegoState extends State<PagJuego> {
     SrvLogger.grabarLog('pag_juego', 'dispose()', 'Salimos de la página');
     super.dispose();
   }
+
+  //----------------------------------------------------------------------------
+  // WIDGET PRINCIPAL.
+  //----------------------------------------------------------------------------
+  @override
+  Widget build(BuildContext context) {
+    const double espacioBanner = 60;
+    if (!_juegoListo) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    return Scaffold(
+      backgroundColor: SrvColores.get(context, ColorKey.fondo),
+      appBar: WidToolbar(
+        showMenuButton: false,
+        showBackButton: true,
+        subtitle: SrvTraducciones.get('subtitulo_app'),
+        pFuncionCallBack: () async {
+          if (EstadoDelJuego.puntosPartida < 0) {
+            await SrvJuego.guardarPartida();
+          }
+        },
+      ),
+
+      //----------------------------------
+      // Contenedor principal de la página
+      //----------------------------------
+      body: Container(
+        padding: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              SrvColores.get(context, ColorKey.degradadoPantalla1),
+              SrvColores.get(context, ColorKey.degradadoPantalla2),
+              SrvColores.get(context, ColorKey.degradadoPantalla3),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            // Puedes añadir 'stops' si quieres controlar dónde cambia cada color:
+            stops: [0.0, 0.7, 0.9],
+          ),
+          // Si añades un patrón de estrellas (tile) como imagen:
+          image: DecorationImage(image: AssetImage(SrvDatosGenerales.fondoPantalla), repeat: ImageRepeat.repeat),
+        ),
+        child: Column(
+          children: [
+            //-----------------------------
+            // Contenedor de los contadores
+            //-----------------------------
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: SrvColores.get(context, ColorKey.principal),
+              ),
+              child: Column(
+                children: [
+                  //------------------------
+                  // Resumen de puntos y WFC
+                  //------------------------
+                  WidResumen(key: _claveResumen),
+                  const SizedBox(height: 5),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      //----------------
+                      // Total de puntos
+                      //----------------
+                      WidContador(
+                        pTexto: SrvTraducciones.get('puntos'),
+                        pContador: EstadoDelJuego.puntosPartida,
+                        pModo: 1,
+                      ),
+                      SizedBox(width: 10),
+                      //---------------
+                      // Total aciertos
+                      //---------------
+                      WidContador(
+                        pTexto: SrvTraducciones.get('aciertos'),
+                        pContador: EstadoDelJuego.parejasAcertadas,
+                        pModo: 1,
+                      ),
+                      SizedBox(width: 10),
+                      //--------------
+                      // Total errores
+                      //--------------
+                      WidContador(
+                        pTexto: SrvTraducciones.get('errores'),
+                        pContador: EstadoDelJuego.parejasFalladas,
+                        pModo: 2,
+                      ),
+                      SizedBox(width: 10),
+                      //------
+                      // Timer
+                      //------
+                      WidCronometro(),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // Grid de cartas
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // IMPORTANTE: Restamos el espacio del banner del alto disponible
+
+                  // Espacio disponible (restamos padding y spacing)
+                  final double anchoDisponible = constraints.maxWidth - 24; // padding 12 + 12
+                  final double altoDisponible = constraints.maxHeight - 24 - espacioBanner;
+
+                  // Espacio entre cartas
+                  final double crossSpacing = 8;
+                  final double mainSpacing = 8;
+
+                  // Calculamos el ancho de cada carta
+                  final double anchoCartaPorEspacio =
+                      (anchoDisponible - (crossSpacing * (EstadoDelJuego.columnas - 1))) / EstadoDelJuego.columnas;
+
+                  // Calculamos el alto de cada carta si usáramos todo el espacio vertical
+                  final double altoCartaPorEspacio =
+                      (altoDisponible - (mainSpacing * (EstadoDelJuego.filas - 1))) / EstadoDelJuego.filas;
+
+                  // Para mantener proporción cuadrada (o cercana), elegimos el menor de los dos
+                  final double sizeCarta = min(anchoCartaPorEspacio, altoCartaPorEspacio);
+
+                  // Calculamos el childAspectRatio basándonos en el tamaño real que tendrá cada carta
+                  // Ratio = ancho / alto de cada celda del grid
+                  final double childAspectRatio = anchoCartaPorEspacio / sizeCarta;
+
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: EstadoDelJuego.columnas,
+                        crossAxisSpacing: crossSpacing,
+                        mainAxisSpacing: mainSpacing,
+                        childAspectRatio: childAspectRatio,
+                        children: List.generate(EstadoDelJuego.cartasTotales, (index) {
+                          return WidCarta(
+                            pIndex: index,
+                            pEstaBocaArriba:
+                                EstadoDelJuego.listaDeCartasGiradas[index] ||
+                                EstadoDelJuego.listaDeCartasEmparejadas[index],
+                            pImagenCarta: EstadoDelJuego.listaDeImagenes[index],
+                            pDestello: EstadoDelJuego.cartasDestello.contains(index),
+                            pCallBackFunction: () => _cuandoPulsanUnaCarta(index),
+                          );
+                        }),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: espacioBanner),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //============================================================================
+  // Funciones de apoyo.
+  //============================================================================
 
   //----------------------------------------------------------------------------
   // Preparar todo para empezar a jugar
@@ -114,7 +288,7 @@ class _PagJuegoState extends State<PagJuego> {
   }
 
   //----------------------------------------------------------------------------
-  // FUNCIÓN PRINCIPAL: Cuando el usuario pulsa una carta
+  // Tareas a realizar cuando se pulsa una carta.
   //----------------------------------------------------------------------------
   Future<void> _cuandoPulsanUnaCarta(int pIndex) async {
     SrvLogger.grabarLog("pag_juego", "_cuandoPulsanUnaCarta()", "Carta pulsada: $pIndex");
@@ -238,120 +412,5 @@ class _PagJuegoState extends State<PagJuego> {
         );
       });
     }
-  }
-
-  //----------------------------------------------------------------------------
-  // Construir la interfaz
-  //----------------------------------------------------------------------------
-  @override
-  Widget build(BuildContext context) {
-    if (!_juegoListo) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    return Scaffold(
-      backgroundColor: SrvColores.get(context, ColorKey.fondo),
-      appBar: WidToolbar(
-        showMenuButton: false,
-        showBackButton: true,
-        subtitle: SrvTraducciones.get('subtitulo_app'),
-        pFuncionCallBack: () async {
-          if (EstadoDelJuego.puntosPartida < 0) {
-            await SrvJuego.guardarPartida();
-          }
-        },
-      ),
-      body: Column(
-        children: [
-          const SizedBox(height: 5),
-          WidResumen(key: _claveResumen),
-          const SizedBox(height: 5),
-
-          // Contadores
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                WidContador(pTexto: SrvTraducciones.get('puntos'), pContador: EstadoDelJuego.puntosPartida, pModo: 1),
-                SizedBox(width: 10),
-                WidContador(
-                  pTexto: SrvTraducciones.get('aciertos'),
-                  pContador: EstadoDelJuego.parejasAcertadas,
-                  pModo: 1,
-                ),
-                SizedBox(width: 10),
-                WidContador(
-                  pTexto: SrvTraducciones.get('errores'),
-                  pContador: EstadoDelJuego.parejasFalladas,
-                  pModo: 2,
-                ),
-                SizedBox(width: 10),
-                WidCronometro(),
-              ],
-            ),
-          ),
-
-          // Grid de cartas
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // IMPORTANTE: Restamos el espacio del banner del alto disponible
-                const double espacioBanner = 60;
-
-                // Espacio disponible (restamos padding y spacing)
-                final double anchoDisponible = constraints.maxWidth - 24; // padding 12 + 12
-                final double altoDisponible = constraints.maxHeight - 24 - espacioBanner;
-
-                // Espacio entre cartas
-                final double crossSpacing = 8;
-                final double mainSpacing = 8;
-
-                // Calculamos el ancho de cada carta
-                final double anchoCartaPorEspacio =
-                    (anchoDisponible - (crossSpacing * (EstadoDelJuego.columnas - 1))) / EstadoDelJuego.columnas;
-
-                // Calculamos el alto de cada carta si usáramos todo el espacio vertical
-                final double altoCartaPorEspacio =
-                    (altoDisponible - (mainSpacing * (EstadoDelJuego.filas - 1))) / EstadoDelJuego.filas;
-
-                // Para mantener proporción cuadrada (o cercana), elegimos el menor de los dos
-                final double sizeCarta = min(anchoCartaPorEspacio, altoCartaPorEspacio);
-
-                // Calculamos el childAspectRatio basándonos en el tamaño real que tendrá cada carta
-                // Ratio = ancho / alto de cada celda del grid
-                final double childAspectRatio = anchoCartaPorEspacio / sizeCarta;
-
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: EstadoDelJuego.columnas,
-                      crossAxisSpacing: crossSpacing,
-                      mainAxisSpacing: mainSpacing,
-                      childAspectRatio: childAspectRatio,
-                      children: List.generate(EstadoDelJuego.cartasTotales, (index) {
-                        return WidCarta(
-                          pIndex: index,
-                          pEstaBocaArriba:
-                              EstadoDelJuego.listaDeCartasGiradas[index] ||
-                              EstadoDelJuego.listaDeCartasEmparejadas[index],
-                          pImagenCarta: EstadoDelJuego.listaDeImagenes[index],
-                          pDestello: EstadoDelJuego.cartasDestello.contains(index),
-                          pCallBackFunction: () => _cuandoPulsanUnaCarta(index),
-                        );
-                      }),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(height: 60),
-        ],
-      ),
-    );
   }
 }

@@ -76,8 +76,25 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
           ),
 
           //resizeToAvoidBottomInset: true,
-          body: SingleChildScrollView(
+          body: Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  SrvColores.get(context, ColorKey.degradadoPantalla1),
+                  SrvColores.get(context, ColorKey.degradadoPantalla2),
+                  SrvColores.get(context, ColorKey.degradadoPantalla3),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                // Puedes añadir 'stops' si quieres controlar dónde cambia cada color:
+                stops: [0.0, 0.7, 0.9],
+              ),
+              // Si añades un patrón de estrellas (tile) como imagen:
+              image: DecorationImage(image: AssetImage(SrvDatosGenerales.fondoPantalla), repeat: ImageRepeat.repeat),
+            ),
             child: Padding(
+              //quito el SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,17 +104,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   //------------------------------------------------------------------
                   Text(
                     SrvTraducciones.get('texto_alias'),
-                    style: GoogleFonts.luckiestGuy(
-                      fontSize: 20,
-                      color: SrvColores.get(context, ColorKey.principal),
-                      shadows: [
-                        Shadow(
-                          blurRadius: 6,
-                          color: SrvColores.get(context, ColorKey.fondo),
-                          offset: const Offset(2, 2),
-                        ),
-                      ],
-                    ),
+                    style: GoogleFonts.luckiestGuy(fontSize: 20, color: SrvColores.get(context, ColorKey.onPrincipal)),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 10),
@@ -114,7 +121,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                       ),
                       hintText: SrvTraducciones.get('alias_hint'),
                       hintStyle: GoogleFonts.luckiestGuy(
-                        color: SrvColores.get(context, ColorKey.principal).withValues(alpha: 0.7),
+                        color: SrvColores.get(context, ColorKey.principal),
                         fontSize: 14,
                       ),
 
@@ -143,14 +150,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                         SrvTraducciones.get('activar_sonidos'),
                         style: GoogleFonts.luckiestGuy(
                           fontSize: 16,
-                          color: SrvColores.get(context, ColorKey.principal),
-                          shadows: [
-                            Shadow(
-                              blurRadius: 6,
-                              color: SrvColores.get(context, ColorKey.fondo),
-                              offset: const Offset(2, 2),
-                            ),
-                          ],
+                          color: SrvColores.get(context, ColorKey.onPrincipal),
                         ),
                       ),
                       Switch(
@@ -182,14 +182,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                         SrvTraducciones.get('activar_musica'),
                         style: GoogleFonts.luckiestGuy(
                           fontSize: 16,
-                          color: SrvColores.get(context, ColorKey.principal),
-                          shadows: [
-                            Shadow(
-                              blurRadius: 6,
-                              color: SrvColores.get(context, ColorKey.fondo),
-                              offset: const Offset(2, 2),
-                            ),
-                          ],
+                          color: SrvColores.get(context, ColorKey.onPrincipal),
                         ),
                       ),
                       Switch(
@@ -216,7 +209,7 @@ class _PagConfiguracionState extends State<PagConfiguracion> {
                   //-----------------------------------------
                   WidIdiomas(
                     pLabel: SrvTraducciones.get('selec_idioma'),
-                    pColorLabel: SrvColores.get(context, ColorKey.principal),
+                    pColorLabel: SrvColores.get(context, ColorKey.negro),
                     pTipoDeLetra: "Luckiest Guy",
                     pTamanyoLetra: 16,
                     pColorLetra: SrvColores.get(context, ColorKey.texto),
